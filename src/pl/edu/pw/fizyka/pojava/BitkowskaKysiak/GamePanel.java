@@ -2,6 +2,7 @@ package pl.edu.pw.fizyka.pojava.BitkowskaKysiak;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -10,13 +11,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -73,6 +75,11 @@ public class GamePanel extends JPanel {
 
 		//okienko zmiany terenu - JComboBox
 		JComboBox<String> lista = new JComboBox<>(teren);
+		
+		// 🔽 ustalamy renderer z wyśrodkowanym tekstem
+		DefaultListCellRenderer renderer = new DefaultListCellRenderer();
+		renderer.setHorizontalAlignment(SwingConstants.CENTER); // wyśrodkuj poziomo
+		lista.setRenderer(renderer);
 	
 		
 		ActionListener terenListener = new ActionListener() {
@@ -86,11 +93,12 @@ public class GamePanel extends JPanel {
 		field.setLabelFor(lista);
 		
 		p = new JPanel();
-		p.setLayout(new FlowLayout(FlowLayout.CENTER));
-		//p.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
+		p.setLayout(new GridLayout(1,2));
+		p.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
 		p.add(field);
+		field.setHorizontalAlignment(SwingConstants.CENTER);
+		field.setVerticalAlignment(SwingConstants.CENTER);
 		p.add(lista);
-		p.setPreferredSize(getMinimumSize());
 		functional.add(p);
 		//functional.add(Box.createRigidArea(new Dimension(150, 40)));
 
@@ -115,12 +123,14 @@ public class GamePanel extends JPanel {
             @Override
             public void stateChanged(ChangeEvent e) {
                 int value = slider.getValue();
-                sliderOut.setText(String.valueOf(value)+ "Hz");
+                sliderOut.setText(String.valueOf(value + "Hz"));
             }
         });
         p2.add(freq);
         p2.add(slider);
         p2.add(sliderOut);
+        p2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
         
         functional.add(p2);
 
