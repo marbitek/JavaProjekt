@@ -2,15 +2,14 @@ package pl.edu.pw.fizyka.pojava.BitkowskaKysiak;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -30,13 +29,17 @@ public class GamePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private JPanel inner, functional, data, p, p2;
-	protected JButton back; 
+	private JPanel inner, functional, data, p, p2, p3, pSource;
+	protected JButton back, onOff; 
 	private String teren[] = {"sand", "water", "air"};
+	private String sources[] = {"One source", "Two sources", "Three sources"};
 	private double wspolczynniki[] = {1.333, 4.555, 6.77};
-	private double currentWsp, currentFreq;
-	private JLabel  field, freq, sliderOut;
+	private double currentWsp, currentFreq, currentSource;
+	private JLabel  field, freq, data1, data2, data3, source;
 	private JSlider slider;
+	
+	
+	
 	
 	
 	
@@ -65,21 +68,22 @@ public class GamePanel extends JPanel {
 		
 		field = new JLabel("field: ");
 		functional.setBorder(BorderFactory.createTitledBorder(
-	                BorderFactory.createLineBorder(Color.GRAY),
+	                BorderFactory.createLineBorder(Color.BLACK),
 	                "Funcionalities",
 	                TitledBorder.CENTER,
 	                TitledBorder.TOP,
 	                new Font("Arial", Font.BOLD, 14),
-	                Color.DARK_GRAY
+	                Color.BLACK
 	        ));
 
 		//okienko zmiany terenu - JComboBox
 		JComboBox<String> lista = new JComboBox<>(teren);
 		
-		// 🔽 ustalamy renderer z wyśrodkowanym tekstem
+		//ustalamy renderer z wyśrodkowanym tekstem
 		DefaultListCellRenderer renderer = new DefaultListCellRenderer();
 		renderer.setHorizontalAlignment(SwingConstants.CENTER); // wyśrodkuj poziomo
 		lista.setRenderer(renderer);
+		lista.setBackground(Color.WHITE);
 	
 		
 		ActionListener terenListener = new ActionListener() {
@@ -93,7 +97,7 @@ public class GamePanel extends JPanel {
 		field.setLabelFor(lista);
 		
 		p = new JPanel();
-		p.setLayout(new GridLayout(1,2));
+		p.setLayout(new GridLayout(2,1));
 		p.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
 		p.add(field);
 		field.setHorizontalAlignment(SwingConstants.CENTER);
@@ -101,46 +105,103 @@ public class GamePanel extends JPanel {
 		p.add(lista);
 		functional.add(p);
 		//functional.add(Box.createRigidArea(new Dimension(150, 40)));
+		functional.add(Box.createRigidArea(new Dimension(250, 20)));
 
+		
+		//okienko z wyborem zródeł
+		pSource = new JPanel(new GridLayout(2,1));
+		pSource.setOpaque(false);
+		
+		
+		
+		source = new JLabel("number of sources: ");
+		source.setHorizontalAlignment(SwingConstants.CENTER);
+		source.setVerticalAlignment(SwingConstants.CENTER);
+		pSource.add(source);
+		
+		JComboBox<String> numbSrc = new JComboBox<>(sources);
+		//numbSrc.setSize(new Dimension(250,20));
+		numbSrc.setRenderer(renderer);
+		numbSrc.setBackground(Color.WHITE);
+				
+		ActionListener sourceListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				int index = lista.getSelectedIndex(); //wybieram indeks z tablicy teren
+				currentSource = index + 1; //wybieram wspolczynnik odpowiadający indeksowi
+				}
+			};
+			
+		numbSrc.addActionListener(sourceListener);
+		source.setLabelFor(numbSrc);
+		pSource.add(numbSrc);
+		
+		functional.add(pSource);
+		functional.add(Box.createRigidArea(new Dimension(250, 20)));
+		
+		
+		
 		//okienko z wyborem czestotliwosci
-		freq = new JLabel("frequency: ");
+		freq = new JLabel("frequency: 0 Hz ");
 		freq.setLabelFor(slider);
+		freq.setHorizontalAlignment(SwingConstants.CENTER);
+		freq.setVerticalAlignment(SwingConstants.CENTER);
 		
 		p2 = new JPanel();
-		p2.setLayout(new GridLayout(1,3));
-		//p2.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
+		p2.setLayout(new BorderLayout());
+		p2.setSize(new Dimension(250, 20));
+		p2.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
 		
-		sliderOut = new JLabel();
-		slider = new JSlider(JSlider.HORIZONTAL, 300, 1000, 300);
-		//slider.setPreferredSize(new Dimension(250, 40)); // 👈 KLUCZOWE!
+		
 
-		//slider.setPaintTicks(true);
-		//slider.setPaintLabels(true);
-		//slider.setMinorTickSpacing(50);
-		//slider.setMajorTickSpacing(200);
+		
+		slider = new JSlider(JSlider.HORIZONTAL, 0, 1000, 0);
+		slider.setPreferredSize(new Dimension(250, 20)); // 👈 KLUCZOWE!
+		slider.setBackground(Color.ORANGE);
+
+		slider.setPaintTicks(true);
+		slider.setPaintLabels(true);
+		slider.setMinorTickSpacing(100);
+		slider.setMajorTickSpacing(200);
 		
         slider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int value = slider.getValue();
-                sliderOut.setText(String.valueOf(value + "Hz"));
+           @Override
+           public void stateChanged(ChangeEvent e) {
+               int value = slider.getValue();
+               freq.setText(String.valueOf("frequency: " + value + " Hz"));
             }
         });
-        p2.add(freq);
-        p2.add(slider);
-        p2.add(sliderOut);
-        p2.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
-        
+        p2.add(freq, BorderLayout.NORTH);
+        p2.add(slider, BorderLayout.CENTER);
+       
         functional.add(p2);
+        functional.add(Box.createRigidArea(new Dimension(250,20)));
 
 		
 		
 		//panel z danymi
-		data = new JPanel();
+		data = new JPanel(new GridLayout(4,1));
 		data.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+		data.setBackground(Color.WHITE);
+		
+		
+		data1 = new JLabel("data1: ");
+		data2 = new JLabel("data2: ");
+		data3 = new JLabel("data3: ");
+		onOff = new JButton("ON/OFF");
+		
+		data.add(data1);
+		data.add(data2);
+		data.add(data3);
+		data.add(onOff);
+		
 		functional.add(data);
 		
+		p.setMaximumSize(new Dimension(250, 60));
+		pSource.setMaximumSize(new Dimension(250, 60));
+		p2.setMaximumSize(new Dimension(250, 80));
+		data.setMaximumSize(new Dimension(250, 250));
+
 		
 		
 		
