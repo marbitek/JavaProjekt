@@ -50,7 +50,7 @@ public class WelcomePanel extends JPanel{
 
 		BufferedImage dune = null;
 		try {
-			dune = ImageIO.read(new File("C:\\Users\\48533\\Desktop\\Studia\\dune3.jpg"));
+			dune = ImageIO.read(new File("src\\dune3.jpg"));
 			//dune = ImageIO.read(new File("C:\\Users\\48533\\Desktop\\Studia\\dune2.jpg"));
 			//dune = ImageIO.read(new File("C:\\Users\\48533\\Desktop\\Studia\\dune.jpg"));
 		} catch (IOException e) {
