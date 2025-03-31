@@ -48,7 +48,8 @@ public class MainPanel extends JFrame {
 	            • Observe the data.
 
 	            Click OK to start the game!
-	            """, nick); 
+	                 """, nick);
+
 
 	        javax.swing.JOptionPane.showMessageDialog(
 	            homeContainer,
