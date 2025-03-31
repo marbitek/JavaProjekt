@@ -23,13 +23,11 @@ public class WelcomePanel extends JPanel{
 	//MB+
 	private static final long serialVersionUID = 1L;
 
-	
 	protected JButton start;
 	private JPanel center;
 	private JLabel welcome, nickname;
 	protected JTextField insertNick;
-	static int fontSize = 32;
-	
+	static int fontSize = 45;
 	
 	public WelcomePanel() {
 		super(new BorderLayout());
@@ -37,27 +35,27 @@ public class WelcomePanel extends JPanel{
 		this.setLayout(new BorderLayout());
 		
 		start = new JButton("Start");
+		start.setPreferredSize(new Dimension(100, 45)); 
+		start.setMinimumSize(new Dimension(80, 45));
 		
 		welcome = new JLabel("Welcome to Dune Harmonics!");
 		welcome.setFont(new Font("Monotype Corsiva", Font.BOLD, fontSize));
 		welcome.setVerticalAlignment(SwingConstants.CENTER);
 		welcome.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		
 		center = new JPanel();
 		center.setLayout(new BorderLayout()); //MK grid layout powinien zalatwic sprawe
 		center.setOpaque(false); 
-		
 		//MB-
 		
 		//MB+
-
 		BufferedImage dune = null;
 		try {
 			dune = ImageIO.read(new File("src\\dune3.jpg")); //MK
 			//dune = ImageIO.read(new File("C:\\Users\\48533\\Desktop\\Studia\\dune2.jpg"));
 			//dune = ImageIO.read(new File("C:\\Users\\48533\\Desktop\\Studia\\dune.jpg"));
-		} catch (IOException e) {
+		} catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 		JLabel picLabel = new JLabel(new ImageIcon(dune));
@@ -68,42 +66,29 @@ public class WelcomePanel extends JPanel{
 		nickname = new JLabel("Please enter your nickname:");
 		
 		//MK+
+		nickname.setPreferredSize(new Dimension(165, 20)); 
+		nickname.setMinimumSize(new Dimension(165, 20));
+		
 		JPanel nickPanel = new JPanel();
 		nickPanel.setLayout(new FlowLayout());
-		
-		
+		nickPanel.setBackground(new Color(188, 143, 143));
 		
 		nickPanel.add(nickname);
 		nickPanel.add(insertNick);
-		center.add(nickPanel, BorderLayout.SOUTH); 
-		
+		center.add(nickPanel, BorderLayout.SOUTH);
 		//MK-
 	
 		nickname.setAlignmentX(Component.CENTER_ALIGNMENT);
 		insertNick.setAlignmentX(Component.CENTER_ALIGNMENT);
-
 		
 		this.add(welcome, BorderLayout.NORTH);
 		this.add(center, BorderLayout.CENTER);
 		this.add(start, BorderLayout.SOUTH);
-		
-		
-		 
-		
-		
-		
-		
 	}
 
-
-	
-
-	
-
-
-
-	public static void main(String[] args) {
-
+	public static void main(String[] args) 
+	{
+		
 	}
 //MB-
 }

@@ -19,7 +19,6 @@ public class MainPanel extends JFrame {
 	static GamePanel gamePanel;
 	static CardLayout card;
 	
-	//TEST
 	public MainPanel()  {
 		JFrame frame = new JFrame("Dune Harmonics");	
 		card = new CardLayout(5, 5);
@@ -31,10 +30,10 @@ public class MainPanel extends JFrame {
 	    homeContainer.add(welcomePanel, "Welcome Panel");
 	    welcomePanel.start.addActionListener(e -> card.show(homeContainer, "Game Panel"));
 	    
-	    
 	    welcomePanel.start.addActionListener(e -> {
 	        String nick = welcomePanel.insertNick.getText().trim();
-	        if (nick.isEmpty()) {
+	        if (nick.isEmpty()) 
+	        {
 	            nick = "Stranger";
 	        }
 

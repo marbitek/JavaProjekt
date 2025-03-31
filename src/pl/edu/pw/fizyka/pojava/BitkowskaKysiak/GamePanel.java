@@ -3,6 +3,7 @@ package pl.edu.pw.fizyka.pojava.BitkowskaKysiak;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -29,8 +30,8 @@ public class GamePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private JPanel inner, functional, data, p, p2, pSource;
-	protected JButton back, onOff; 
+	private JPanel inner, functional, data, p, p2, pSource, controlPanel;
+	protected JButton back, onOff, exit, reset; 
 	private String teren[] = {"sand", "water", "rock"};
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
 	private double wspolczynniki[] = {1.333, 4.555, 6.77};
@@ -38,16 +39,23 @@ public class GamePanel extends JPanel {
 	private JLabel  field, freq, data1, data2, data3, source;
 	private JSlider slider;
 	
-	
-	
-	
-	
-	
 	public GamePanel() {
 		
 		super(new BorderLayout());
+		
+		//MK+
+		controlPanel = new JPanel(); 
+		controlPanel.setLayout(new FlowLayout());
 		back = new JButton("Back");
-		this.add(back, BorderLayout.SOUTH);
+		reset = new JButton("Reset");
+		exit = new JButton("Exit");
+		controlPanel.add(back);
+		controlPanel.add(reset);
+		controlPanel.add(exit);
+		controlPanel.setBackground(new Color(188, 143, 143));
+		
+		this.add(controlPanel, BorderLayout.SOUTH);
+		//MK-
 		
 		inner = new JPanel();
 		functional = new JPanel();
@@ -63,8 +71,6 @@ public class GamePanel extends JPanel {
 		
 		this.add(inner, BorderLayout.CENTER);
 		this.add(functional, BorderLayout.EAST);
-		
-
 		
 		field = new JLabel("field: ");
 		functional.setBorder(BorderFactory.createTitledBorder(
@@ -152,9 +158,6 @@ public class GamePanel extends JPanel {
 		p2.setSize(new Dimension(250, 20));
 		p2.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
 		
-		
-
-		
 		slider = new JSlider(JSlider.HORIZONTAL, 0, 1000, 0);
 		slider.setPreferredSize(new Dimension(250, 20)); // 👈 KLUCZOWE!
 		slider.setBackground(Color.ORANGE);
@@ -176,8 +179,6 @@ public class GamePanel extends JPanel {
        
         functional.add(p2);
         functional.add(Box.createRigidArea(new Dimension(250,20)));
-
-		
 		
 		//panel z danymi
 		data = new JPanel(new GridLayout(4,1));
@@ -201,18 +202,9 @@ public class GamePanel extends JPanel {
 		pSource.setMaximumSize(new Dimension(250, 60));
 		p2.setMaximumSize(new Dimension(250, 80));
 		data.setMaximumSize(new Dimension(240, 250));
-
-		
-		
-		
-
-		
+	
 		
 	}
-	
-	
-	
-	
 	
 }
 	
