@@ -29,10 +29,10 @@ public class GamePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private JPanel inner, functional, data, p, p2, p3, pSource;
+	private JPanel inner, functional, data, p, p2, pSource;
 	protected JButton back, onOff; 
 	private String teren[] = {"sand", "water", "air"};
-	private String sources[] = {"One source", "Two sources", "Three sources"};
+	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
 	private double wspolczynniki[] = {1.333, 4.555, 6.77};
 	private double currentWsp, currentFreq, currentSource;
 	private JLabel  field, freq, data1, data2, data3, source;
@@ -200,7 +200,7 @@ public class GamePanel extends JPanel {
 		p.setMaximumSize(new Dimension(250, 60));
 		pSource.setMaximumSize(new Dimension(250, 60));
 		p2.setMaximumSize(new Dimension(250, 80));
-		data.setMaximumSize(new Dimension(250, 250));
+		data.setMaximumSize(new Dimension(240, 250));
 
 		
 		

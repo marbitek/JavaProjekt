@@ -4,7 +4,6 @@ package pl.edu.pw.fizyka.pojava.BitkowskaKysiak;
 import java.awt.CardLayout;
 import java.awt.Color;
 
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -26,10 +25,41 @@ public class MainPanel extends JFrame {
 		card = new CardLayout(5, 5);
 		homeContainer = new JPanel(card);
 		homeContainer.setBackground(Color.white);
+		//homeContainer.setMaximumSize(new Dimension(900, 600));
 		
 	    welcomePanel = new WelcomePanel();
 	    homeContainer.add(welcomePanel, "Welcome Panel");
 	    welcomePanel.start.addActionListener(e -> card.show(homeContainer, "Game Panel"));
+	    
+	    
+	    welcomePanel.start.addActionListener(e -> {
+	        String nick = welcomePanel.insertNick.getText().trim();
+	        if (nick.isEmpty()) {
+	            nick = "Stranger";
+	        }
+
+	        String info = String.format("""
+	            Welcome %s in Dune Harmonics!
+	            
+	            In this game you can:
+	            • Chose the type of field,
+	            • Chose the number of sources,
+	            • Set the frequency of the sources,
+	            • Observe the data.
+
+	            Click OK to start a game!
+	            """, nick);
+
+	        javax.swing.JOptionPane.showMessageDialog(
+	            homeContainer,
+	            info,
+	            "Instruction",
+	            javax.swing.JOptionPane.INFORMATION_MESSAGE
+	        );
+
+	        card.show(homeContainer, "Game Panel");
+	    });
+
 	    
 	    gamePanel = new GamePanel();
 	    homeContainer.add(gamePanel, "Game Panel");
