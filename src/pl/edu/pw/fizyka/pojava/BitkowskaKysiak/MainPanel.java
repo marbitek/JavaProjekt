@@ -10,6 +10,7 @@ import javax.swing.SwingUtilities;
 
 public class MainPanel extends JFrame {
 
+	//MB+
 	private static final long serialVersionUID = 1L;
 
 	static JPanel homePanel, centre;
@@ -18,7 +19,7 @@ public class MainPanel extends JFrame {
 	static GamePanel gamePanel;
 	static CardLayout card;
 	
-	
+	//TEST
 	public MainPanel()  {
 		JFrame frame = new JFrame("Dune Harmonics");	
 		card = new CardLayout(5, 5);
@@ -46,8 +47,8 @@ public class MainPanel extends JFrame {
 	            • Set the frequency of the sources,
 	            • Observe the data.
 
-	            Click OK to start a game!
-	            """, nick);
+	            Click OK to start the game!
+	            """, nick); 
 
 	        javax.swing.JOptionPane.showMessageDialog(
 	            homeContainer,
@@ -79,5 +80,5 @@ public class MainPanel extends JFrame {
 	{
 	    SwingUtilities.invokeLater(MainPanel::new);
 	}
-
+	//MB-
 }
