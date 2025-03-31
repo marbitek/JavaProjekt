@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,9 +47,16 @@ public class GamePanel extends JPanel {
 		//MK+
 		controlPanel = new JPanel(); 
 		controlPanel.setLayout(new FlowLayout());
-		back = new JButton("Back");
+		back = new JButton("Back"); 
+		back.setMinimumSize(new Dimension(65, 25));
+		
 		reset = new JButton("Reset");
+		reset.setMinimumSize(new Dimension(65, 25));
+		
 		exit = new JButton("Exit");
+		exit.setMinimumSize(new Dimension(65, 25));
+		
+		exit.addActionListener(e -> System.exit(0));
 		controlPanel.add(back);
 		controlPanel.add(reset);
 		controlPanel.add(exit);

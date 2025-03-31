@@ -48,6 +48,8 @@ public class WelcomePanel extends JPanel{
 		center.setOpaque(false); 
 		//MB-
 		
+		
+		
 		//MB+
 		BufferedImage dune = null;
 		try {
