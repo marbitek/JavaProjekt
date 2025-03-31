@@ -48,15 +48,7 @@ public class MainPanel extends JFrame {
 
 	public static void main(String[] args)
 	{
-		System.out.println("Hello!");
 	    SwingUtilities.invokeLater(MainPanel::new);
 	}
-	
-		
-		
-		
-		
-		
-		
 
 }
