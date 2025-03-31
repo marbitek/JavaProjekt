@@ -31,7 +31,7 @@ public class GamePanel extends JPanel {
 	
 	private JPanel inner, functional, data, p, p2, pSource;
 	protected JButton back, onOff; 
-	private String teren[] = {"sand", "water", "air"};
+	private String teren[] = {"sand", "water", "rock"};
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
 	private double wspolczynniki[] = {1.333, 4.555, 6.77};
 	private double currentWsp, currentFreq, currentSource;
