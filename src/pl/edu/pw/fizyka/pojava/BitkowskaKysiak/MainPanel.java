@@ -20,8 +20,7 @@ public class MainPanel extends JFrame {
 	
 	
 	public MainPanel()  {
-		JFrame frame = new JFrame("Dune Harmonics");
-		add(new JLabel("Hello"));		
+		JFrame frame = new JFrame("Dune Harmonics");	
 		card = new CardLayout(5, 5);
 		homeContainer = new JPanel(card);
 		homeContainer.setBackground(Color.white);
@@ -78,8 +77,6 @@ public class MainPanel extends JFrame {
 
 	public static void main(String[] args)
 	{
-		System.out.println("Hello World!");
-
 	    SwingUtilities.invokeLater(MainPanel::new);
 	}
 
