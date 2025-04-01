@@ -90,14 +90,13 @@ public class WelcomePanel extends JPanel{
 		start.setFont(new Font("Lucida Handwriting", Font.ITALIC, 24));
 		utilityFunctions.buttonStyling(start, new Color(240, 248, 255), new Color(128, 0, 0));
 		
-		//MK-
-	
+		//MK
 		nickname.setAlignmentX(Component.CENTER_ALIGNMENT);
 		insertNick.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		this.add(welcome, BorderLayout.NORTH);
 		this.add(center, BorderLayout.CENTER);
-		this.add(startPanel, BorderLayout.SOUTH);
+		this.add(startPanel, BorderLayout.SOUTH); 
 	}
 
 	public static void main(String[] args) 

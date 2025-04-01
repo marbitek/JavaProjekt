@@ -33,6 +33,7 @@ import javax.swing.event.ChangeListener;
 
 public class utilityFunctions extends JFrame {
 	
+	//MK+
     public static void buttonStyling(JButton button, Color bgColor, Color fgColor) {
         button.setBackground(bgColor);
         button.setForeground(fgColor);
@@ -43,4 +44,5 @@ public class utilityFunctions extends JFrame {
             BorderFactory.createEmptyBorder(5, 10, 5, 10)
         ));
     }
+    //KM-
 }
