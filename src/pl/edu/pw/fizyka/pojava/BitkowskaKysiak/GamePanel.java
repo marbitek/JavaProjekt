@@ -1,5 +1,7 @@
 package pl.edu.pw.fizyka.pojava.BitkowskaKysiak;
 
+import pl.edu.pw.fizyka.pojava.BitkowskaKysiak.utilityFunctions;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,6 +11,8 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -48,13 +52,14 @@ public class GamePanel extends JPanel {
 		controlPanel = new JPanel(); 
 		controlPanel.setLayout(new FlowLayout());
 		back = new JButton("Back"); 
-		back.setMinimumSize(new Dimension(65, 25));
+		back.setMinimumSize(new Dimension(70, 25));
+		
 		
 		reset = new JButton("Reset");
-		reset.setMinimumSize(new Dimension(65, 25));
+		reset.setMinimumSize(new Dimension(70, 25));
 		
 		exit = new JButton("Exit");
-		exit.setMinimumSize(new Dimension(65, 25));
+		exit.setMinimumSize(new Dimension(70, 25));
 		
 		exit.addActionListener(e -> System.exit(0));
 		controlPanel.add(back);
@@ -63,9 +68,15 @@ public class GamePanel extends JPanel {
 		controlPanel.setBackground(new Color(188, 143, 143));
 		
 		this.add(controlPanel, BorderLayout.SOUTH);
+		
+		utilityFunctions.buttonStyling(back, new Color(255, 222, 173), new Color(128, 0, 0));
+		utilityFunctions.buttonStyling(reset, new Color(255, 222, 173), new Color(128, 0, 0));
+		utilityFunctions.buttonStyling(exit, new Color(255, 222, 173), new Color(128, 0, 0));
 		//MK-
 		
 		inner = new JPanel();
+	        
+	    
 		functional = new JPanel();
 		functional.setLayout(new BoxLayout(functional, BoxLayout.Y_AXIS));
 		functional.setPreferredSize(new Dimension(250, 400));
@@ -213,6 +224,8 @@ public class GamePanel extends JPanel {
 	
 		
 	}
+
+
 	
 }
 	

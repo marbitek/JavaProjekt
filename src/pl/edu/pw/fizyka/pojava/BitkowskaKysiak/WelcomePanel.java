@@ -1,5 +1,7 @@
 package pl.edu.pw.fizyka.pojava.BitkowskaKysiak;
 
+import pl.edu.pw.fizyka.pojava.BitkowskaKysiak.utilityFunctions;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -7,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +27,7 @@ public class WelcomePanel extends JPanel{
 	private static final long serialVersionUID = 1L;
 
 	protected JButton start;
-	private JPanel center;
+	private JPanel center, nickPanel, startPanel;
 	private JLabel welcome, nickname;
 	protected JTextField insertNick;
 	static int fontSize = 45;
@@ -71,13 +74,24 @@ public class WelcomePanel extends JPanel{
 		nickname.setPreferredSize(new Dimension(165, 20)); 
 		nickname.setMinimumSize(new Dimension(165, 20));
 		
-		JPanel nickPanel = new JPanel();
+		nickPanel = new JPanel();
 		nickPanel.setLayout(new FlowLayout());
-		nickPanel.setBackground(new Color(188, 143, 143));
+		nickPanel.setBackground(new Color(160, 82, 45));
 		
 		nickPanel.add(nickname);
 		nickPanel.add(insertNick);
 		center.add(nickPanel, BorderLayout.SOUTH);
+		
+		startPanel = new JPanel();
+		startPanel.setLayout(new FlowLayout());
+		startPanel.setBackground(new Color(160, 82, 45));
+		startPanel.add(start);
+		
+		start.setPreferredSize(new Dimension(120,40)); 
+		start.setMinimumSize(new Dimension(120,40));
+		start.setFont(new Font("Lucida Handwriting", Font.ITALIC, 24));
+		utilityFunctions.buttonStyling(start, new Color(240, 248, 255), new Color(128, 0, 0));
+		
 		//MK-
 	
 		nickname.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -85,7 +99,7 @@ public class WelcomePanel extends JPanel{
 		
 		this.add(welcome, BorderLayout.NORTH);
 		this.add(center, BorderLayout.CENTER);
-		this.add(start, BorderLayout.SOUTH);
+		this.add(startPanel, BorderLayout.SOUTH);
 	}
 
 	public static void main(String[] args) 
