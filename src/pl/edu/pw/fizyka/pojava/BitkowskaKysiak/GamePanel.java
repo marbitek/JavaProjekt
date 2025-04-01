@@ -36,7 +36,7 @@ public class GamePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private JPanel inner, functional, data, p, p2, pSource, controlPanel;
+	private JPanel inner, innerPanel, functional, data, p, p2, pSource, controlPanel;
 	protected JButton back, onOff, exit, reset; 
 	private String teren[] = {"sand", "water", "rock"};
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
@@ -76,7 +76,7 @@ public class GamePanel extends JPanel {
 		//MK-
 		
 		inner = new JPanel();
-	        
+	     
 	    
 		functional = new JPanel();
 		functional.setLayout(new BoxLayout(functional, BoxLayout.Y_AXIS));
@@ -88,8 +88,29 @@ public class GamePanel extends JPanel {
 		Border padding = BorderFactory.createMatteBorder(15, 15, 15, 15, Color.ORANGE);
 		Border ramka = BorderFactory.createLineBorder(Color.black, 3);
 		inner.setBorder(BorderFactory.createCompoundBorder(padding, ramka));
+		//inner.setMinimumSize(new Dimension((int) (0.35 * this.getWidth()), (int) (0.5 * this.getHeight())));
+		//inner.setMaximumSize(new Dimension((int) (0.35 * this.getWidth()), (int) (0.5 * this.getHeight())));
+		//inner.setPreferredSize(new Dimension((int) (0.35 * this.getWidth()), (int) (0.5 * this.getHeight())));
 		
-		this.add(inner, BorderLayout.CENTER);
+		this.addComponentListener(new ComponentAdapter() {
+		    @Override
+		    public void componentResized(ComponentEvent e) {
+		        int newWidth = (int) (getWidth() * 0.35);  // 35% of the parent width
+		        int newHeight = (int) (getHeight() * 0.5); // 50% of the parent height
+		        inner.setPreferredSize(new Dimension(newWidth, newHeight));
+		        inner.setMinimumSize(new Dimension(newWidth, newHeight));
+		        inner.setMaximumSize(new Dimension(newWidth, newHeight));
+		        inner.revalidate();
+		        inner.repaint();
+		    }
+		});
+		
+		
+		innerPanel = new JPanel();
+		innerPanel.setBackground(Color.orange);
+		innerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		innerPanel.add(inner);
+		this.add(innerPanel, BorderLayout.CENTER);
 		this.add(functional, BorderLayout.EAST);
 		
 		field = new JLabel("Field: ");
@@ -252,13 +273,16 @@ public class GamePanel extends JPanel {
 	
 		this.addComponentListener(new java.awt.event.ComponentAdapter() {
 		    @Override
-		    public void componentResized(java.awt.event.ComponentEvent e) {
-		        int newWidth = (int) (getWidth() * 0.70);
-		        int newHeight = (int) (getHeight() * 0.70);
+		    public void componentResized(java.awt.event.ComponentEvent e) 
+		    {
+		    	double zmienna = (getHeight() * 0.9);
+		        int newWidth = (int)zmienna;
+		        int newHeight = (int)zmienna;
 		        inner.setPreferredSize(new java.awt.Dimension(newWidth, newHeight));
 		        inner.revalidate();
 		    }
 		});
+		
 		
 	}
 
