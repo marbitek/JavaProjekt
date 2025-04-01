@@ -26,6 +26,9 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.Dimension;
 
 
 
@@ -194,26 +197,27 @@ public class GamePanel extends JPanel {
         p2.add(freq, BorderLayout.NORTH);
         p2.add(slider, BorderLayout.CENTER);
        
-        p2.add(pow);
+        
         
         functional.add(p2);
         functional.add(Box.createRigidArea(new Dimension(250,20)));
 		
 		//panel z danymi
-		data = new JPanel(new GridLayout(4,1));
+		data = new JPanel(new GridLayout(5,1));
 		data.setBorder(BorderFactory.createLoweredSoftBevelBorder());
 		data.setBackground(Color.WHITE);
 		
 		//MK+
-		data1 = new JLabel("Time elapsed: ");
-		data2 = new JLabel("Harvested spice ");
+		data1 = new JLabel("Time elapsed: 0.00 s");
+		data2 = new JLabel("Harvested spice: 0.00 t");
 		onOff = new JButton("ON/OFF");
 		utilityFunctions.buttonStyling(onOff, Color.black, new Color(255, 248, 220));
 		
 		powerSlider = new JSlider(JSlider.HORIZONTAL, 25, 75, 50);
-		powerSlider.setPreferredSize(new Dimension(250, 20)); // 👈 KLUCZOWE!
+		powerSlider.setPreferredSize(new Dimension(250, 20)); 
 		powerSlider.setBackground(Color.ORANGE);
 		pow = new JLabel("Excavation power: 50 MW");
+		pow.setOpaque(true);
 		pow.setBackground(Color.orange);
 
 		powerSlider.setPaintTicks(true);
@@ -228,11 +232,16 @@ public class GamePanel extends JPanel {
                pow.setText(String.valueOf("Excavation power: " + Pvalue + " MW"));
             }
         });
-		//MK-
+		
+		
+			
+		data.add(pow);
 		data.add(powerSlider);
 		data.add(data1);
 		data.add(data2);
 		data.add(onOff);
+		
+		//MK-
 		
 		functional.add(data);
 		
@@ -241,22 +250,18 @@ public class GamePanel extends JPanel {
 		p2.setMaximumSize(new Dimension(250, 80));
 		data.setMaximumSize(new Dimension(240, 250));
 	
+		this.addComponentListener(new java.awt.event.ComponentAdapter() {
+		    @Override
+		    public void componentResized(java.awt.event.ComponentEvent e) {
+		        int newWidth = (int) (getWidth() * 0.70);
+		        int newHeight = (int) (getHeight() * 0.70);
+		        inner.setPreferredSize(new java.awt.Dimension(newWidth, newHeight));
+		        inner.revalidate();
+		    }
+		});
 		
 	}
 
 
 	
 }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-
