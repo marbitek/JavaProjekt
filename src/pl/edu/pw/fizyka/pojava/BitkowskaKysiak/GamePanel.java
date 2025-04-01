@@ -43,7 +43,7 @@ public class GamePanel extends JPanel {
 	private double wspolczynniki[] = {1.333, 4.555, 6.77};
 	private double currentWsp, currentFreq, currentSource;
 	private JLabel  field, freq, data1, data2, source, pow;
-	private JSlider slider, powerSlider;
+	protected JSlider slider, powerSlider;
 	
 	public GamePanel() {
 		

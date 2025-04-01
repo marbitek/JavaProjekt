@@ -63,7 +63,16 @@ public class MainPanel extends JFrame {
 	    
 	    gamePanel = new GamePanel();
 	    homeContainer.add(gamePanel, "Game Panel");
-	    gamePanel.back.addActionListener(e -> card.show(homeContainer, "Welcome Panel"));
+	    
+	    //gamePanel.back.addActionListener(e -> card.show(homeContainer, "Welcome Panel"));
+	    //MK - modyfikuje zeby slidery w gamepanel wracaly do poczatkowych wartosci po powrocie do poczatku
+	    gamePanel.back.addActionListener(e -> {
+	        card.show(homeContainer, "Welcome Panel");
+
+	        gamePanel.slider.setValue(0);
+	        gamePanel.powerSlider.setValue(50);
+	    });
+
 
 	    
 	    frame.add(homeContainer);
