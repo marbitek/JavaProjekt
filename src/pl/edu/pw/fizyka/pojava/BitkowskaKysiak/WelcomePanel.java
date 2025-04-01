@@ -1,7 +1,5 @@
 package pl.edu.pw.fizyka.pojava.BitkowskaKysiak;
 
-import pl.edu.pw.fizyka.pojava.BitkowskaKysiak.utilityFunctions;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -76,7 +74,7 @@ public class WelcomePanel extends JPanel{
 		
 		nickPanel = new JPanel();
 		nickPanel.setLayout(new FlowLayout());
-		nickPanel.setBackground(new Color(160, 82, 45));
+		nickPanel.setBackground(new Color(245, 222, 179));
 		
 		nickPanel.add(nickname);
 		nickPanel.add(insertNick);
@@ -84,7 +82,7 @@ public class WelcomePanel extends JPanel{
 		
 		startPanel = new JPanel();
 		startPanel.setLayout(new FlowLayout());
-		startPanel.setBackground(new Color(160, 82, 45));
+		startPanel.setBackground(new Color(245, 222, 179));
 		startPanel.add(start);
 		
 		start.setPreferredSize(new Dimension(120,40)); 

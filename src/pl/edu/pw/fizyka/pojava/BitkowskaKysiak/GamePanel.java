@@ -1,7 +1,5 @@
 package pl.edu.pw.fizyka.pojava.BitkowskaKysiak;
 
-import pl.edu.pw.fizyka.pojava.BitkowskaKysiak.utilityFunctions;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -41,8 +39,8 @@ public class GamePanel extends JPanel {
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
 	private double wspolczynniki[] = {1.333, 4.555, 6.77};
 	private double currentWsp, currentFreq, currentSource;
-	private JLabel  field, freq, data1, data2, data3, source;
-	private JSlider slider;
+	private JLabel  field, freq, data1, data2, source, pow;
+	private JSlider slider, powerSlider;
 	
 	public GamePanel() {
 		
@@ -65,13 +63,13 @@ public class GamePanel extends JPanel {
 		controlPanel.add(back);
 		controlPanel.add(reset);
 		controlPanel.add(exit);
-		controlPanel.setBackground(new Color(188, 143, 143));
+		controlPanel.setBackground(new Color(245, 222, 179));
 		
 		this.add(controlPanel, BorderLayout.SOUTH);
 		
-		utilityFunctions.buttonStyling(back, new Color(255, 222, 173), new Color(128, 0, 0));
-		utilityFunctions.buttonStyling(reset, new Color(255, 222, 173), new Color(128, 0, 0));
-		utilityFunctions.buttonStyling(exit, new Color(255, 222, 173), new Color(128, 0, 0));
+		utilityFunctions.buttonStyling(back, new Color(240, 248, 255), new Color(128, 0, 0));
+		utilityFunctions.buttonStyling(reset, new Color(240, 248, 255), new Color(128, 0, 0));
+		utilityFunctions.buttonStyling(exit, new Color(240, 248, 255), new Color(128, 0, 0));
 		//MK-
 		
 		inner = new JPanel();
@@ -91,7 +89,7 @@ public class GamePanel extends JPanel {
 		this.add(inner, BorderLayout.CENTER);
 		this.add(functional, BorderLayout.EAST);
 		
-		field = new JLabel("field: ");
+		field = new JLabel("Field: ");
 		functional.setBorder(BorderFactory.createTitledBorder(
 	                BorderFactory.createLineBorder(Color.BLACK),
 	                "Funcionalities",
@@ -139,7 +137,7 @@ public class GamePanel extends JPanel {
 		
 		
 		
-		source = new JLabel("number of sources: ");
+		source = new JLabel("Number of sources: ");
 		source.setHorizontalAlignment(SwingConstants.CENTER);
 		source.setVerticalAlignment(SwingConstants.CENTER);
 		pSource.add(source);
@@ -200,19 +198,39 @@ public class GamePanel extends JPanel {
         functional.add(Box.createRigidArea(new Dimension(250,20)));
 		
 		//panel z danymi
-		data = new JPanel(new GridLayout(4,1));
+		data = new JPanel(new GridLayout(5,1));
 		data.setBorder(BorderFactory.createLoweredSoftBevelBorder());
 		data.setBackground(Color.WHITE);
 		
-		
-		data1 = new JLabel("data1: ");
-		data2 = new JLabel("data2: ");
-		data3 = new JLabel("data3: ");
+		//MK+
+		data1 = new JLabel("Time elapsed: ");
+		data2 = new JLabel("Harvested spice ");
 		onOff = new JButton("ON/OFF");
+		utilityFunctions.buttonStyling(onOff, Color.black, new Color(255, 248, 220));
 		
+		powerSlider = new JSlider(JSlider.HORIZONTAL, 25, 75, 50);
+		powerSlider.setPreferredSize(new Dimension(250, 20)); // 👈 KLUCZOWE!
+		powerSlider.setBackground(Color.ORANGE);
+		pow = new JLabel("Excavation power: 50 MW");
+
+		powerSlider.setPaintTicks(true);
+		powerSlider.setPaintLabels(true);
+		powerSlider.setMinorTickSpacing(5);
+		powerSlider.setMajorTickSpacing(25);
+		
+		powerSlider.addChangeListener(new ChangeListener() {
+           @Override
+           public void stateChanged(ChangeEvent e) {
+               int Pvalue = slider.getValue();
+               pow.setText(String.valueOf("Excavation power: " + Pvalue + " MW"));
+            }
+        });
+		//MK-
+		
+		data.add(pow);
+		data.add(powerSlider);
 		data.add(data1);
 		data.add(data2);
-		data.add(data3);
 		data.add(onOff);
 		
 		functional.add(data);
