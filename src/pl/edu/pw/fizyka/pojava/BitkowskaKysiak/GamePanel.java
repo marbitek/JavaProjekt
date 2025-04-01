@@ -194,11 +194,13 @@ public class GamePanel extends JPanel {
         p2.add(freq, BorderLayout.NORTH);
         p2.add(slider, BorderLayout.CENTER);
        
+        p2.add(pow);
+        
         functional.add(p2);
         functional.add(Box.createRigidArea(new Dimension(250,20)));
 		
 		//panel z danymi
-		data = new JPanel(new GridLayout(5,1));
+		data = new JPanel(new GridLayout(4,1));
 		data.setBorder(BorderFactory.createLoweredSoftBevelBorder());
 		data.setBackground(Color.WHITE);
 		
@@ -212,6 +214,7 @@ public class GamePanel extends JPanel {
 		powerSlider.setPreferredSize(new Dimension(250, 20)); // 👈 KLUCZOWE!
 		powerSlider.setBackground(Color.ORANGE);
 		pow = new JLabel("Excavation power: 50 MW");
+		pow.setBackground(Color.orange);
 
 		powerSlider.setPaintTicks(true);
 		powerSlider.setPaintLabels(true);
@@ -221,13 +224,11 @@ public class GamePanel extends JPanel {
 		powerSlider.addChangeListener(new ChangeListener() {
            @Override
            public void stateChanged(ChangeEvent e) {
-               int Pvalue = slider.getValue();
+               int Pvalue = powerSlider.getValue();
                pow.setText(String.valueOf("Excavation power: " + Pvalue + " MW"));
             }
         });
 		//MK-
-		
-		data.add(pow);
 		data.add(powerSlider);
 		data.add(data1);
 		data.add(data2);
