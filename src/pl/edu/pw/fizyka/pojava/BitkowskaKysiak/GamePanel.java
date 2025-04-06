@@ -1,38 +1,21 @@
 package pl.edu.pw.fizyka.pojava.BitkowskaKysiak;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.Dimension;
 
 
 
-public class GamePanel extends JPanel {
+
+public class GamePanel extends JPanel implements GameInterface
+{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -61,8 +44,8 @@ public class GamePanel extends JPanel {
 		
 		exit = new JButton("Exit");
 		exit.setMinimumSize(new Dimension(70, 25));
-		
 		exit.addActionListener(e -> System.exit(0));
+		
 		controlPanel.add(back);
 		controlPanel.add(reset);
 		controlPanel.add(exit);
@@ -75,37 +58,17 @@ public class GamePanel extends JPanel {
 		utilityFunctions.buttonStyling(exit, new Color(240, 248, 255), new Color(128, 0, 0));
 		//MK-
 		
-		inner = new JPanel();
-	     
+		inner = new SimulationPanel();
 	    
 		functional = new JPanel();
 		functional.setLayout(new BoxLayout(functional, BoxLayout.Y_AXIS));
 		functional.setPreferredSize(new Dimension(250, 400));
 		
-		inner.setBackground(Color.WHITE);
 		functional.setBackground(Color.ORANGE);
 		
 		Border padding = BorderFactory.createMatteBorder(15, 15, 15, 15, Color.ORANGE);
 		Border ramka = BorderFactory.createLineBorder(Color.black, 3);
 		inner.setBorder(BorderFactory.createCompoundBorder(padding, ramka));
-		//inner.setMinimumSize(new Dimension((int) (0.35 * this.getWidth()), (int) (0.5 * this.getHeight())));
-		//inner.setMaximumSize(new Dimension((int) (0.35 * this.getWidth()), (int) (0.5 * this.getHeight())));
-		//inner.setPreferredSize(new Dimension((int) (0.35 * this.getWidth()), (int) (0.5 * this.getHeight())));
-		
-		this.addComponentListener(new ComponentAdapter() {
-		    @Override
-		    public void componentResized(ComponentEvent e) {
-		        int newWidth = (int) (getWidth() * 0.35);  // 35% of the parent width
-		        int newHeight = (int) (getHeight() * 0.5); // 50% of the parent height
-		        inner.setPreferredSize(new Dimension(newWidth, newHeight));
-		        inner.setMinimumSize(new Dimension(newWidth, newHeight));
-		        inner.setMaximumSize(new Dimension(newWidth, newHeight));
-		        inner.revalidate();
-		        inner.repaint();
-		    }
-		});
-		
-		
 		innerPanel = new JPanel();
 		innerPanel.setBackground(Color.orange);
 		innerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
