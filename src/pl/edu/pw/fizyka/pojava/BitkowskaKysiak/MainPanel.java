@@ -68,7 +68,7 @@ public class MainPanel extends JFrame {
 	    //MK - modyfikuje zeby slidery w gamepanel wracaly do poczatkowych wartosci po powrocie do poczatku
 	    gamePanel.back.addActionListener(e -> {
 	        card.show(homeContainer, "Welcome Panel");
-
+	        WelcomePanel.insertNick.setText("");
 	        gamePanel.slider.setValue(0);
 	        gamePanel.powerSlider.setValue(50);
 	    });

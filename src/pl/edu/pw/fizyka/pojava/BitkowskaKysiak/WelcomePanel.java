@@ -27,7 +27,7 @@ public class WelcomePanel extends JPanel{
 	protected JButton start;
 	private JPanel center, nickPanel, startPanel;
 	private JLabel welcome, nickname;
-	protected JTextField insertNick;
+	protected static JTextField insertNick;
 	static int fontSize = 45;
 	
 	public WelcomePanel() {
