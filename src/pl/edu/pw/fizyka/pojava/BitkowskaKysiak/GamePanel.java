@@ -58,7 +58,10 @@ public class GamePanel extends JPanel implements GameInterface
 		utilityFunctions.buttonStyling(exit, new Color(240, 248, 255), new Color(128, 0, 0));
 		//MK-
 		
-		inner = new JPanel();
+		//inner = new JPanel();
+		//testujemy czy sim panel dziala
+		inner = new SimulationPanel(100, 100, 2);
+		
 		//SimulationPanel();
 	    
 		functional = new JPanel();

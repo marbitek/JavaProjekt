@@ -11,21 +11,28 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-public class Pixel 
+public class Pixel extends JPanel
 {
-	Color color;
+	Color color = Color.white;
 	int x, y;
 	
-    public Pixel(int x, int y) 
+    public Pixel(int x, int y, Color c) 
     {
         this.x = x;
         this.y = y;
-        this.color = Color.blue;
+        this.color = c;
+        this.setBackground(color);
+        this.setMinimumSize(new Dimension(x,y));
+        this.setPreferredSize(new Dimension(x,y));
     }
     
-    public Color getColor() 
+    //public Color getColor() {return color;}
+    
+    public void setColor(Color color) 
     {
-        return color;
+        this.color = color;
+        setBackground(color);
+        repaint();
     }
     
     public void draw(Graphics g, int size) 
