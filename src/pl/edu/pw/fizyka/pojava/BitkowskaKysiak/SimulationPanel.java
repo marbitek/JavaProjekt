@@ -28,11 +28,12 @@ public class SimulationPanel extends JPanel
 	float R, G, B;
 	BufferedImage panelImage = null;
 	
-	public SimulationPanel(int X, int Y, int size)
+	public SimulationPanel(int X, int Y, int size, int GamePanelX, int GamePanelY)
 	{
 		x_dim = X;
 		y_dim = Y;
-		pixelSize = size;
+		//pixelSize = size;
+		pixelSize = (GamePanelX/X);
 		
 		//this.setLayout(new GridLayout(x_dim,y_dim));
 		pixelGrid = new ArrayList<>();
@@ -48,7 +49,8 @@ public class SimulationPanel extends JPanel
         g2d.fillRect(0, 0, imgW, imgH);
         g2d.dispose();
 
-        setPreferredSize(new Dimension(imgW, imgH));
+        setMinimumSize(new Dimension(imgW, imgH));
+        setPreferredSize(new Dimension(GamePanelX, GamePanelY));
 		
 		for(int y = 0; y<y_dim; y++)
 		{
@@ -56,12 +58,12 @@ public class SimulationPanel extends JPanel
 			for(int x = 0; x < x_dim; x++)
 			{
 				onePxl = new Pixel(pixelSize, pixelSize, new Color(
-						rand.nextInt(),rand.nextInt(),rand.nextInt()
+						rand.nextInt(256),rand.nextInt(256),rand.nextInt(256)
 						), 0);
 				
 				//this.add(onePxl);
 				pixelrow.add(onePxl);
-				this.paintPxl(onePxl.getX(), onePxl.getY(), onePxl.getClr());
+				this.paintPxl(x, y, onePxl.getClr());
 			}
 			pixelGrid.add(pixelrow);
 		}

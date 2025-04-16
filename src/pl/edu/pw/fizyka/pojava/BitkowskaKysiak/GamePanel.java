@@ -58,9 +58,14 @@ public class GamePanel extends JPanel implements GameInterface
 		utilityFunctions.buttonStyling(exit, new Color(240, 248, 255), new Color(128, 0, 0));
 		//MK-
 		
+		
+		innerPanel = new JPanel();
+		innerPanel.setBackground(Color.orange);
+		innerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		
 		//inner = new JPanel();
 		//testujemy czy sim panel dziala
-		inner = new SimulationPanel(100, 100, 2);
+		inner = new SimulationPanel(500, 500, 1, innerPanel.getX(), innerPanel.getY());
 		
 		//SimulationPanel();
 	    
@@ -73,9 +78,7 @@ public class GamePanel extends JPanel implements GameInterface
 		Border padding = BorderFactory.createMatteBorder(15, 15, 15, 15, Color.ORANGE);
 		Border ramka = BorderFactory.createLineBorder(Color.black, 3);
 		inner.setBorder(BorderFactory.createCompoundBorder(padding, ramka));
-		innerPanel = new JPanel();
-		innerPanel.setBackground(Color.orange);
-		innerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
 		innerPanel.add(inner);
 		this.add(innerPanel, BorderLayout.CENTER);
 		this.add(functional, BorderLayout.EAST);
@@ -237,6 +240,10 @@ public class GamePanel extends JPanel implements GameInterface
 		pSource.setMaximumSize(new Dimension(250, 60));
 		p2.setMaximumSize(new Dimension(250, 80));
 		data.setMaximumSize(new Dimension(240, 250));
+		
+		
+		
+		//kod poniżej zapewnia stałe proporcje panelu symulacji
 	
 		this.addComponentListener(new java.awt.event.ComponentAdapter() {
 		    @Override
