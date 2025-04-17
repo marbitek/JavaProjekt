@@ -34,8 +34,9 @@ public class SimulationPanel extends JPanel
 		y_dim = Y;
 		//pixelSize = size;
 		//pixelSize = (GamePanelX/X);
-		pixelSize = size > 0 ? size : Math.min(GamePanelX / X, GamePanelY / Y);
-		
+		//pixelSize = size > 0 ? size : Math.min(GamePanelX / X, GamePanelY / Y);
+		pixelSize = size > 0 ? size : Math.max(1, Math.min(GamePanelX / x_dim, GamePanelY / y_dim));
+
 		//this.setLayout(new GridLayout(x_dim,y_dim));
 		pixelGrid = new ArrayList<>();
 		imgW = x_dim*pixelSize;
@@ -74,13 +75,42 @@ public class SimulationPanel extends JPanel
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        System.out.println("Painting SimulationPanel " + getWidth() + "x" + getHeight());
         g.drawImage(panelImage, 0, 0, null);
+        
+        if (panelImage != null) {
+            g.drawImage(panelImage, 0, 0, getWidth(), getHeight(), null); // scale to fit
+        }
     }
     
-    public void resize(int GamePanelX, int GamePanelY)
-    {
-    	
+    	public void resize(int GamePanelX, int GamePanelY) {
+        pixelSize = Math.max(1, Math.min(GamePanelX / x_dim, GamePanelY / y_dim));
+        imgW = x_dim * pixelSize;
+        imgH = y_dim * pixelSize;
+
+        if (imgW > 0 && imgH > 0) {
+            panelImage = new BufferedImage(imgW, imgH, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = panelImage.createGraphics();
+            g2d.setColor(new Color(255, 228, 181));
+            g2d.fillRect(0, 0, imgW, imgH);
+            g2d.dispose();
+
+            for (int y = 0; y < y_dim; y++) {
+                for (int x = 0; x < x_dim; x++) {
+                    Pixel p = pixelGrid.get(y).get(x);
+                    paintPxl(x, y, p.getClr());
+                }
+            }
+
+            setPreferredSize(new Dimension(GamePanelX, GamePanelY));
+            revalidate();
+            repaint();
+        } else {
+            System.err.println("Resize failed due to zero dimension: " + imgW + "x" + imgH);
+        }
     }
+
+
     
     public void paintPxl(int Width, int Height, Color c)
     {

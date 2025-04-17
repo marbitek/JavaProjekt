@@ -61,7 +61,8 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		innerPanel = new JPanel();
 		innerPanel.setBackground(Color.orange);
-		innerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		innerPanel.setLayout(new BorderLayout());		
+		//innerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		innerPanel.setMinimumSize(new Dimension(500, 500));
 		
 		//inner = new JPanel();
@@ -80,7 +81,7 @@ public class GamePanel extends JPanel implements GameInterface
 		Border ramka = BorderFactory.createLineBorder(Color.black, 3);
 		inner.setBorder(BorderFactory.createCompoundBorder(padding, ramka));
 
-		innerPanel.add(inner);
+		innerPanel.add(inner , BorderLayout.CENTER);
 		this.add(innerPanel, BorderLayout.CENTER);
 		this.add(functional, BorderLayout.EAST);
 		
@@ -250,10 +251,23 @@ public class GamePanel extends JPanel implements GameInterface
 		    @Override
 		    public void componentResized(java.awt.event.ComponentEvent e) 
 		    {
+		    	/*
 		    	double zmienna = (getHeight() * 0.9);
 		        int newWidth = (int)zmienna;
 		        int newHeight = (int)zmienna;
+		        
+		        
 		        inner.setPreferredSize(new java.awt.Dimension(newWidth, newHeight));
+		        */
+		        int size = (int)(Math.min(getHeight(), getWidth()) * 0.9); // keep square
+		        ((SimulationPanel)inner).resize(size, size);
+
+		    	
+		        
+		        
+		        //((SimulationPanel)inner).resize(newWidth, newHeight);
+
+		        
 		        inner.revalidate();
 		        inner.repaint();
 		    }
