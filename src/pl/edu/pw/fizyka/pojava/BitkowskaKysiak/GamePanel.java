@@ -68,7 +68,7 @@ public class GamePanel extends JPanel implements GameInterface
 		//inner = new JPanel();
 		//testujemy czy sim panel dziala
 		//inner = new SimulationPanel(500, 500, 1, innerPanel.getX(), innerPanel.getY());
-		inner = new SimulationPanel(500, 500, 1, 500, 500);
+		inner = new SimulationPanel(25, 25, 1, 500, 500);
 		//SimulationPanel();
 	    
 		functional = new JPanel();
@@ -81,7 +81,28 @@ public class GamePanel extends JPanel implements GameInterface
 		Border ramka = BorderFactory.createLineBorder(Color.black, 3);
 		inner.setBorder(BorderFactory.createCompoundBorder(padding, ramka));
 
-		innerPanel.add(inner , BorderLayout.CENTER);
+		//innerPanel.add(inner , BorderLayout.CENTER);
+		JPanel squareWrapper = new JPanel() {
+		    @Override
+		    public Dimension getPreferredSize() {
+		        int size = Math.min(innerPanel.getWidth(), innerPanel.getHeight());
+		        return new Dimension(size, size);
+		    }
+
+		    @Override
+		    public void doLayout() {
+		        int size = Math.min(getWidth(), getHeight());
+		        int x = (getWidth() - size) / 2;
+		        int y = (getHeight() - size) / 2;
+		        inner.setBounds(x, y, size, size);
+		    }
+		};
+		squareWrapper.add(inner);
+		squareWrapper.setBackground(Color.orange); 
+
+		innerPanel.add(squareWrapper, BorderLayout.CENTER);
+
+		
 		this.add(innerPanel, BorderLayout.CENTER);
 		this.add(functional, BorderLayout.EAST);
 		
