@@ -62,11 +62,12 @@ public class GamePanel extends JPanel implements GameInterface
 		innerPanel = new JPanel();
 		innerPanel.setBackground(Color.orange);
 		innerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		innerPanel.setMinimumSize(new Dimension(500, 500));
 		
 		//inner = new JPanel();
 		//testujemy czy sim panel dziala
-		inner = new SimulationPanel(500, 500, 1, innerPanel.getX(), innerPanel.getY());
-		
+		//inner = new SimulationPanel(500, 500, 1, innerPanel.getX(), innerPanel.getY());
+		inner = new SimulationPanel(500, 500, 1, 500, 500);
 		//SimulationPanel();
 	    
 		functional = new JPanel();
@@ -254,6 +255,7 @@ public class GamePanel extends JPanel implements GameInterface
 		        int newHeight = (int)zmienna;
 		        inner.setPreferredSize(new java.awt.Dimension(newWidth, newHeight));
 		        inner.revalidate();
+		        inner.repaint();
 		    }
 		});
 		

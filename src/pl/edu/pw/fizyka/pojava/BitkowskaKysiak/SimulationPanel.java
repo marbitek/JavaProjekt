@@ -33,7 +33,8 @@ public class SimulationPanel extends JPanel
 		x_dim = X;
 		y_dim = Y;
 		//pixelSize = size;
-		pixelSize = (GamePanelX/X);
+		//pixelSize = (GamePanelX/X);
+		pixelSize = size > 0 ? size : Math.min(GamePanelX / X, GamePanelY / Y);
 		
 		//this.setLayout(new GridLayout(x_dim,y_dim));
 		pixelGrid = new ArrayList<>();
@@ -74,6 +75,11 @@ public class SimulationPanel extends JPanel
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(panelImage, 0, 0, null);
+    }
+    
+    public void resize(int GamePanelX, int GamePanelY)
+    {
+    	
     }
     
     public void paintPxl(int Width, int Height, Color c)
