@@ -31,7 +31,7 @@ public class MainPanel extends JFrame {
 	    welcomePanel.start.addActionListener(e -> card.show(homeContainer, "Game Panel"));
 	    
 	    welcomePanel.start.addActionListener(e -> {
-	        String nick = welcomePanel.insertNick.getText().trim();
+	        String nick = WelcomePanel.insertNick.getText().trim();
 	        if (nick.isEmpty()) 
 	        {
 	            nick = "Stranger";
