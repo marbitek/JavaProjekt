@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-public class MainPanel extends JFrame {
+public class MainPanel extends JFrame implements Runnable {
 
 	//MB+
 	private static final long serialVersionUID = 1L;
@@ -19,7 +19,15 @@ public class MainPanel extends JFrame {
 	static GamePanel gamePanel;
 	static CardLayout card;
 	
-	public MainPanel()  {
+	public static void main(String[] args) {
+		//MainPanel implementuje runnable więc invoke odrazu go uruchamia
+		 SwingUtilities.invokeLater(new MainPanel());
+		 }
+			
+	
+	@Override
+	public void run() 
+	{
 		JFrame frame = new JFrame("Dune Harmonics");	
 		card = new CardLayout(5, 5);
 		homeContainer = new JPanel(card);
@@ -28,12 +36,11 @@ public class MainPanel extends JFrame {
 		
 	    welcomePanel = new WelcomePanel();
 	    homeContainer.add(welcomePanel, "Welcome Panel");
-	    welcomePanel.start.addActionListener(e -> card.show(homeContainer, "Game Panel"));
 	    
+	    //start->jdialog->GamePanel
 	    welcomePanel.start.addActionListener(e -> {
 	        String nick = WelcomePanel.insertNick.getText().trim();
-	        if (nick.isEmpty()) 
-	        {
+	        if (nick.isEmpty()) {
 	            nick = "Stranger";
 	        }
 
@@ -85,9 +92,10 @@ public class MainPanel extends JFrame {
 	    frame.setVisible(true);
 	}
 
-	public static void main(String[] args)
-	{
-	    SwingUtilities.invokeLater(MainPanel::new);
-	}
+
+	   
+	
 	//MB-
+
+	
 }
