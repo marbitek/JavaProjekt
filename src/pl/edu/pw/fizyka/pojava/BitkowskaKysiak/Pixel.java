@@ -14,15 +14,18 @@ import java.awt.event.ComponentEvent;
 public class Pixel //extends JPanel
 {
 	Color color = Color.white;
-	int x, y, vx, vy;
-	String[] terrainTypes = { "Sand", "Granite", "Limestone"};
+	private int x, y, vx, vy, gridX = 0, gridY = 0;
+	private double terrainSpeedModifier;
+	String[] terrainTypes = {"Sand", "Granite", "Limestone"};
 	String thisTerrainType = terrainTypes[0];
 	
-    public Pixel(int x, int y, Color c, int terrainSpecificator) 
+    public Pixel(int x, int y, Color c, int terrainSpecificator, int gX, int gY) 
     {
         this.x = x;
         this.y = y;
         this.color = c;
+        gridX = gX;
+        gridY = gY;
         //this.setBackground(color);
         //this.setMinimumSize(new Dimension(x,y));
         //this.setPreferredSize(new Dimension(x,y));
@@ -75,6 +78,15 @@ public class Pixel //extends JPanel
         this.vx = vx;
     }
 
+    //terrain speed modifier getters and setters
+    public double getTSM() {
+    	return terrainSpeedModifier;
+    }
+
+    public void setTSM(double tsm) {
+        this.terrainSpeedModifier = tsm;
+    }
+    
     public int getVy() {
         return vy;
     }
@@ -85,4 +97,13 @@ public class Pixel //extends JPanel
 
     public Color getClr() {return color;}
     public void setClr(Color c) {color = c;}
+    
+
+public int getGX() {
+    return gridX;
+}
+
+public int getGY() {
+    return gridY;
+}
 }

@@ -20,19 +20,21 @@ public class GamePanel extends JPanel implements GameInterface
 	private static final long serialVersionUID = 1L;
 	
 	private JPanel inner, innerPanel, functional, data, p, p2, pSource, controlPanel;
-	protected JButton back, onOff, exit, reset; 
-	private String teren[] = {"sand", "water", "rock"};
+	protected JButton back, onOff, exit, reset, generate; 
+	private String teren[] = {"Sand", "Granite", "Limestone"};
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
 	private double wspolczynniki[] = {1.333, 4.555, 6.77};
 	private double currentWsp, currentFreq, currentSource;
 	private JLabel  field, freq, data1, data2, source, pow;
 	protected JSlider slider, powerSlider;
+	private int size = 100, terrainClusters = 1, clusterSize = 5;
 	
 	public GamePanel() {
 		
 		super(new BorderLayout());
 		
 		//MK+
+		JComboBox<String> lista = new JComboBox<>(teren); //przeniesione tutaj
 		controlPanel = new JPanel(); 
 		controlPanel.setLayout(new FlowLayout());
 		back = new JButton("Back"); 
@@ -46,9 +48,27 @@ public class GamePanel extends JPanel implements GameInterface
 		exit.setMinimumSize(new Dimension(70, 25));
 		exit.addActionListener(e -> System.exit(0));
 		
+		//przycisk generowania terenu o wybranym aktualnie typie
+		generate = new JButton("Generate chosen terrain");
+		generate.setMinimumSize(new Dimension(70, 25));
+		generate.addActionListener(new ActionListener() 
+				{
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						Object selected = (String) lista.getSelectedItem();
+						String text_of_selected = selected.toString();
+						((SimulationPanel) inner).generateTerrain(text_of_selected,terrainClusters,clusterSize, currentWsp, size);
+						
+					}
+				}
+				
+				);
+		
 		controlPanel.add(back);
 		controlPanel.add(reset);
 		controlPanel.add(exit);
+		controlPanel.add(generate);
 		controlPanel.setBackground(new Color(245, 222, 179));
 		
 		this.add(controlPanel, BorderLayout.SOUTH);
@@ -56,6 +76,8 @@ public class GamePanel extends JPanel implements GameInterface
 		utilityFunctions.buttonStyling(back, new Color(240, 248, 255), new Color(128, 0, 0));
 		utilityFunctions.buttonStyling(reset, new Color(240, 248, 255), new Color(128, 0, 0));
 		utilityFunctions.buttonStyling(exit, new Color(240, 248, 255), new Color(128, 0, 0));
+		utilityFunctions.buttonStyling(generate, new Color(240, 248, 255), new Color(128, 0, 0));
+		
 		//MK-
 		
 		
@@ -68,7 +90,7 @@ public class GamePanel extends JPanel implements GameInterface
 		//inner = new JPanel();
 		//testujemy czy sim panel dziala
 		//inner = new SimulationPanel(500, 500, 1, innerPanel.getX(), innerPanel.getY());
-		inner = new SimulationPanel(25, 25, 1, 500, 500);
+		inner = new SimulationPanel(size, size, 1, 500, 500);
 		//SimulationPanel();
 	    
 		functional = new JPanel();
@@ -117,7 +139,7 @@ public class GamePanel extends JPanel implements GameInterface
 	        ));
 
 		//okienko zmiany terenu - JComboBox
-		JComboBox<String> lista = new JComboBox<>(teren);
+		
 		
 		//ustalamy renderer z wyśrodkowanym tekstem
 		DefaultListCellRenderer renderer = new DefaultListCellRenderer();

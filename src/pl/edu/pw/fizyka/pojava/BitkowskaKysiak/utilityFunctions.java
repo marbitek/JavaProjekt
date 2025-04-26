@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-public class utilityFunctions extends JFrame {
+public class utilityFunctions {
 	
 	//MK+
     public static void buttonStyling(JButton button, Color bgColor, Color fgColor) {
@@ -26,4 +26,7 @@ public class utilityFunctions extends JFrame {
         ));
     }
     //KM-
+    
+    
+    
 }
