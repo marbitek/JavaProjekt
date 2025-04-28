@@ -97,9 +97,6 @@ public class WelcomePanel extends JPanel{
 		this.add(startPanel, BorderLayout.SOUTH); 
 	}
 
-	public static void main(String[] args) 
-	{
-		
-	}
+	
 //MB-
 }

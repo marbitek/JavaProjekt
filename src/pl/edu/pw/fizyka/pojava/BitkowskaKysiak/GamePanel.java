@@ -8,8 +8,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+
 
 
 
@@ -83,7 +82,10 @@ public class GamePanel extends JPanel implements GameInterface
 
 		//innerPanel.add(inner , BorderLayout.CENTER);
 		JPanel squareWrapper = new JPanel() {
-		    @Override
+		    
+			private static final long serialVersionUID = 1L;
+
+			@Override
 		    public Dimension getPreferredSize() {
 		        int size = Math.min(innerPanel.getWidth(), innerPanel.getHeight());
 		        return new Dimension(size, size);

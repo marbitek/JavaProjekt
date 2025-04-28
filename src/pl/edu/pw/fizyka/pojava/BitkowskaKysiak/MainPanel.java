@@ -24,7 +24,7 @@ public class MainPanel extends JFrame implements Runnable {
 		 SwingUtilities.invokeLater(new MainPanel());
 		 }
 			
-	
+	//konstruktor w metodzie run
 	@Override
 	public void run() 
 	{
