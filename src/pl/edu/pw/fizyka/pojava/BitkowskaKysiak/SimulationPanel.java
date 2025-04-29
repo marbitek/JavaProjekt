@@ -67,6 +67,8 @@ public class SimulationPanel extends JPanel
         setMinimumSize(new Dimension(imgW, imgH));
         setPreferredSize(new Dimension(GamePanelX, GamePanelY));
 		
+        
+        //inicjalizacja na biało pixeli
 		for(int y = 0; y<y_dim; y++)
 		{
 			pixelrow = new ArrayList<>();
