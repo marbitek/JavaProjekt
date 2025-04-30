@@ -144,6 +144,32 @@ public class SimulationPanel extends JPanel
 		return p;
 	}
 	
+	
+	//zwraca siatkę pixeli
+	public List<List<Pixel>> getPxlGrid()
+	{
+		return pixelGrid;
+	}
+	
+	//zwraca podany rząd pixeli
+	public List<Pixel> getPxlRow(int i)
+	{
+		return pixelGrid.get(i);
+	}
+	
+	//zwraca podaną kolumnę pixeli
+	public List<Pixel> getPxlCol(int i)
+	{
+		List<Pixel> column = new ArrayList<>();
+		for(int j = 0; j < x_dim; j++)
+		{
+			onePxl = getPxlRow(j).get(i);
+			column.add(onePxl);
+		}
+		
+		return column;
+	}
+	
 	//metoda zwraca pixele sąsiadujące z naszym jedną ścianką, lista w kolejności: górny a potem zgodnie z wskazówkami zegara
 	public Pixel[] getNeigbours(Pixel onePxl, int size)
 	{
@@ -180,6 +206,7 @@ public class SimulationPanel extends JPanel
 	}
 		return neighbours;
 	}
+	
 	
 	
 	//metoda sprawdza czy pixel o wskazanych koordynatach nie wychodzi poza granice panelu pixeli

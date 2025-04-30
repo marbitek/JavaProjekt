@@ -19,7 +19,7 @@ public class GamePanel extends JPanel implements GameInterface
 
 	private static final long serialVersionUID = 1L;
 	
-	private JPanel inner, innerPanel, functional, data, p, p2, pSource, controlPanel;
+	private JPanel innerPanel, functional, data, p, p2, pSource, controlPanel, squareWrapper;
 	protected JButton back, onOff, exit, reset, generate; 
 	private String teren[] = {"Sand", "Granite", "Limestone"};
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
@@ -28,6 +28,7 @@ public class GamePanel extends JPanel implements GameInterface
 	private JLabel  field, freq, data1, data2, source, pow;
 	protected JSlider slider, powerSlider;
 	private int size = 100, terrainClusters = 1, clusterSize = 5;
+	SimulationPanel inner;
 	
 	public GamePanel() {
 		
@@ -43,6 +44,31 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		reset = new JButton("Reset");
 		reset.setMinimumSize(new Dimension(70, 25));
+		reset.addActionListener(new ActionListener()
+				{
+					@Override
+					
+					public void actionPerformed(ActionEvent e)
+					{
+					inner.getPxlGrid().clear();
+						
+			        squareWrapper.remove(inner);
+
+			        // Create and add new SimulationPanel
+			        inner = new SimulationPanel(size, size, 1, 500, 500);
+			        Border padding = BorderFactory.createMatteBorder(15, 15, 15, 15, Color.ORANGE);
+			        Border ramka = BorderFactory.createLineBorder(Color.black, 3);
+			        inner.setBorder(BorderFactory.createCompoundBorder(padding, ramka));
+
+			        squareWrapper.add(inner);
+
+			        // Resize/repaint properly
+			        squareWrapper.revalidate();
+			        squareWrapper.repaint();
+					}
+					
+					}
+				);
 		
 		exit = new JButton("Exit");
 		exit.setMinimumSize(new Dimension(70, 25));
@@ -104,7 +130,7 @@ public class GamePanel extends JPanel implements GameInterface
 		inner.setBorder(BorderFactory.createCompoundBorder(padding, ramka));
 
 		//innerPanel.add(inner , BorderLayout.CENTER);
-		JPanel squareWrapper = new JPanel() {
+		squareWrapper = new JPanel() {
 		    @Override
 		    public Dimension getPreferredSize() {
 		        int size = Math.min(innerPanel.getWidth(), innerPanel.getHeight());
