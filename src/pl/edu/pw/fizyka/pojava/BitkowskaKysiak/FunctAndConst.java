@@ -2,18 +2,24 @@ package pl.edu.pw.fizyka.pojava.BitkowskaKysiak;
 
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
-public class utilityFunctions {
+
+
+public class FunctAndConst {
 	
+	protected static final Color SAND = new Color(237, 201, 175);
+	protected static final Color GRANITE = new Color(169, 169, 169);
+	protected static final Color LIMESTONE = new Color(245, 245, 220);
+	
+	
+	
+	protected static final double c = 343.0;   // prędkość dźwięku m/s
+    protected static int amplitude = 20; //amplituda fali
+    protected static final double brightnessFactor = 255.0 / amplitude;
+
+	
+    
 	//MK+
     public static void buttonStyling(JButton button, Color bgColor, Color fgColor) {
         button.setBackground(bgColor);
@@ -26,6 +32,7 @@ public class utilityFunctions {
         ));
     }
     //KM-
+    
     
     
     

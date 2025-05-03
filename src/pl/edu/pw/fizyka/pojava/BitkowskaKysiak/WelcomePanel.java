@@ -88,7 +88,7 @@ public class WelcomePanel extends JPanel{
 		start.setPreferredSize(new Dimension(120,40)); 
 		start.setMinimumSize(new Dimension(120,40));
 		start.setFont(new Font("Lucida Handwriting", Font.ITALIC, 24));
-		utilityFunctions.buttonStyling(start, new Color(240, 248, 255), new Color(128, 0, 0));
+		FunctAndConst.buttonStyling(start, new Color(240, 248, 255), new Color(128, 0, 0));
 		
 		//MK
 		nickname.setAlignmentX(Component.CENTER_ALIGNMENT);

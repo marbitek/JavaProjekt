@@ -23,11 +23,14 @@ public class GamePanel extends JPanel implements GameInterface
 	protected JButton back, onOff, exit, reset, generate; 
 	private String teren[] = {"Sand", "Granite", "Limestone"};
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
-	private double wspolczynniki[] = {1.333, 4.555, 6.77};
-	private double currentWsp, currentFreq, currentSource;
+	private double wspolczynniki[] = {0.996, 0.700, 0.30};
+	private double currentWsp, currentFreq;
+	private int numbSource;
 	private JLabel  field, freq, data1, data2, source, pow;
 	protected JSlider slider, powerSlider;
 	private int size = 100, terrainClusters = 1, clusterSize = 5;
+	private boolean gen = false;
+	
 	
 	public GamePanel() {
 		
@@ -56,10 +59,10 @@ public class GamePanel extends JPanel implements GameInterface
 					@Override
 					public void actionPerformed(ActionEvent e)
 					{
-						Object selected = (String) lista.getSelectedItem();
+						/*Object selected = (String) lista.getSelectedItem();
 						String text_of_selected = selected.toString();
-						((SimulationPanel) inner).generateTerrain(text_of_selected,terrainClusters,clusterSize, currentWsp, size);
-						
+						((SimulationPanel) inner).generateTerrain(text_of_selected,terrainClusters,clusterSize, currentWsp, size, gen);
+						*/
 					}
 				}
 				
@@ -73,10 +76,10 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		this.add(controlPanel, BorderLayout.SOUTH);
 		
-		utilityFunctions.buttonStyling(back, new Color(240, 248, 255), new Color(128, 0, 0));
-		utilityFunctions.buttonStyling(reset, new Color(240, 248, 255), new Color(128, 0, 0));
-		utilityFunctions.buttonStyling(exit, new Color(240, 248, 255), new Color(128, 0, 0));
-		utilityFunctions.buttonStyling(generate, new Color(240, 248, 255), new Color(128, 0, 0));
+		FunctAndConst.buttonStyling(back, new Color(240, 248, 255), new Color(128, 0, 0));
+		FunctAndConst.buttonStyling(reset, new Color(240, 248, 255), new Color(128, 0, 0));
+		FunctAndConst.buttonStyling(exit, new Color(240, 248, 255), new Color(128, 0, 0));
+		FunctAndConst.buttonStyling(generate, new Color(240, 248, 255), new Color(128, 0, 0));
 		
 		//MK-
 		
@@ -90,7 +93,16 @@ public class GamePanel extends JPanel implements GameInterface
 		//inner = new JPanel();
 		//testujemy czy sim panel dziala
 		//inner = new SimulationPanel(500, 500, 1, innerPanel.getX(), innerPanel.getY());
-		inner = new SimulationPanel(size, size, 1, 500, 500);
+		
+		
+		
+		
+		//OBIEKT TYPU SIMULATION PANEL!!!!!!!!!!!!!!!!!!!!!!!!!
+		inner = new SimulationPanel(size, size, 1, 500, 500);  //500x500 pixeli
+		
+		
+		
+		
 		//SimulationPanel();
 	    
 		functional = new JPanel();
@@ -105,7 +117,10 @@ public class GamePanel extends JPanel implements GameInterface
 
 		//innerPanel.add(inner , BorderLayout.CENTER);
 		JPanel squareWrapper = new JPanel() {
-		    @Override
+		  
+			private static final long serialVersionUID = 1L;
+
+			@Override
 		    public Dimension getPreferredSize() {
 		        int size = Math.min(innerPanel.getWidth(), innerPanel.getHeight());
 		        return new Dimension(size, size);
@@ -153,6 +168,7 @@ public class GamePanel extends JPanel implements GameInterface
 			public void actionPerformed(ActionEvent arg0) {
 				int index = lista.getSelectedIndex(); //wybieram indeks z tablicy teren
 				currentWsp = wspolczynniki[index]; //wybieram wspolczynnik odpowiadający indeksowi
+				((SimulationPanel)inner).setDamping(currentWsp);
 				}
 		};
 		lista.addActionListener(terenListener);
@@ -190,7 +206,9 @@ public class GamePanel extends JPanel implements GameInterface
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				int index = lista.getSelectedIndex(); //wybieram indeks z tablicy teren
-				currentSource = index + 1; //wybieram wspolczynnik odpowiadający indeksowi
+				numbSource = index + 1; //wybieram wspolczynnik odpowiadający indeksowi
+				((SimulationPanel)inner).setMaxSources(numbSource);
+				
 				}
 			};
 			
@@ -223,11 +241,14 @@ public class GamePanel extends JPanel implements GameInterface
 		slider.setMinorTickSpacing(100);
 		slider.setMajorTickSpacing(200);
 		
+		
+		//ustawienia częstotliwości - tu setFreq
         slider.addChangeListener(new ChangeListener() {
            @Override
            public void stateChanged(ChangeEvent e) {
-               int value = slider.getValue();
-               freq.setText(String.valueOf("frequency: " + value + " Hz"));
+               currentFreq = slider.getValue();
+               freq.setText(String.valueOf("frequency: " + currentFreq + " Hz"));
+               ((SimulationPanel)inner).setFreq(currentFreq);
             }
         });
         p2.add(freq, BorderLayout.NORTH);
@@ -247,7 +268,16 @@ public class GamePanel extends JPanel implements GameInterface
 		data1 = new JLabel("Time elapsed: 0.00 s");
 		data2 = new JLabel("Harvested spice: 0.00 t");
 		onOff = new JButton("ON/OFF");
-		utilityFunctions.buttonStyling(onOff, Color.black, new Color(255, 248, 220));
+		FunctAndConst.buttonStyling(onOff, Color.black, new Color(255, 248, 220));
+		JButton onOff = new JButton("ON/OFF");
+		boolean[] on = { false };  // prosta "brytwa" do przechowywania stanu
+
+		onOff.addActionListener(e -> {
+		    on[0] = !on[0];                          // przełączamy stan
+		    ((SimulationPanel)inner).setAddEnabled(on[0]);              // włączamy/wyłączamy możliwość dodawania
+		    onOff.setText(on[0] ? "ON" : "OFF"); 
+		});
+
 		
 		powerSlider = new JSlider(JSlider.HORIZONTAL, 25, 75, 50);
 		powerSlider.setPreferredSize(new Dimension(250, 20)); 

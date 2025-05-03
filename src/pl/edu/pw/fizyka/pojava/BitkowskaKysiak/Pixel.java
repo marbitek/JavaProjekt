@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.List;
 
 public class Pixel //extends JPanel
 {
@@ -77,6 +78,13 @@ public class Pixel //extends JPanel
     public void setVx(int vx) {
         this.vx = vx;
     }
+    
+    //otrzymanie pixela o zadanych koordynatach
+  	public Pixel getPxl(int x, int y, List<List<Pixel>> pixelGrid ) //get pixel
+  	{
+  		Pixel p = pixelGrid.get(y).get(x);
+  		return p;
+  	}
 
     //terrain speed modifier getters and setters
     public double getTSM() {
