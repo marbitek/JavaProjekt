@@ -5,11 +5,11 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+
 
 
 
@@ -270,12 +270,24 @@ public class GamePanel extends JPanel implements GameInterface
 		onOff = new JButton("ON/OFF");
 		FunctAndConst.buttonStyling(onOff, Color.black, new Color(255, 248, 220));
 		JButton onOff = new JButton("ON/OFF");
-		boolean[] on = { false };  // prosta "brytwa" do przechowywania stanu
+		
+		
+		//uruchamianie symulacji
+		boolean[] on = {false};  //flaga do przechowywania stanu
 
 		onOff.addActionListener(e -> {
-		    on[0] = !on[0];                          // przełączamy stan
-		    ((SimulationPanel)inner).setAddEnabled(on[0]);              // włączamy/wyłączamy możliwość dodawania
+			try {
+				if(currentFreq == 0) throw new MyException("Frequency value is zero!");
+				
+			on[0] = !on[0];
+		    ((SimulationPanel)inner).setAddEnabled(on[0]); // włączamy/wyłączamy możliwość dodawania
+		    ((SimulationPanel)inner).setSimRunning(on[0]); //wlączamy symulacje
 		    onOff.setText(on[0] ? "ON" : "OFF"); 
+				
+		    
+			} catch (MyException ex) {
+				JOptionPane.showMessageDialog(GamePanel.this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
 		});
 
 		

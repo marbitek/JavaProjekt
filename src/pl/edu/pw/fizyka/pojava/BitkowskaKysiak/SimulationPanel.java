@@ -42,9 +42,9 @@ public class SimulationPanel extends JPanel implements Runnable
 	
 	 // Buffory stanu fali
     private double[][] previous, current, next;
-    private double damping;
+    private double damping = 0.996;
     private double freq;               // domyślna częstotliwość Hz
-    private int maxSources;   // ile w ogóle pozwalamy tworzyć
+    private int maxSources = 1;   // ile w ogóle pozwalamy tworzyć
     
     
     
@@ -59,6 +59,7 @@ public class SimulationPanel extends JPanel implements Runnable
 	//flagi 
 	protected boolean addEnabled = false; //flaga czy dodawać zródło 
 	protected boolean generate = false; //flaga czy generować teren, na razie
+	protected boolean simRunning = true; //flaga czy symulacja wogole działa
 	
 	// Klasa Źródło fali
     private static class Source {
@@ -90,9 +91,15 @@ public class SimulationPanel extends JPanel implements Runnable
     public void setAddEnabled(boolean addEnabled) {
         this.addEnabled = addEnabled;
     }
+    
+    //ustawianie flagi SimRunning
+    public void setSimRunning(boolean simRunning) {
+    	this.simRunning = simRunning;
+    }
 
 	
 
+    //konstruktor SimulationPanel
 	public SimulationPanel(int X, int Y, int size, int GamePanelX, int GamePanelY)
 	{
 		this.x_dim = X;
@@ -147,7 +154,7 @@ public class SimulationPanel extends JPanel implements Runnable
             @Override
             public void mousePressed(MouseEvent e) {
             	if (!addEnabled) return;
-            	if (sources.size() > maxSources) return;
+            	if (sources.size() >= maxSources) return; //warunek na liczbe zrodel
             	
                 int gx = e.getX()/pixelSize;
                 int gy = e.getY()/pixelSize;
@@ -251,11 +258,15 @@ public class SimulationPanel extends JPanel implements Runnable
     public void run() {
         long last=System.currentTimeMillis();
         while(true) {
-            updateSimulation();
-            updatePixels();
-            long now = System.currentTimeMillis();
-            if(now-last > 50){ 
-            	for(Source s: sources) addImpulse(s,5.0); last=now; }
+        	if (simRunning) {
+        		updateSimulation();
+                updatePixels();
+                long now = System.currentTimeMillis();
+                if(now-last > 50){ 
+                 	for(Source s: sources) addImpulse(s,5.0); 
+                 	last=now; }	
+        	}
+           
             repaint();
             try{Thread.sleep(16);}catch(Exception e){}
         }

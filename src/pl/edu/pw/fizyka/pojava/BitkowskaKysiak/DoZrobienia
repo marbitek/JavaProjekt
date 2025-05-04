@@ -1,0 +1,8 @@
+DO ZROBIENIA:
+1. poprawić kolorki
+2. dodać puszczanie i zatrzymywanie zegara - docelowo zegar odlicza i po czasie symulacja się kończy
+3. połączyć fale z gen terenu
+4. bez klikania okienek początkowe ustawienia fali sand i one sorce, f trzeba ustalić 
+5. pokomentować i uporządkować kod
+6. po odpaleniu symulacji czy gizuiczki mają się blokować czy nie 
+7. wywala wyjątek jesli użytkownik chce uruchomić symulacje bez częstotliwości - ZROBIONE
