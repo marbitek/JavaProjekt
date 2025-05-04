@@ -1,92 +1,175 @@
 package pl.edu.pw.fizyka.pojava.BitkowskaKysiak;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
 //JPanel w GamePanel'u w ktorym odbywac sie bedzie symulacja
-public class SimulationPanel extends JPanel
+public class SimulationPanel extends JPanel implements Runnable
 {
-	int x_dim = 100;
-	int y_dim = 100;
-	//Pixel[][] pixels; 
-	List<List<Pixel>> pixelGrid; //tablice wierszy siatki pixeli
-	List<Pixel> pixelrow;
-	int pixelSize = 2, imgW, imgH;
-	Pixel onePxl; 
-	Random rand = new Random(); //do losowania
-	float R, G, B;
-	BufferedImage panelImage = null;
+	/**
+	 * @author Michał Kysiak (głównie na razie)
+	 * @author 48533 (troszkę)
+	 * 
+	 * Klasa odpowiadająca z panel symulacyjny - symulacja fal i generacja terenu.
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private final int x_dim;
+	private final int y_dim;
+	private int pixelSize;
+	
+	//siatka pixeli
+	private List<List<Pixel>> pixelGrid; //tablice wierszy siatki pixeli
+	private List<Pixel> pixelRow; //rządek pixeli do inicjalizacji
+		
+	//Obrazek panelu 
+	private BufferedImage panelImage = null;
+	
+	
+	private int imgW, imgH;
+	private Pixel onePxl; 
+	private Random rand = new Random(); //do losowania
+	protected float R, G, B;
+	
+	// Lista źródeł fali
+    private final List<Source> sources = new ArrayList<>();
+	
+	 // Buffory stanu fali
+    private double[][] previous, current, next;
+    private double damping = 0.996;
+    private double freq;               // domyślna częstotliwość Hz
+    private int maxSources = 1;   // ile w ogóle pozwalamy tworzyć
+    
+    
+    
 	
 	//for methods tied to terrain generation 
-	int xModif, yModif, sidestepX, sidestepY, counter;
+	protected int xModif, yModif, sidestepX, sidestepY, counter;
+	protected float terrainChance = (float) 0.35; //chance that a random pixel will be a part of generated terrain
 	
-	float terrainChance = (float) 0.35; //chance that a random pixel will be a part of generated terrain
+	private Pixel[] adjacentPixels; //pixele sąsiadujące z onePxl
+	private int adjacentsInNewTerrain; //liczba pixeli w sąsiedztwie należąca do nowego terenu
+
+	//flagi 
+	protected boolean addEnabled = false; //flaga czy dodawać zródło 
+	protected boolean generate = false; //flaga czy generować teren, na razie
+	protected boolean simRunning = true; //flaga czy symulacja wogole działa
 	
-	Pixel[] adjacentPixels; //pixele sąsiadujące z onePxl
-	int adjacentsInNewTerrain; //liczba pixeli w sąsiedztwie należąca do nowego terenu
-
-	Color SAND = new Color(237, 201, 175);
-	Color GRANITE = new Color(169, 169, 169);
-	Color LIMESTONE = new Color(245, 245, 220);
+	// Klasa Źródło fali
+    private static class Source {
+    	int x,y; 
+    	
+    	Source(int x,int y){
+    		this.x=x;
+    		this.y=y;
+    		} 
+    	}
+    
+    //maksymalna liczba xrodel
+    public void setMaxSources(int max) {
+        this.maxSources = max;
+      }
+    
+    //ustawienia wygaszania
+    public void setDamping(double damping) {
+    	this.damping = damping;
+    }
+    
+    
+     //ustawienia częstotliwości
+    public void setFreq(double freq) {
+    	this.freq = freq;
+    }
+    
+   //flaga dodawania zrodla
+    public void setAddEnabled(boolean addEnabled) {
+        this.addEnabled = addEnabled;
+    }
+    
+    //ustawianie flagi SimRunning
+    public void setSimRunning(boolean simRunning) {
+    	this.simRunning = simRunning;
+    }
 
 	
 
+    //konstruktor SimulationPanel
 	public SimulationPanel(int X, int Y, int size, int GamePanelX, int GamePanelY)
 	{
-		x_dim = X;
-		y_dim = Y;
+		this.x_dim = X;
+		this.y_dim = Y;
+		//this.pixelSize = size;
+		
 		//pixelSize = size;
 		//pixelSize = (GamePanelX/X);
 		//pixelSize = size > 0 ? size : Math.min(GamePanelX / X, GamePanelY / Y);
 		pixelSize = size > 0 ? size : Math.max(1, Math.min(GamePanelX / x_dim, GamePanelY / y_dim));
 
-		//this.setLayout(new GridLayout(x_dim,y_dim));
-		pixelGrid = new ArrayList<>();
-		imgW = x_dim*pixelSize;
-		imgH = y_dim*pixelSize;
 		
+		// Inicjalizacja buforów fali
+        previous = new double[x_dim][y_dim];
+        current  = new double[x_dim][y_dim];
+        next     = new double[x_dim][y_dim];
+		
+		//Inicjalizacja PanelImage
 		//naszym panelem bedzie obrazek, powinno to rozwiązać problemy z pamięcią
+		imgW = x_dim*pixelSize; //szerokosc obrazka
+		imgH = y_dim*pixelSize; //wysokosc obrazka
 		panelImage = new BufferedImage(imgW, imgH, BufferedImage.TYPE_INT_RGB);
+		clearPanel();
 		
+		
+		setMinimumSize(new Dimension(imgW, imgH));
+		setPreferredSize(new Dimension(imgW, imgH));
+	    setBackground(Color.WHITE);
+	    setOpaque(true);
+		
+		/*pixelGrid = new ArrayList<>();
         Graphics2D g2d = panelImage.createGraphics();
         g2d.setColor(new Color(255, 228, 181));
         g2d.fillRect(0, 0, imgW, imgH);
-        g2d.dispose();
-
-        setMinimumSize(new Dimension(imgW, imgH));
-        setPreferredSize(new Dimension(GamePanelX, GamePanelY));
+        g2d.dispose();*/
+        
+     // Inicjalizacja Pixel grid na biało
+        pixelGrid = new ArrayList<>();
+        for (int y = 0; y <y_dim; y++) {
+        	pixelRow = new ArrayList<>();
+            for (int x = 0; x <x_dim; x++) {
+                Pixel p = new Pixel(x, y, Color.WHITE, 0, x, y);
+                pixelRow.add(p);
+                paintPxl(x, y, p.getClr());
+            }
+            pixelGrid.add(pixelRow);
+        }
 		
         
-        //inicjalizacja na biało pixeli
-		for(int y = 0; y<y_dim; y++)
-		{
-			pixelrow = new ArrayList<>();
-			for(int x = 0; x < x_dim; x++)
-			{
-				onePxl = new Pixel(pixelSize, pixelSize, Color.white/*new Color(
-						rand.nextInt(256),rand.nextInt(256),rand.nextInt(256)
-						)*/, 0, x, y);
-				
-				//this.add(onePxl);
-				pixelrow.add(onePxl);
-				this.paintPxl(x, y, onePxl.getClr());
-			}
-			pixelGrid.add(pixelrow);
-		}
+        // Obsługa kliknięć – dodaj źródło impulsu
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+            	if (!addEnabled) return;
+            	if (sources.size() >= maxSources) return; //warunek na liczbe zrodel
+            	
+                int gx = e.getX()/pixelSize;
+                int gy = e.getY()/pixelSize;
+                if (gx >= 0 && gx <x_dim && gy >= 0 && gy <y_dim) {
+                    Source s = new Source(gx, gy);
+                    sources.add(s);
+                    addImpulse(s, FunctAndConst.amplitude);
+                }
+            }
+        });
+
+        new Thread(this).start();
 		this.repaint();
 	}
-	
+	/*
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -96,7 +179,100 @@ public class SimulationPanel extends JPanel
         if (panelImage != null) {
             g.drawImage(panelImage, 0, 0, getWidth(), getHeight(), null); // scale to fit
         }
+    }*/
+	
+	 // Wyczyść panelImage do białego tła
+    private void clearPanel() {
+        Graphics2D g2 = panelImage.createGraphics();
+        g2.setColor(Color.WHITE);
+        g2.fillRect(0 , 0, imgW, imgH);
+        g2.dispose();
     }
+    
+    // Początkowy impuls fali w promieniu r
+    private void addImpulse(Source s, double amplitude) {
+        int r = 3;
+        long t = System.nanoTime();
+        double w = amplitude * Math.sin(2 * Math.PI * freq * (t * 1e-9));
+        for(int dx = -r; dx <= r; dx++) 
+        	for(int dy = -r; dy <= r; dy++){
+            int px = s.x + dx, py = s.y + dy;
+            if(px > 0 && px < x_dim-1 && py > 0 && py <y_dim-1 && dx * dx + dy * dy <= r * r) {
+                current[px][py] += w;
+                previous[px][py] += w;
+            }
+        }
+    }
+    
+    
+    // Aktualizacja symulacji fali
+    private void updateSimulation() {
+        double dx = 0.01;
+        double dt = 1e-5;
+        double coeff = (FunctAndConst.c * dt / dx) * (FunctAndConst.c * dt / dx);
+        
+        if(coeff > 0.5) return;
+        
+        for(int x = 1; x < x_dim-1; x++) 
+        	for(int y = 1; y < y_dim-1; y++){
+            double laplasjan = current[x-1][y] + current[x+1][y]
+                       + current[x][y-1] + current[x][y+1] - 4 * current[x][y];
+            next[x][y] = 2 * current[x][y] - previous[x][y] + coeff * laplasjan;
+            next[x][y] *= damping;
+        }
+        double[][] tmp = previous; 
+        previous = current; 
+        current = next; 
+        next = tmp;
+    }
+
+    // Aktualizacja kolorów pixel
+    private void updatePixels() {
+        clearPanel();
+        for(int x = 0; x < x_dim; x++) 
+        	for(int y = 0; y < y_dim; y++){
+            double v = current[x][y];
+            int shade = 255 - (int)(FunctAndConst.brightnessFactor*Math.abs(v));
+            shade = Math.max(0, Math.min(255, shade));
+            Pixel p = pixelGrid.get(y).get(x);
+            p.setClr(new Color(shade,shade,shade));
+            paintPxl(x,y,p.getClr());
+        }
+    }
+
+    // Rysowanie jednego pixela na panelImage
+    private void paintPxl(int gx, int gy, Color c) {
+        Graphics2D g2 = panelImage.createGraphics();
+        g2.setColor(c);
+        g2.fillRect(gx*pixelSize, gy*pixelSize, pixelSize, pixelSize);
+        g2.dispose();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(panelImage, 0,0, getWidth(), getHeight(), null);
+    }
+
+    @Override
+    public void run() {
+        long last=System.currentTimeMillis();
+        while(true) {
+        	if (simRunning) {
+        		updateSimulation();
+                updatePixels();
+                long now = System.currentTimeMillis();
+                if(now-last > 50){ 
+                 	for(Source s: sources) addImpulse(s,5.0); 
+                 	last=now; }	
+        	}
+           
+            repaint();
+            try{Thread.sleep(16);}catch(Exception e){}
+        }
+    }
+
+  
     
     	public void resize(int GamePanelX, int GamePanelY) 
     	{
@@ -128,13 +304,14 @@ public class SimulationPanel extends JPanel
 
 
     //zmienia kolor jednego pixela
-    public void paintPxl(int Width, int Height, Color c)
+    	
+   /* public void paintPxl(int Width, int Height, Color c)
     {
         Graphics2D g2d = panelImage.createGraphics();
         g2d.setColor(c);
         g2d.fillRect(Width*pixelSize, Height*pixelSize, pixelSize, pixelSize);
         g2d.dispose();
-    }
+    }*/
 	
     
     //otrzymanie pixela o zadanych koordynatach
@@ -258,102 +435,121 @@ public class SimulationPanel extends JPanel
 		}
 		return adjacents;
 	}
-	public void generateTerrain(String type, int clusterNumber, int clusterMaxSize, double wsp, int gridSize) {
-	    Set<Pixel> newTerrain = new HashSet<>();
-	    Set<Pixel> prevIteration = new HashSet<>();
-	    Set<Pixel> thisIteration = new HashSet<>();
-
-	    int randX, randY, pixelsAdded = 0, pixelsRemoved = 0;
-	    Color terrainColor = switch (type) {
-	        case "Sand" -> SAND;
-	        case "Granite" -> GRANITE;
-	        case "Limestone" -> LIMESTONE;
-	        default -> {
-	            System.out.println("Unknown terrain type selected.");
-	            yield SAND;
-	        }
-	    };
-
-	    for (int i = 0; i < clusterNumber; i++) {
-	        randX = rand.nextInt(gridSize);
-	        randY = rand.nextInt(gridSize);
-
-	        Pixel clusterCenter = getPxl(randX, randY);
-
-	        newTerrain.add(clusterCenter);
-	        prevIteration.clear();
-	        prevIteration.add(clusterCenter);
-
-	        int counter = 1;
-	        boolean stopCondition = false;
-
-	        do {
-	            for (Pixel px : prevIteration) {   
-
-	                Pixel[] adjacent = turnAdjacent(px, 1/Math.sqrt(counter), 1);
-	                for (Pixel p : adjacent) {
-	                    if (p != null && !newTerrain.contains(p)) {
-	                        thisIteration.add(p);
-	                    }
-	                }
-	            }
-
-	            boolean empty = thisIteration.isEmpty();
-	            newTerrain.addAll(thisIteration);
-	            prevIteration = new HashSet<>(thisIteration);
-	            thisIteration.clear();
-	            counter++;
-
-	            if (empty) stopCondition = true;
-
-	        } while (!stopCondition);
-	    }
-	    
-		//usuwamy pixele nowego terenu nieposiadające sąsiadów
-		//pixele których wszyscy sąsiedzi są nowym terenem stają się pixelami nowego terenu
-		for(int y = 0; y<gridSize; y++)
-		{
-			for(int x = 0; x < gridSize; x++)
+	
+	
+	
+	/**
+	 * Funkcja generująca w losowych miejscach dany typ terenu
+	 * @param type
+	 * @param clusterNumber
+	 * @param clusterMaxSize
+	 * @param wsp
+	 * @param gridSize
+	 * @param generate
+	 */
+	public void generateTerrain(String type, int clusterNumber, int clusterMaxSize, double wsp, int gridSize, boolean generate) {
+	   
+		this.generate = generate;
+		
+		if(generate) {
+		
+			Set<Pixel> newTerrain = new HashSet<>();
+		    Set<Pixel> prevIteration = new HashSet<>();
+		    Set<Pixel> thisIteration = new HashSet<>();
+	
+		    int randX, randY, pixelsAdded = 0, pixelsRemoved = 0;
+		    Color terrainColor = switch (type) {
+		        case "Sand" -> FunctAndConst.SAND;
+		        case "Granite" -> FunctAndConst.GRANITE;
+		        case "Limestone" -> FunctAndConst.LIMESTONE;
+		        default -> {
+		            System.out.println("Unknown terrain type selected.");
+		            yield FunctAndConst.SAND;
+		        }
+		    };
+	
+		    for (int i = 0; i < clusterNumber; i++) {
+		        randX = rand.nextInt(gridSize);
+		        randY = rand.nextInt(gridSize);
+	
+		        Pixel clusterCenter = getPxl(randX, randY);
+	
+		        newTerrain.add(clusterCenter);
+		        prevIteration.clear();
+		        prevIteration.add(clusterCenter);
+	
+		        int counter = 1;
+		        boolean stopCondition = false;
+	
+		        do {
+		            for (Pixel px : prevIteration) {   
+	
+		                Pixel[] adjacent = turnAdjacent(px, 1/Math.sqrt(counter), 1);
+		                for (Pixel p : adjacent) {
+		                    if (p != null && !newTerrain.contains(p)) {
+		                        thisIteration.add(p);
+		                    }
+		                }
+		            }
+	
+		            boolean empty = thisIteration.isEmpty();
+		            newTerrain.addAll(thisIteration);
+		            prevIteration = new HashSet<>(thisIteration);
+		            thisIteration.clear();
+		            counter++;
+	
+		            if (empty) stopCondition = true;
+	
+		        } while (!stopCondition);
+		    }
+		    
+			//usuwamy pixele nowego terenu nieposiadające sąsiadów
+			//pixele których wszyscy sąsiedzi są nowym terenem stają się pixelami nowego terenu
+			for(int y = 0; y<gridSize; y++)
 			{
-				onePxl = getPxl(x,y);
-				adjacentPixels = getNeigbours(onePxl, gridSize);
-				adjacentsInNewTerrain = 0;
-				
-				for(Pixel p : adjacentPixels) 
+				for(int x = 0; x < gridSize; x++)
 				{
-				if(p != null && newTerrain.contains(p)) 
+					onePxl = getPxl(x,y);
+					adjacentPixels = getNeigbours(onePxl, gridSize);
+					adjacentsInNewTerrain = 0;
+					
+					for(Pixel p : adjacentPixels) 
 					{
-					adjacentsInNewTerrain++;
+					if(p != null && newTerrain.contains(p)) 
+						{
+						adjacentsInNewTerrain++;
+						}
 					}
-				}
-				
-				if(adjacentsInNewTerrain == adjacentPixels.length-1 && !newTerrain.contains(onePxl))
-				{
-					newTerrain.add(onePxl);
-					pixelsAdded++;
-				} else if(adjacentsInNewTerrain < 2 && newTerrain.contains(onePxl))
+					
+					if(adjacentsInNewTerrain == adjacentPixels.length-1 && !newTerrain.contains(onePxl))
 					{
-						newTerrain.remove(onePxl);
-						pixelsRemoved++;
-					}
-				
-				
-		}
-		}
-
-	    for (Pixel p : newTerrain) {
-	        p.setClr(terrainColor);
-	        p.setTSM(wsp);
-	        paintPxl(p.getGX(), p.getGY(), p.getClr());
-	    }
-
-	    
-        System.out.println("Pixels added: "+pixelsAdded);
-        System.out.println("Pixels removed: "+pixelsRemoved);
-	    revalidate();
-	    repaint();
+						newTerrain.add(onePxl);
+						pixelsAdded++;
+					} else if(adjacentsInNewTerrain < 2 && newTerrain.contains(onePxl))
+						{
+							newTerrain.remove(onePxl);
+							pixelsRemoved++;
+						}
+					
+					
+			}
+			}
+	
+		    for (Pixel p : newTerrain) {
+		        p.setClr(terrainColor);
+		        p.setTSM(wsp);
+		        paintPxl(p.getGX(), p.getGY(), p.getClr());
+		    }
+	
+		    
+	        System.out.println("Pixels added: "+pixelsAdded);
+	        System.out.println("Pixels removed: "+pixelsRemoved);
+		    revalidate();
+		    repaint();
+			}
 	}
 
+	
 	/*
 	public void generateTerrain(String type, int clusterNumber, int clusterMaxSize, double wsp, int gridSize)
 	{
