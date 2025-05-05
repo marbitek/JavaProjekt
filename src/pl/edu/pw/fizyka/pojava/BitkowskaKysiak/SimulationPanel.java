@@ -106,6 +106,10 @@ public class SimulationPanel extends JPanel implements Runnable
 		this.y_dim = Y;
 		//this.pixelSize = size;
 		
+		if (x_dim <= 0 || y_dim <= 0) {
+		    throw new IllegalArgumentException("x_dim and y_dim must be > 0");
+		}
+		
 		//pixelSize = size;
 		//pixelSize = (GamePanelX/X);
 		//pixelSize = size > 0 ? size : Math.min(GamePanelX / X, GamePanelY / Y);
@@ -228,7 +232,35 @@ public class SimulationPanel extends JPanel implements Runnable
 
     // Aktualizacja kolorów pixel
     private void updatePixels() {
-        clearPanel();
+        //clearPanel();
+        
+        for (int y = 0; y < y_dim; y++) {
+            for (int x = 0; x < x_dim; x++) {
+                double v = current[x][y];
+                int shade = 255 - (int)(FunctAndConst.brightnessFactor * Math.abs(v));
+                shade = Math.max(0, Math.min(255, shade));
+                
+                Pixel p = pixelGrid.get(y).get(x);
+                if (!FunctAndConst.isTerrain(p.getClr())) {
+                    p.setClr(new Color(shade, shade, shade));
+                    paintPxl(x, y, p.getClr());
+                }
+
+                //p.setClr(new Color(shade, shade, shade));
+                //paintPxl(x, y, p.getClr());
+                
+                if (pixelGrid == null || pixelGrid.size() != y_dim || pixelGrid.get(0).size() != x_dim) {
+                    System.err.println("PixelGrid not initialized or invalid dimensions. Skipping update.");
+                    return;
+                }
+
+                
+                //pixelGrid.get(y).get(x).setClr(new Color(shade, shade, shade));
+            }
+        }
+
+        
+        /*
         for(int x = 0; x < x_dim; x++) 
         	for(int y = 0; y < y_dim; y++){
             double v = current[x][y];
@@ -238,6 +270,7 @@ public class SimulationPanel extends JPanel implements Runnable
             p.setClr(new Color(shade,shade,shade));
             paintPxl(x,y,p.getClr());
         }
+        */
     }
 
     // Rysowanie jednego pixela na panelImage
@@ -279,6 +312,12 @@ public class SimulationPanel extends JPanel implements Runnable
         pixelSize = Math.max(1, Math.min(GamePanelX / x_dim, GamePanelY / y_dim));
         imgW = x_dim * pixelSize;
         imgH = y_dim * pixelSize;
+        
+        if (pixelGrid == null || pixelGrid.size() != y_dim || pixelGrid.get(0).size() != x_dim) {
+            System.err.println("Pixel grid is not properly initialized or does not match dimensions.");
+            return;
+        }
+
 
         if (imgW > 0 && imgH > 0) {
             panelImage = new BufferedImage(imgW, imgH, BufferedImage.TYPE_INT_RGB);
@@ -317,8 +356,7 @@ public class SimulationPanel extends JPanel implements Runnable
     //otrzymanie pixela o zadanych koordynatach
 	public Pixel getPxl(int x, int y) //get pixel
 	{
-		Pixel p = pixelGrid.get(y).get(x);
-		return p;
+		return pixelGrid.get(y).get(x);
 	}
 	
 	
@@ -452,7 +490,7 @@ public class SimulationPanel extends JPanel implements Runnable
 		this.generate = generate;
 		
 		if(generate) {
-		
+			System.out.println("Terrain generation called");
 			Set<Pixel> newTerrain = new HashSet<>();
 		    Set<Pixel> prevIteration = new HashSet<>();
 		    Set<Pixel> thisIteration = new HashSet<>();
@@ -460,13 +498,15 @@ public class SimulationPanel extends JPanel implements Runnable
 		    int randX, randY, pixelsAdded = 0, pixelsRemoved = 0;
 		    Color terrainColor = switch (type) {
 		        case "Sand" -> FunctAndConst.SAND;
-		        case "Granite" -> FunctAndConst.GRANITE;
+		        case "Granite" -> FunctAndConst.GRANITE;   
 		        case "Limestone" -> FunctAndConst.LIMESTONE;
 		        default -> {
 		            System.out.println("Unknown terrain type selected.");
 		            yield FunctAndConst.SAND;
 		        }
 		    };
+		    
+		    
 	
 		    for (int i = 0; i < clusterNumber; i++) {
 		        randX = rand.nextInt(gridSize);
@@ -538,7 +578,7 @@ public class SimulationPanel extends JPanel implements Runnable
 		    for (Pixel p : newTerrain) {
 		        p.setClr(terrainColor);
 		        p.setTSM(wsp);
-		        paintPxl(p.getGX(), p.getGY(), p.getClr());
+		        paintPxl(p.getGX(), p.getGY(), terrainColor);
 		    }
 	
 		    

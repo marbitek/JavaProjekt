@@ -50,13 +50,16 @@ public class Simulation extends JPanel implements Runnable {
         current  = new double[x_dim][y_dim];
         next     = new double[x_dim][y_dim];
 
-        /* Inicjalizacja siatki pikseli
+        // Inicjalizacja siatki pikseli
+        
         pixels = new Pixel[x_dim][y_dim];
         for (int x = 0; x < x_dim; x++) {
             for (int y = 0; y < y_dim; y++) {
-                pixels[x][y] = new Pixel(x, y, Color.WHITE, 0);
+                pixels[x][y] = new Pixel(x, y, Color.WHITE, 0, x, y);
             }
-        }*/
+        }
+
+        
 
         // Obsługa kliknięcia - dodanie źródła fali
         addMouseListener(new MouseAdapter() {
@@ -134,7 +137,7 @@ public class Simulation extends JPanel implements Runnable {
                            + current[x][y-1] + current[x][y+1]
                            - 4 * current[x][y];
                 next[x][y] = 2 * current[x][y] - previous[x][y] + coeff * lap;
-                //next[x][y] *= damping;
+                next[x][y] *= damping;
             }
         }
 
@@ -143,6 +146,8 @@ public class Simulation extends JPanel implements Runnable {
         previous = current;
         current = next;
         next = tmp;
+        
+        
     }
 
     /**

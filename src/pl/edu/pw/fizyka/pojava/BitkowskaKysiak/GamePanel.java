@@ -20,7 +20,7 @@ public class GamePanel extends JPanel implements GameInterface
 	private static final long serialVersionUID = 1L;
 	
 	private JPanel innerPanel, functional, data, p, p2, pSource, controlPanel, squareWrapper;
-	protected JButton back, onOff, exit, reset, generate; 
+	protected JButton back, onOff, exit, reset, generate, genFlip; 
 	private String teren[] = {"Sand", "Granite", "Limestone"};
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
 	private double wspolczynniki[] = {0.996, 0.700, 0.30};
@@ -44,6 +44,19 @@ public class GamePanel extends JPanel implements GameInterface
 		back = new JButton("Back"); 
 		back.setMinimumSize(new Dimension(70, 25));
 		
+		genFlip = new JButton("Enable/disable generation");
+		genFlip.setMinimumSize(new Dimension(70, 25));
+		genFlip.addActionListener(new ActionListener()
+		{
+			@Override
+			
+			public void actionPerformed(ActionEvent e)
+			{
+				gen = !gen;
+			}
+			
+			}
+		);
 		
 		reset = new JButton("Reset");
 		reset.setMinimumSize(new Dimension(70, 25));
@@ -54,7 +67,8 @@ public class GamePanel extends JPanel implements GameInterface
 					public void actionPerformed(ActionEvent e)
 					{
 					inner.getPxlGrid().clear();
-						
+					
+					inner.setSimRunning(false);	
 			        squareWrapper.remove(inner);
 
 			        // Create and add new SimulationPanel
@@ -85,10 +99,10 @@ public class GamePanel extends JPanel implements GameInterface
 					@Override
 					public void actionPerformed(ActionEvent e)
 					{
-						/*Object selected = (String) lista.getSelectedItem();
+						Object selected = (String) lista.getSelectedItem();
 						String text_of_selected = selected.toString();
 						((SimulationPanel) inner).generateTerrain(text_of_selected,terrainClusters,clusterSize, currentWsp, size, gen);
-						*/
+						
 					}
 				}
 				
@@ -98,6 +112,7 @@ public class GamePanel extends JPanel implements GameInterface
 		controlPanel.add(reset);
 		controlPanel.add(exit);
 		controlPanel.add(generate);
+		controlPanel.add(genFlip);
 		controlPanel.setBackground(new Color(245, 222, 179));
 		
 		this.add(controlPanel, BorderLayout.SOUTH);

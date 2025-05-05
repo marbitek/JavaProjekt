@@ -33,9 +33,19 @@ public class Pixel //extends JPanel
         
         if(terrainSpecificator >= 0 || terrainSpecificator <= 2)
         {
-        	thisTerrainType = terrainTypes[terrainSpecificator];
+            thisTerrainType = terrainTypes[terrainSpecificator];
         }
+
+
         
+        
+        if (thisTerrainType.equals("Sand")) {
+            terrainSpeedModifier = 0.5;  // for example, slower wave speed on sand
+        } else if (thisTerrainType.equals("Granite")) {
+            terrainSpeedModifier = 1.5;  // faster wave speed on granite
+        } else if (thisTerrainType.equals("Limestone")) {
+            terrainSpeedModifier = 1.2;  // moderate wave speed on limestone
+        }
     }
     
     //public Color getColor() {return color;}
@@ -48,13 +58,25 @@ public class Pixel //extends JPanel
         setBackground(color);
         repaint();
     }*/
-    
+    /*
     public void draw(Graphics g, int size) 
     {
         g.setColor(color);
         g.fillRect(x * size, y * size, size, size);
     }
-    
+    */
+
+    public void draw(Graphics g, int size) {
+        if (thisTerrainType.equals("Sand")) {
+            g.setColor(new Color(255, 255, 100));  // light yellow for sand
+        } else if (thisTerrainType.equals("Granite")) {
+            g.setColor(new Color(150, 150, 150));  // grey for granite
+        } else if (thisTerrainType.equals("Limestone")) {
+            g.setColor(new Color(200, 200, 150));  // light gray for limestone
+        }
+        g.fillRect(x * size, y * size, size, size);
+    }
+
     public int getX() {
         return x;
     }
@@ -104,7 +126,13 @@ public class Pixel //extends JPanel
     }
 
     public Color getClr() {return color;}
-    public void setClr(Color c) {color = c;}
+    public void setClr(Color c) 
+    {
+    	if(FunctAndConst.isTerrain(c))
+    	{
+    		color = c;
+    	}
+    	}
     
 
 public int getGX() {

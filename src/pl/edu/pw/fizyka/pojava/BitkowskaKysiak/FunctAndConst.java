@@ -21,6 +21,12 @@ public class FunctAndConst {
 	
     
 	//MK+
+    public static boolean isTerrain(Color c)
+    {
+    	return (c == GRANITE || c == LIMESTONE || c == SAND);
+    }
+    
+    
     public static void buttonStyling(JButton button, Color bgColor, Color fgColor) {
         button.setBackground(bgColor);
         button.setForeground(fgColor);
