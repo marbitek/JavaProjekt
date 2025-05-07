@@ -23,7 +23,7 @@ public class GamePanel extends JPanel implements GameInterface
 	protected JButton back, onOff, exit, reset, generate, genFlip; 
 	private String teren[] = {"Sand", "Granite", "Limestone"};
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
-	private double wspolczynniki[] = {0.996, 0.700, 0.30};
+	private double wspolczynniki[] = {0.996, 0.700, 0.30}; //tłumienie
 	protected double currentWsp;
 	protected static double currentFreq;
 	private int numbSource;
@@ -32,6 +32,7 @@ public class GamePanel extends JPanel implements GameInterface
 	protected JSlider slider, powerSlider;
 	private int size = 100, terrainClusters = 1, clusterSize = 5;
 	private SimulationPanel inner;
+	private final TerrainGeneration terrainGen;
 	private boolean gen = false;
 	private boolean[] on = {false};  //flaga do przechowywania stanu
 	
@@ -63,11 +64,11 @@ public class GamePanel extends JPanel implements GameInterface
 			inner.resetState();
 			resetUiControls();
 
-		    inner.setDamping(currentWsp);
+		    //inner.setDamping(currentWsp);
 		    inner.setMaxSources(numbSource);
 		    inner.setFreq(currentFreq);
 	
-		    inner.setAddEnabled(on[0]);      // jeżeli chcesz mieć symulację od razu włączoną, zadbaj by on[0] było true
+		    inner.setAddEnabled(on[0]);  
 		    inner.setSimRunning(on[0]);
 		});
 
@@ -84,7 +85,7 @@ public class GamePanel extends JPanel implements GameInterface
 			public void actionPerformed(ActionEvent e) {
 				Object selected = (String) lista.getSelectedItem();
 				String text_of_selected = selected.toString();
-				((SimulationPanel) inner).generateTerrain(text_of_selected,terrainClusters,clusterSize, currentWsp, size, gen);		
+				terrainGen.generateTerrain(text_of_selected,terrainClusters,clusterSize, size, gen);		
 			}
 		});
 		
@@ -104,7 +105,6 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		//MK-
 		
-		
 		innerPanel = new JPanel();
 		innerPanel.setBackground(Color.orange);
 		innerPanel.setLayout(new BorderLayout());		
@@ -112,6 +112,8 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		//OBIEKT TYPU SIMULATION PANEL!
 		inner = new SimulationPanel(size, size, 1, 500, 500);  //500x500 pixeli
+		terrainGen = new TerrainGeneration(inner);
+		
 		Border padding = BorderFactory.createMatteBorder(15, 15, 15, 15, Color.ORANGE);
 		Border ramka = BorderFactory.createLineBorder(Color.black, 3);
 		inner.setBorder(BorderFactory.createCompoundBorder(padding, ramka));
@@ -173,7 +175,7 @@ public class GamePanel extends JPanel implements GameInterface
 			public void actionPerformed(ActionEvent arg0) {
 				int index = lista.getSelectedIndex(); //wybieram indeks z tablicy teren
 				currentWsp = wspolczynniki[index]; //wybieram wspolczynnik odpowiadający indeksowi
-				((SimulationPanel)inner).setDamping(currentWsp);
+				//((SimulationPanel)inner).setDamping(currentWsp);
 				}
 		};
 		lista.addActionListener(terenListener);
@@ -269,23 +271,15 @@ public class GamePanel extends JPanel implements GameInterface
 		//MK+
 		data1 = new JLabel("Time elapsed: 0.00 s");
 		data2 = new JLabel("Harvested spice: 0.00 t");
-		//onOff = new JButton("ON/OFF");
 		
+		
+		
+		
+		
+		
+		//GUZIK ON -> OFF
 		onOff = new JButton("ON");
 		FunctAndConst.buttonStyling(onOff, Color.black, new Color(255, 248, 220));
-		/*onOff.addActionListener(e -> {
-			try {
-				if(currentFreq == 0) throw new MyException("Frequency value is zero!");
-		    boolean run = onOff.isSelected();
-		    onOff.setText(run ? "OFF" : "ON");
-		    inner.setAddEnabled(run); // włączamy/wyłączamy możliwość dodawania
-		    inner.setSimRunning(run);       // ← zawsze działa na aktualnym 'inner'
-			} catch (MyException ex) {
-				JOptionPane.showMessageDialog(GamePanel.this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-			}});*/
-		
-		//uruchamianie symulacji
-		
 
 		onOff.addActionListener(e -> {
 			try {
@@ -303,6 +297,8 @@ public class GamePanel extends JPanel implements GameInterface
 		});
 
 		
+		
+		//SUWAK MOCY
 		powerSlider = new JSlider(JSlider.HORIZONTAL, 25, 75, 50);
 		powerSlider.setPreferredSize(new Dimension(250, 20)); 
 		powerSlider.setBackground(Color.ORANGE);

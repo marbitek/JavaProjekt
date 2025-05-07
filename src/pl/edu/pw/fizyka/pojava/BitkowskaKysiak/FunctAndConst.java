@@ -11,7 +11,7 @@ public class FunctAndConst {
 	protected static final Color SAND = new Color(237, 201, 175);
 	protected static final Color GRANITE = new Color(169, 169, 169);
 	protected static final Color LIMESTONE = new Color(245, 245, 220);
-	
+	protected static final Color AIR = Color.white;
 	
 	
 	protected static final double c = 343.0;   // prędkość dźwięku m/s
