@@ -77,7 +77,7 @@ public class MainPanel extends JFrame {
 	    
 	    frame.add(homeContainer);
 	    card.show(homeContainer, "Welcome Panel");
-	    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    frame.setSize(900, 600);
 	    frame.setLocationRelativeTo(null);
 	    //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);

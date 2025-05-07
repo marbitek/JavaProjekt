@@ -12,8 +12,8 @@ import java.util.List;
 public class SimulationPanel extends JPanel implements Runnable
 {
 	/**
-	 * @author Michał Kysiak (głównie na razie)
-	 * @author 48533 (troszkę)
+	 * @author Michał Kysiak (głównie na razie)- generacja terenu
+	 * @author Maria Bitkowska - propagacja fali
 	 * 
 	 * Klasa odpowiadająca z panel symulacyjny - symulacja fal i generacja terenu.
 	 * 
@@ -160,9 +160,11 @@ public class SimulationPanel extends JPanel implements Runnable
             	if (!addEnabled) return;
             	if (sources.size() >= maxSources) return; //warunek na liczbe zrodel
             	
-                int gx = e.getX()/pixelSize;
-                int gy = e.getY()/pixelSize;
-                if (gx >= 0 && gx <x_dim && gy >= 0 && gy <y_dim) {
+            	//poprawne mapowanie kliknięcia
+                int gx = e.getX() * x_dim / getWidth();
+                int gy = e.getY() * y_dim / getHeight();
+                
+                if (gx >= 0 && gx < x_dim && gy >= 0 && gy < y_dim) {
                     Source s = new Source(gx, gy);
                     sources.add(s);
                     addImpulse(s, FunctAndConst.amplitude);
@@ -213,17 +215,40 @@ public class SimulationPanel extends JPanel implements Runnable
     private void updateSimulation() {
         double dx = 0.01;
         double dt = 1e-5;
-        double coeff = (FunctAndConst.c * dt / dx) * (FunctAndConst.c * dt / dx);
+        final double baseCoeff = (FunctAndConst.c * dt / dx) * (FunctAndConst.c * dt / dx);
         
-        if(coeff > 0.5) return;
+        if(baseCoeff > 0.5) return;
         
-        for(int x = 1; x < x_dim-1; x++) 
+       /* for(int x = 1; x < x_dim-1; x++) 
         	for(int y = 1; y < y_dim-1; y++){
-            double laplasjan = current[x-1][y] + current[x+1][y]
-                       + current[x][y-1] + current[x][y+1] - 4 * current[x][y];
-            next[x][y] = 2 * current[x][y] - previous[x][y] + coeff * laplasjan;
-            next[x][y] *= damping;
+        		
+        		Pixel px = pixelGrid.get(y).get(x);
+        		double k = px.getTSM();
+        		double coeffLocal = baseCoeff * k * k;*/
+        // weź realny rozmiar siatki:
+        int rows = pixelGrid.size();                // liczba wierszy = y_dim
+        if (rows == 0) return;
+        int cols = pixelGrid.get(0).size();         // liczba kolumn = x_dim
+
+        // upewnij się, że buffory mają te same wymiary:
+        cols = Math.min(cols, current.length);
+        rows = Math.min(rows, current[0].length);
+
+        // iteruj tylko do rows-1, cols-1
+        for (int y = 1; y < rows - 1; y++) {
+            for (int x = 1; x < cols - 1; x++) {
+                Pixel px = pixelGrid.get(y).get(x);
+                double k = px.getTSM();
+                double coeffLocal = baseCoeff * k * k;
+
+        		
+	            double laplasjan = current[x-1][y] + current[x+1][y]
+	                       + current[x][y-1] + current[x][y+1] - 4 * current[x][y];
+	            next[x][y] = 2 * current[x][y] - previous[x][y] + coeffLocal * laplasjan;
+	            next[x][y] *= damping;
         }
+        }
+            
         double[][] tmp = previous; 
         previous = current; 
         current = next; 
@@ -234,18 +259,31 @@ public class SimulationPanel extends JPanel implements Runnable
     private void updatePixels() {
         //clearPanel();
         
-        for (int y = 0; y < y_dim; y++) {
-            for (int x = 0; x < x_dim; x++) {
+    	for (int y = 0; y < pixelGrid.size(); y++) {
+            List<Pixel> row = pixelGrid.get(y);
+            for (int x = 0; x < row.size(); x++) {
                 double v = current[x][y];
-                int shade = 255 - (int)(FunctAndConst.brightnessFactor * Math.abs(v));
-                shade = Math.max(0, Math.min(255, shade));
+                float amp = (float) Math.min(1.0, Math.abs(v) * FunctAndConst.brightnessFactor / 255.0);
                 
                 Pixel p = pixelGrid.get(y).get(x);
+                Color base = p.getClr();
+                float[] hsb  = Color.RGBtoHSB(base.getRed(),
+                        base.getGreen(),
+                        base.getBlue(), null);
+
+             // przy dodatniej amplitudzie rozjaśniamy, przy ujemnej ściemniamy
+                hsb[2] = Math.max(0f, Math.min(1f,
+                         hsb[2] + (v >= 0 ? amp : -amp)));
+
+                Color shaded = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
+                p.setClr(shaded);
+                paintPxl(x, y, shaded);
+                /*
                 if (!FunctAndConst.isTerrain(p.getClr())) {
                     p.setClr(new Color(shade, shade, shade));
                     paintPxl(x, y, p.getClr());
                 }
-
+*/
                 //p.setClr(new Color(shade, shade, shade));
                 //paintPxl(x, y, p.getClr());
                 
@@ -306,6 +344,46 @@ public class SimulationPanel extends JPanel implements Runnable
     }
 
   
+ // w SimulationPanel.java, w klasie SimulationPanel:
+
+    /**
+     * Przywraca panel i całą symulację do stanu początkowego:
+     * - czyści bufor fali
+     * - czyści źródła
+     * - maluje wszystkie pixele na biało
+     */
+    public void resetState() {
+        // 1) wyzeruj bufory
+        for (int i = 0; i < x_dim; i++) {
+            Arrays.fill(previous[i], 0);
+            Arrays.fill(current[i],  0);
+            Arrays.fill(next[i],     0);
+        }
+        
+
+
+        panelImage = new BufferedImage(imgW, imgH, BufferedImage.TYPE_INT_RGB);
+        clearPanel();
+
+        // 2) Odbuduj pixelGrid na biało
+        pixelGrid.clear();
+        for (int y = 0; y < y_dim; y++) {
+            List<Pixel> row = new ArrayList<>();
+            for (int x = 0; x < x_dim; x++) {
+                Pixel p = new Pixel(x, y, Color.WHITE, 0, x, y);
+                row.add(p);
+                // od razu nanieś biały piksel
+                paintPxl(x, y, Color.WHITE);
+            }
+            pixelGrid.add(row);
+        }
+        
+        sources.clear();
+        this.generate = false;
+        revalidate();
+        repaint();
+    }
+
     
     	public void resize(int GamePanelX, int GamePanelY) 
     	{

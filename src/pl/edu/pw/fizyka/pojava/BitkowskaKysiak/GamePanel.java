@@ -24,21 +24,23 @@ public class GamePanel extends JPanel implements GameInterface
 	private String teren[] = {"Sand", "Granite", "Limestone"};
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
 	private double wspolczynniki[] = {0.996, 0.700, 0.30};
-	private double currentWsp, currentFreq;
+	protected double currentWsp;
+	protected static double currentFreq;
 	private int numbSource;
+	private JComboBox<String> numbSrc, lista;
 	private JLabel  field, freq, data1, data2, source, pow;
 	protected JSlider slider, powerSlider;
 	private int size = 100, terrainClusters = 1, clusterSize = 5;
-	SimulationPanel inner;
-
+	private SimulationPanel inner;
 	private boolean gen = false;
+	private boolean[] on = {false};  //flaga do przechowywania stanu
 	
 	public GamePanel() {
 		
 		super(new BorderLayout());
 		
 		//MK+
-		JComboBox<String> lista = new JComboBox<>(teren); //przeniesione tutaj
+		lista = new JComboBox<>(teren); //przeniesione tutaj
 		controlPanel = new JPanel(); 
 		controlPanel.setLayout(new FlowLayout());
 		back = new JButton("Back"); 
@@ -46,46 +48,29 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		genFlip = new JButton("Enable/disable generation");
 		genFlip.setMinimumSize(new Dimension(70, 25));
-		genFlip.addActionListener(new ActionListener()
-		{
+		genFlip.addActionListener(new ActionListener(){
 			@Override
-			
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e){
 				gen = !gen;
-			}
-			
-			}
-		);
+			}	
+		});
+		
 		
 		reset = new JButton("Reset");
 		reset.setMinimumSize(new Dimension(70, 25));
-		reset.addActionListener(new ActionListener()
-				{
-					@Override
-					
-					public void actionPerformed(ActionEvent e)
-					{
-					inner.getPxlGrid().clear();
-					
-					inner.setSimRunning(false);	
-			        squareWrapper.remove(inner);
+		reset.addActionListener(e -> {
+			
+			inner.resetState();
+			resetUiControls();
 
-			        // Create and add new SimulationPanel
-			        inner = new SimulationPanel(size, size, 1, 500, 500);
-			        Border padding = BorderFactory.createMatteBorder(15, 15, 15, 15, Color.ORANGE);
-			        Border ramka = BorderFactory.createLineBorder(Color.black, 3);
-			        inner.setBorder(BorderFactory.createCompoundBorder(padding, ramka));
+		    inner.setDamping(currentWsp);
+		    inner.setMaxSources(numbSource);
+		    inner.setFreq(currentFreq);
+	
+		    inner.setAddEnabled(on[0]);      // jeżeli chcesz mieć symulację od razu włączoną, zadbaj by on[0] było true
+		    inner.setSimRunning(on[0]);
+		});
 
-			        squareWrapper.add(inner);
-
-			        // Resize/repaint properly
-			        squareWrapper.revalidate();
-			        squareWrapper.repaint();
-					}
-					
-					}
-				);
 		
 		exit = new JButton("Exit");
 		exit.setMinimumSize(new Dimension(70, 25));
@@ -94,19 +79,14 @@ public class GamePanel extends JPanel implements GameInterface
 		//przycisk generowania terenu o wybranym aktualnie typie
 		generate = new JButton("Generate chosen terrain");
 		generate.setMinimumSize(new Dimension(70, 25));
-		generate.addActionListener(new ActionListener() 
-				{
-					@Override
-					public void actionPerformed(ActionEvent e)
-					{
-						Object selected = (String) lista.getSelectedItem();
-						String text_of_selected = selected.toString();
-						((SimulationPanel) inner).generateTerrain(text_of_selected,terrainClusters,clusterSize, currentWsp, size, gen);
-						
-					}
-				}
-				
-				);
+		generate.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Object selected = (String) lista.getSelectedItem();
+				String text_of_selected = selected.toString();
+				((SimulationPanel) inner).generateTerrain(text_of_selected,terrainClusters,clusterSize, currentWsp, size, gen);		
+			}
+		});
 		
 		controlPanel.add(back);
 		controlPanel.add(reset);
@@ -128,39 +108,23 @@ public class GamePanel extends JPanel implements GameInterface
 		innerPanel = new JPanel();
 		innerPanel.setBackground(Color.orange);
 		innerPanel.setLayout(new BorderLayout());		
-		//innerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		innerPanel.setMinimumSize(new Dimension(500, 500));
 		
-		//inner = new JPanel();
-		//testujemy czy sim panel dziala
-		//inner = new SimulationPanel(500, 500, 1, innerPanel.getX(), innerPanel.getY());
-		
-		
-		
-		
-		//OBIEKT TYPU SIMULATION PANEL!!!!!!!!!!!!!!!!!!!!!!!!!
+		//OBIEKT TYPU SIMULATION PANEL!
 		inner = new SimulationPanel(size, size, 1, 500, 500);  //500x500 pixeli
-		
-		
-		
-		
-		//SimulationPanel();
-	    
-		functional = new JPanel();
-		functional.setLayout(new BoxLayout(functional, BoxLayout.Y_AXIS));
-		functional.setPreferredSize(new Dimension(250, 400));
-		
-		functional.setBackground(Color.ORANGE);
-		
 		Border padding = BorderFactory.createMatteBorder(15, 15, 15, 15, Color.ORANGE);
 		Border ramka = BorderFactory.createLineBorder(Color.black, 3);
 		inner.setBorder(BorderFactory.createCompoundBorder(padding, ramka));
+		
+		functional = new JPanel();
+		functional.setLayout(new BoxLayout(functional, BoxLayout.Y_AXIS));
+		functional.setPreferredSize(new Dimension(250, 400));
+		functional.setBackground(Color.ORANGE);
+		
+		
 
 		//innerPanel.add(inner , BorderLayout.CENTER);
-		squareWrapper = new JPanel() 
-		{
-
-		  
+		squareWrapper = new JPanel() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -196,9 +160,7 @@ public class GamePanel extends JPanel implements GameInterface
 	                Color.BLACK
 	        ));
 
-		//okienko zmiany terenu - JComboBox
-		
-		
+				
 		//ustalamy renderer z wyśrodkowanym tekstem
 		DefaultListCellRenderer renderer = new DefaultListCellRenderer();
 		renderer.setHorizontalAlignment(SwingConstants.CENTER); // wyśrodkuj poziomo
@@ -225,7 +187,6 @@ public class GamePanel extends JPanel implements GameInterface
 		field.setVerticalAlignment(SwingConstants.CENTER);
 		p.add(lista);
 		functional.add(p);
-		//functional.add(Box.createRigidArea(new Dimension(150, 40)));
 		functional.add(Box.createRigidArea(new Dimension(250, 20)));
 
 		
@@ -233,22 +194,20 @@ public class GamePanel extends JPanel implements GameInterface
 		pSource = new JPanel(new GridLayout(2,1));
 		pSource.setOpaque(false);
 		
-		
-		
 		source = new JLabel("Number of sources: ");
 		source.setHorizontalAlignment(SwingConstants.CENTER);
 		source.setVerticalAlignment(SwingConstants.CENTER);
 		pSource.add(source);
 		
-		JComboBox<String> numbSrc = new JComboBox<>(sources);
-		//numbSrc.setSize(new Dimension(250,20));
+		numbSrc = new JComboBox<>(sources);
 		numbSrc.setRenderer(renderer);
 		numbSrc.setBackground(Color.WHITE);
 				
 		ActionListener sourceListener = new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				int index = lista.getSelectedIndex(); //wybieram indeks z tablicy teren
+			public void actionPerformed(ActionEvent e) {
+				int index = ((JComboBox<?>) e.getSource()).getSelectedIndex();
+				//int index = lista.getSelectedIndex(); //wybieram indeks z tablicy teren
 				numbSource = index + 1; //wybieram wspolczynnik odpowiadający indeksowi
 				((SimulationPanel)inner).setMaxSources(numbSource);
 				
@@ -276,7 +235,7 @@ public class GamePanel extends JPanel implements GameInterface
 		p2.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
 		
 		slider = new JSlider(JSlider.HORIZONTAL, 0, 1000, 0);
-		slider.setPreferredSize(new Dimension(250, 20)); // 👈 KLUCZOWE!
+		slider.setPreferredSize(new Dimension(250, 20)); 
 		slider.setBackground(Color.ORANGE);
 
 		slider.setPaintTicks(true);
@@ -310,13 +269,23 @@ public class GamePanel extends JPanel implements GameInterface
 		//MK+
 		data1 = new JLabel("Time elapsed: 0.00 s");
 		data2 = new JLabel("Harvested spice: 0.00 t");
-		onOff = new JButton("ON/OFF");
-		FunctAndConst.buttonStyling(onOff, Color.black, new Color(255, 248, 220));
-		JButton onOff = new JButton("ON/OFF");
+		//onOff = new JButton("ON/OFF");
 		
+		onOff = new JButton("ON");
+		FunctAndConst.buttonStyling(onOff, Color.black, new Color(255, 248, 220));
+		/*onOff.addActionListener(e -> {
+			try {
+				if(currentFreq == 0) throw new MyException("Frequency value is zero!");
+		    boolean run = onOff.isSelected();
+		    onOff.setText(run ? "OFF" : "ON");
+		    inner.setAddEnabled(run); // włączamy/wyłączamy możliwość dodawania
+		    inner.setSimRunning(run);       // ← zawsze działa na aktualnym 'inner'
+			} catch (MyException ex) {
+				JOptionPane.showMessageDialog(GamePanel.this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}});*/
 		
 		//uruchamianie symulacji
-		boolean[] on = {false};  //flaga do przechowywania stanu
+		
 
 		onOff.addActionListener(e -> {
 			try {
@@ -325,7 +294,7 @@ public class GamePanel extends JPanel implements GameInterface
 			on[0] = !on[0];
 		    ((SimulationPanel)inner).setAddEnabled(on[0]); // włączamy/wyłączamy możliwość dodawania
 		    ((SimulationPanel)inner).setSimRunning(on[0]); //wlączamy symulacje
-		    onOff.setText(on[0] ? "ON" : "OFF"); 
+		    onOff.setText(on[0] ? "OFF" : "ON"); 
 				
 		    
 			} catch (MyException ex) {
@@ -379,23 +348,10 @@ public class GamePanel extends JPanel implements GameInterface
 		    @Override
 		    public void componentResized(java.awt.event.ComponentEvent e) 
 		    {
-		    	/*
-		    	double zmienna = (getHeight() * 0.9);
-		        int newWidth = (int)zmienna;
-		        int newHeight = (int)zmienna;
-		        
-		        
-		        inner.setPreferredSize(new java.awt.Dimension(newWidth, newHeight));
-		        */
+		    	
 		        int size = (int)(Math.min(getHeight(), getWidth()) * 0.9); // keep square
 		        ((SimulationPanel)inner).resize(size, size);
 
-		    	
-		        
-		        
-		        //((SimulationPanel)inner).resize(newWidth, newHeight);
-
-		        
 		        inner.revalidate();
 		        inner.repaint();
 		    }
@@ -403,6 +359,30 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		
 	}
+	
+	private void resetUiControls() {
+
+	    // 1. GUI ‑ suwaki, comboboxy, etykiety
+	    lista.setSelectedIndex(0);    // „Sand”
+	    lista.setEnabled(true);
+	    numbSrc.setSelectedIndex(0);             // 1 źródło
+	    numbSrc.setEnabled(true);
+	    slider.setValue(0);                      // 0 Hz
+	    powerSlider.setValue(50);                // 50 MW
+	    freq.setText("frequency: 0 Hz");
+	    pow.setText("Excavation power: 50 MW");
+	    onOff.setText("ON");
+	    
+	    // 2. flagi logiki symulacji
+	    gen = false;                    // wyłącz generator terenu
+	    on[0] = false;                    // własna flaga ON/OFF
+
+	    // 3. aktualizacja bieżących zmiennych używanych przez SimulationPanel
+	    currentWsp   = wspolczynniki[0];
+	    numbSource   = 1;
+	    currentFreq  = 0;
+	}
+
 
 
 	
