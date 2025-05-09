@@ -10,7 +10,6 @@ import javax.swing.SwingUtilities;
 
 public class MainPanel extends JFrame {
 
-	//MB+
 	private static final long serialVersionUID = 1L;
 
 	static JPanel homePanel, centre;
@@ -24,7 +23,6 @@ public class MainPanel extends JFrame {
 		card = new CardLayout(5, 5);
 		homeContainer = new JPanel(card);
 		homeContainer.setBackground(Color.white);
-		//homeContainer.setMaximumSize(new Dimension(900, 600));
 		
 	    welcomePanel = new WelcomePanel();
 	    homeContainer.add(welcomePanel, "Welcome Panel");
@@ -63,8 +61,7 @@ public class MainPanel extends JFrame {
 	    
 	    gamePanel = new GamePanel();
 	    homeContainer.add(gamePanel, "Game Panel");
-	    
-	    //gamePanel.back.addActionListener(e -> card.show(homeContainer, "Welcome Panel"));
+
 	    //MK - modyfikuje zeby slidery w gamepanel wracaly do poczatkowych wartosci po powrocie do poczatku
 	    gamePanel.back.addActionListener(e -> {
 	        card.show(homeContainer, "Welcome Panel");
@@ -72,8 +69,6 @@ public class MainPanel extends JFrame {
 	        gamePanel.slider.setValue(0);
 	        gamePanel.powerSlider.setValue(50);
 	    });
-
-
 	    
 	    frame.add(homeContainer);
 	    card.show(homeContainer, "Welcome Panel");
@@ -85,9 +80,7 @@ public class MainPanel extends JFrame {
 	    frame.setVisible(true);
 	}
 
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 	    SwingUtilities.invokeLater(MainPanel::new);
 	}
-	//MB-
 }

@@ -11,19 +11,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-
-
-
 public class GamePanel extends JPanel implements GameInterface
 {
 
+	/**
+	 * @author 48533
+	 * @author Michał Kysiak
+	 */
 	private static final long serialVersionUID = 1L;
 	
 	private JPanel innerPanel, functional, data, p, p2, pSource, controlPanel, squareWrapper;
 	protected JButton back, onOff, exit, reset, generate, genFlip; 
 	private String teren[] = {"Sand", "Granite", "Limestone"};
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
-	private double wspolczynniki[] = {0.996, 0.700, 0.30}; //tłumienie
 	protected double currentWsp;
 	protected static double currentFreq;
 	private int numbSource;
@@ -33,15 +33,13 @@ public class GamePanel extends JPanel implements GameInterface
 	private int size = 100, terrainClusters = 1, clusterSize = 5;
 	private SimulationPanel inner;
 	private final TerrainGeneration terrainGen;
-	private boolean gen = false;
-	private boolean[] on = {false};  //flaga do przechowywania stanu
+	private boolean gen = true; //flaga do generowania terenu
+	private boolean on = false;  //flaga do przechowywania stanu
 	
 	public GamePanel() {
 		
 		super(new BorderLayout());
 		
-		//MK+
-		lista = new JComboBox<>(teren); //przeniesione tutaj
 		controlPanel = new JPanel(); 
 		controlPanel.setLayout(new FlowLayout());
 		back = new JButton("Back"); 
@@ -49,13 +47,6 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		genFlip = new JButton("Enable/disable generation");
 		genFlip.setMinimumSize(new Dimension(70, 25));
-		genFlip.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				gen = !gen;
-			}	
-		});
-		
 		
 		reset = new JButton("Reset");
 		reset.setMinimumSize(new Dimension(70, 25));
@@ -64,12 +55,11 @@ public class GamePanel extends JPanel implements GameInterface
 			inner.resetState();
 			resetUiControls();
 
-		    //inner.setDamping(currentWsp);
 		    inner.setMaxSources(numbSource);
 		    inner.setFreq(currentFreq);
 	
-		    inner.setAddEnabled(on[0]);  
-		    inner.setSimRunning(on[0]);
+		    inner.setAddEnabled(on);  
+		    inner.setSimRunning(on);
 		});
 
 		
@@ -77,6 +67,40 @@ public class GamePanel extends JPanel implements GameInterface
 		exit.setMinimumSize(new Dimension(70, 25));
 		exit.addActionListener(e -> System.exit(0));
 		
+		
+		functional = new JPanel();
+		functional.setLayout(new BoxLayout(functional, BoxLayout.Y_AXIS));
+		functional.setPreferredSize(new Dimension(250, 400));
+		functional.setBackground(Color.ORANGE);
+		
+		field = new JLabel("Field: ");
+		functional.setBorder(BorderFactory.createTitledBorder(
+	                BorderFactory.createLineBorder(Color.BLACK),
+	                "Funcionalities",
+	                TitledBorder.CENTER,
+	                TitledBorder.TOP,
+	                new Font("Arial", Font.BOLD, 14),
+	                Color.BLACK
+	        ));
+		
+		lista = new JComboBox<>(teren); //przeniesione tutaj
+		//ustalamy renderer z wyśrodkowanym tekstem
+		DefaultListCellRenderer renderer = new DefaultListCellRenderer();
+		renderer.setHorizontalAlignment(SwingConstants.CENTER); // wyśrodkuj poziomo
+		lista.setRenderer(renderer);
+		lista.setBackground(Color.WHITE);
+		field.setLabelFor(lista);
+		
+		p = new JPanel();
+		p.setLayout(new GridLayout(2,1));
+		p.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
+		p.add(field);
+		field.setHorizontalAlignment(SwingConstants.CENTER);
+		field.setVerticalAlignment(SwingConstants.CENTER);
+		p.add(lista);
+		functional.add(p);
+		functional.add(Box.createRigidArea(new Dimension(250, 20)));
+
 		//przycisk generowania terenu o wybranym aktualnie typie
 		generate = new JButton("Generate chosen terrain");
 		generate.setMinimumSize(new Dimension(70, 25));
@@ -103,8 +127,6 @@ public class GamePanel extends JPanel implements GameInterface
 		FunctAndConst.buttonStyling(exit, new Color(240, 248, 255), new Color(128, 0, 0));
 		FunctAndConst.buttonStyling(generate, new Color(240, 248, 255), new Color(128, 0, 0));
 		
-		//MK-
-		
 		innerPanel = new JPanel();
 		innerPanel.setBackground(Color.orange);
 		innerPanel.setLayout(new BorderLayout());		
@@ -118,14 +140,7 @@ public class GamePanel extends JPanel implements GameInterface
 		Border ramka = BorderFactory.createLineBorder(Color.black, 3);
 		inner.setBorder(BorderFactory.createCompoundBorder(padding, ramka));
 		
-		functional = new JPanel();
-		functional.setLayout(new BoxLayout(functional, BoxLayout.Y_AXIS));
-		functional.setPreferredSize(new Dimension(250, 400));
-		functional.setBackground(Color.ORANGE);
-		
-		
 
-		//innerPanel.add(inner , BorderLayout.CENTER);
 		squareWrapper = new JPanel() {
 			private static final long serialVersionUID = 1L;
 
@@ -152,45 +167,6 @@ public class GamePanel extends JPanel implements GameInterface
 		this.add(innerPanel, BorderLayout.CENTER);
 		this.add(functional, BorderLayout.EAST);
 		
-		field = new JLabel("Field: ");
-		functional.setBorder(BorderFactory.createTitledBorder(
-	                BorderFactory.createLineBorder(Color.BLACK),
-	                "Funcionalities",
-	                TitledBorder.CENTER,
-	                TitledBorder.TOP,
-	                new Font("Arial", Font.BOLD, 14),
-	                Color.BLACK
-	        ));
-
-				
-		//ustalamy renderer z wyśrodkowanym tekstem
-		DefaultListCellRenderer renderer = new DefaultListCellRenderer();
-		renderer.setHorizontalAlignment(SwingConstants.CENTER); // wyśrodkuj poziomo
-		lista.setRenderer(renderer);
-		lista.setBackground(Color.WHITE);
-	
-		
-		ActionListener terenListener = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				int index = lista.getSelectedIndex(); //wybieram indeks z tablicy teren
-				currentWsp = wspolczynniki[index]; //wybieram wspolczynnik odpowiadający indeksowi
-				//((SimulationPanel)inner).setDamping(currentWsp);
-				}
-		};
-		lista.addActionListener(terenListener);
-		field.setLabelFor(lista);
-		
-		p = new JPanel();
-		p.setLayout(new GridLayout(2,1));
-		p.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
-		p.add(field);
-		field.setHorizontalAlignment(SwingConstants.CENTER);
-		field.setVerticalAlignment(SwingConstants.CENTER);
-		p.add(lista);
-		functional.add(p);
-		functional.add(Box.createRigidArea(new Dimension(250, 20)));
-
 		
 		//okienko z wyborem zródeł
 		pSource = new JPanel(new GridLayout(2,1));
@@ -209,9 +185,8 @@ public class GamePanel extends JPanel implements GameInterface
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int index = ((JComboBox<?>) e.getSource()).getSelectedIndex();
-				//int index = lista.getSelectedIndex(); //wybieram indeks z tablicy teren
 				numbSource = index + 1; //wybieram wspolczynnik odpowiadający indeksowi
-				((SimulationPanel)inner).setMaxSources(numbSource);
+				inner.setMaxSources(numbSource);
 				
 				}
 			};
@@ -246,20 +221,18 @@ public class GamePanel extends JPanel implements GameInterface
 		slider.setMajorTickSpacing(200);
 		
 		
-		//ustawienia częstotliwości - tu setFreq
+		//ustawienia częstotliwości fali 
         slider.addChangeListener(new ChangeListener() {
            @Override
            public void stateChanged(ChangeEvent e) {
                currentFreq = slider.getValue();
                freq.setText(String.valueOf("frequency: " + currentFreq + " Hz"));
-               ((SimulationPanel)inner).setFreq(currentFreq);
+               inner.setFreq(currentFreq);
             }
         });
         p2.add(freq, BorderLayout.NORTH);
         p2.add(slider, BorderLayout.CENTER);
        
-        
-        
         functional.add(p2);
         functional.add(Box.createRigidArea(new Dimension(250,20)));
 		
@@ -268,27 +241,22 @@ public class GamePanel extends JPanel implements GameInterface
 		data.setBorder(BorderFactory.createLoweredSoftBevelBorder());
 		data.setBackground(Color.WHITE);
 		
-		//MK+
 		data1 = new JLabel("Time elapsed: 0.00 s");
 		data2 = new JLabel("Harvested spice: 0.00 t");
 		
-		
-		
-		
-		
-		
-		//GUZIK ON -> OFF
-		onOff = new JButton("ON");
+	
+		//GUZIK RUN -> PAUSe
+		onOff = new JButton("RUN");
 		FunctAndConst.buttonStyling(onOff, Color.black, new Color(255, 248, 220));
 
 		onOff.addActionListener(e -> {
 			try {
 				if(currentFreq == 0) throw new MyException("Frequency value is zero!");
 				
-			on[0] = !on[0];
-		    ((SimulationPanel)inner).setAddEnabled(on[0]); // włączamy/wyłączamy możliwość dodawania
-		    ((SimulationPanel)inner).setSimRunning(on[0]); //wlączamy symulacje
-		    onOff.setText(on[0] ? "OFF" : "ON"); 
+			on = !on;
+			gen = !gen;
+		    inner.setSimRunning(on); //wlączamy symulacje
+		    onOff.setText(on ? "PAUSE" : "RUN"); 
 				
 		    
 			} catch (MyException ex) {
@@ -296,7 +264,6 @@ public class GamePanel extends JPanel implements GameInterface
 			}
 		});
 
-		
 		
 		//SUWAK MOCY
 		powerSlider = new JSlider(JSlider.HORIZONTAL, 25, 75, 50);
@@ -319,16 +286,12 @@ public class GamePanel extends JPanel implements GameInterface
             }
         });
 		
-		
-			
 		data.add(pow);
 		data.add(powerSlider);
 		data.add(data1);
 		data.add(data2);
 		data.add(onOff);
-		
-		//MK-
-		
+
 		functional.add(data);
 		
 		p.setMaximumSize(new Dimension(250, 60));
@@ -336,10 +299,7 @@ public class GamePanel extends JPanel implements GameInterface
 		p2.setMaximumSize(new Dimension(250, 80));
 		data.setMaximumSize(new Dimension(240, 250));
 		
-		
-		
 		//kod poniżej zapewnia stałe proporcje panelu symulacji
-	
 		this.addComponentListener(new java.awt.event.ComponentAdapter() {
 		    @Override
 		    public void componentResized(java.awt.event.ComponentEvent e) 
@@ -353,12 +313,11 @@ public class GamePanel extends JPanel implements GameInterface
 		    }
 		});
 		
-		
 	}
 	
 	private void resetUiControls() {
 
-	    // 1. GUI ‑ suwaki, comboboxy, etykiety
+	    //suwaki, comboboxy, etykiety
 	    lista.setSelectedIndex(0);    // „Sand”
 	    lista.setEnabled(true);
 	    numbSrc.setSelectedIndex(0);             // 1 źródło
@@ -367,19 +326,15 @@ public class GamePanel extends JPanel implements GameInterface
 	    powerSlider.setValue(50);                // 50 MW
 	    freq.setText("frequency: 0 Hz");
 	    pow.setText("Excavation power: 50 MW");
-	    onOff.setText("ON");
+	    onOff.setText("RUN");
 	    
-	    // 2. flagi logiki symulacji
-	    gen = false;                    // wyłącz generator terenu
-	    on[0] = false;                    // własna flaga ON/OFF
+	    //flagi symulacji
+	    gen = true;                    // wyłącz generator terenu
+	    on = false;                    // własna flaga ON/OFF
 
-	    // 3. aktualizacja bieżących zmiennych używanych przez SimulationPanel
-	    currentWsp   = wspolczynniki[0];
+	    //aktualizacja bieżących zmiennych
 	    numbSource   = 1;
 	    currentFreq  = 0;
 	}
-
-
-
 	
 }

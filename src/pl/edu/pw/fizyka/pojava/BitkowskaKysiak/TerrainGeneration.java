@@ -8,6 +8,10 @@ import java.util.Random;
 import java.util.Set;
 
 public class TerrainGeneration {
+	
+	/**
+	 * @author Michał Kysiak
+	 */
 
 	  	private final SimulationPanel panel;
 		//for methods tied to terrain generation 

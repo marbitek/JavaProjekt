@@ -19,9 +19,12 @@ import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 
 public class WelcomePanel extends JPanel{
-	//MB+
+
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @author 48533
+	 */
 	protected JButton start;
 	private JPanel center, nickPanel, startPanel;
 	private JLabel welcome, nickname;
@@ -45,28 +48,20 @@ public class WelcomePanel extends JPanel{
 		center = new JPanel();
 		center.setLayout(new BorderLayout()); //MK grid layout powinien zalatwic sprawe
 		center.setOpaque(false); 
-		//MB-
 		
-		
-		
-		//MB+
 		BufferedImage dune = null;
 		try {
 			dune = ImageIO.read(new File("src\\dune3.jpg")); //MK
-			//dune = ImageIO.read(new File("C:\\Users\\48533\\Desktop\\Studia\\dune2.jpg"));
-			//dune = ImageIO.read(new File("C:\\Users\\48533\\Desktop\\Studia\\dune.jpg"));
-		} catch (IOException e) 
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		JLabel picLabel = new JLabel(new ImageIcon(dune));
 		center.add(picLabel, BorderLayout.CENTER);  //MK
 		insertNick = new JTextField(20);
 		insertNick.setPreferredSize(new Dimension(200, 30)); 
 		
 		nickname = new JLabel("Please enter your nickname:");
-		
-		//MK+
 		nickname.setPreferredSize(new Dimension(165, 20)); 
 		nickname.setMinimumSize(new Dimension(165, 20));
 		
@@ -88,7 +83,6 @@ public class WelcomePanel extends JPanel{
 		start.setFont(new Font("Lucida Handwriting", Font.ITALIC, 24));
 		FunctAndConst.buttonStyling(start, new Color(240, 248, 255), new Color(128, 0, 0));
 		
-		//MK
 		nickname.setAlignmentX(Component.CENTER_ALIGNMENT);
 		insertNick.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
@@ -97,9 +91,4 @@ public class WelcomePanel extends JPanel{
 		this.add(startPanel, BorderLayout.SOUTH); 
 	}
 
-	public static void main(String[] args) 
-	{
-		
-	}
-//MB-
 }

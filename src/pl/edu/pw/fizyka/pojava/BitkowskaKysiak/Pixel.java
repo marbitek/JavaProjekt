@@ -4,6 +4,11 @@ import java.awt.*;
 import java.util.List;
 
 public class Pixel {
+	
+	/**
+	 * @author Michał Kysiak - głównie
+	 * @author 48533 - drobne poprawki
+	 */
 	private Color baseColor;
 	private int x, y, gridX = 0, gridY = 0;
 	private double terrainSpeedModifier = 1.0; //dla powierza
@@ -11,6 +16,16 @@ public class Pixel {
 	String[] terrainTypes = {"Sand", "Granite", "Limestone", "Air"};
 	String thisTerrainType = terrainTypes[0];
 	
+	
+	/**
+	 * konstruktor klasy Pixel
+	 * @param x
+	 * @param y
+	 * @param c
+	 * @param terrainSpecificator
+	 * @param gX
+	 * @param gY
+	 */
     public Pixel(int x, int y, Color c, int terrainSpecificator, int gX, int gY) 
     {
         this.x = x;
@@ -26,26 +41,39 @@ public class Pixel {
         	thisTerrainType = terrainTypes[3];  // „Air”
         }
         
-        //prędkość rozchodzenia się dzwięku i w danym ośrodku 
+        //prędkość rozchodzenia się dzwięku w danym ośrodku i jego tłumienie
         if (thisTerrainType.equals("Sand")) {
-            terrainSpeedModifier = 1.2;  // for example, slower wave speed on sand
+            terrainSpeedModifier = 1.2; 
             setDampLocal(0.996);
         } else if (thisTerrainType.equals("Granite")) {
-            terrainSpeedModifier = 1.6;  // faster wave speed on granite
+            terrainSpeedModifier = 1.6;  
             setDampLocal(0.796);
         } else if (thisTerrainType.equals("Limestone")) {
-            terrainSpeedModifier = 1.4;  // moderate wave speed on limestone
+            terrainSpeedModifier = 1.4; 
             setDampLocal(0.696);
         } else if (thisTerrainType.equals("Air")) {
-            terrainSpeedModifier = 1;  // dzwięk w powietrzu
+            terrainSpeedModifier = 1;  
             setDampLocal(1);
         }
     }
     
+    /**
+     * Setter wygaszania
+     * @param damp
+     */
     public void setDampLocal(double damp) {this.dampLocal = damp;}
     
+    /**
+     * Getter wygaszania
+     * @return dampLocal
+     */
     public double getDampLocal() { return dampLocal; }
 
+    /**
+     * Metoda kolorowania pixela
+     * @param g
+     * @param size
+     */
     public void draw(Graphics g, int size) {
         if (thisTerrainType.equals("Sand")) {
             g.setColor(FunctAndConst.SAND);
@@ -65,7 +93,14 @@ public class Pixel {
 
     public void setY(int y) { this.y = y;}
     
-    //otrzymanie pixela o zadanych koordynatach
+    
+    /**
+     * otrzymanie pixela o zadanych koordynatach
+     * @param x
+     * @param y
+     * @param pixelGrid
+     * @return
+     */
   	public Pixel getPxl(int x, int y, List<List<Pixel>> pixelGrid ) {
   		Pixel p = pixelGrid.get(y).get(x);
   		return p;
