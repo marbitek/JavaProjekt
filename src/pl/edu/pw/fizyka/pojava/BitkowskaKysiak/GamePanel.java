@@ -29,7 +29,7 @@ public class GamePanel extends JPanel implements GameInterface
 	private int numbSource;
 	private JComboBox<String> numbSrc, lista;
 	private JLabel  field, freq, data1, data2, source, pow;
-	protected JSlider slider, powerSlider, reduceSlider;
+	protected JSlider slider, powerSlider, reduceSlider, clusterSlider, sizeSlider, offshootsSlider;
 	private int size = 500, terrainClusters = 1, offshoots = 10;
 	private SimulationPanel inner;
 	private final TerrainGeneration terrainGen;
@@ -75,6 +75,14 @@ public class GamePanel extends JPanel implements GameInterface
 			    
 			    gen = true;
 			    on = false;
+			    
+			    FunctAndConst.enableButton(generate, FunctAndConst.buttonBg, FunctAndConst.buttonFg);
+			    FunctAndConst.enableButton(back, FunctAndConst.buttonBg, FunctAndConst.buttonFg);
+			    
+	            clusterSlider.setValue(clusterSlider.getMinimum());   
+	            sizeSlider.setValue(sizeSlider.getMinimum());  
+	            offshootsSlider.setValue(offshootsSlider.getMinimum());
+	            reduceSlider.setValue(reduceSlider.getMinimum());     
 			    
 				} catch(Exception ex)
 				{
@@ -280,6 +288,8 @@ public class GamePanel extends JPanel implements GameInterface
 		    lista.setEnabled(false);
 		    //lista.setEnabled(false);
 		    onOff.setText(on ? "PAUSE" : "RUN"); 
+		    FunctAndConst.disableButton(generate);
+		    FunctAndConst.disableButton(back);
 			
 		    if(onOff.getText().equals("PAUSE")) inner.pauseSim(true);
 
@@ -349,14 +359,14 @@ public class GamePanel extends JPanel implements GameInterface
 		genPanel.add(p);
 
 		JLabel clusterLabel = new JLabel("Generated clusters:");
-		JSlider clusterSlider = new JSlider(1, 10, terrainClusters);
+		clusterSlider = new JSlider(1, 10, 1);
 		clusterSlider.setMajorTickSpacing(1);
 		clusterSlider.setPaintTicks(true);
 		clusterSlider.setPaintLabels(true);
 		clusterSlider.addChangeListener(e -> terrainClusters = clusterSlider.getValue());
 
 		JLabel sizeLabel = new JLabel("Cluster Size:");
-		JSlider sizeSlider = new JSlider(1, 5, (int) clusterSizeParameter);
+		sizeSlider = new JSlider(1, 5, 1);
 		sizeSlider.setMajorTickSpacing(1);
 		sizeSlider.setPaintTicks(true);
 		sizeSlider.setPaintLabels(true);
@@ -371,9 +381,9 @@ public class GamePanel extends JPanel implements GameInterface
 		    }
 		});
 
-		// Number of offshoots (max 20)
+		
 		JLabel offshootsLabel = new JLabel("Number of offshoots:");
-		JSlider offshootsSlider = new JSlider(0, 20, offshoots);
+		offshootsSlider = new JSlider(0, 20, 0);
 		offshootsSlider.setMajorTickSpacing(5);
 		offshootsSlider.setPaintTicks(true);
 		offshootsSlider.setPaintLabels(true);
@@ -384,9 +394,9 @@ public class GamePanel extends JPanel implements GameInterface
 		    }
 		});
 
-		// Parameter reduction (max 3, must be < clusterSizeParameter)
+		
 		JLabel reduceLabel = new JLabel("Reduction of offshoots:");
-		reduceSlider = new JSlider(1, 3, (int) parameterReduction);
+		reduceSlider = new JSlider(1, 3, 1);
 		reduceSlider.setMajorTickSpacing(1);
 		reduceSlider.setPaintTicks(true);
 		reduceSlider.setPaintLabels(true);
