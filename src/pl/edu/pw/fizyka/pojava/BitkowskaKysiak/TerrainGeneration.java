@@ -38,7 +38,7 @@ public class TerrainGeneration {
 		 * @param gridSize
 		 * @param generate
 		 */
-		public void generateTerrain(String type, int clusterNumber, double clusterSizeParameter, int gridSize, boolean generate, double parameterReduction) {
+		public void generateTerrain(String type, int clusterNumber, double clusterSizeParameter, int gridSize, boolean generate, double parameterReduction, int offshoots) {
 			
 			
 			
@@ -112,8 +112,9 @@ public class TerrainGeneration {
 			        
 			        if(a > 0)
 			        {
-			        for(int u = 0; u < n; u++)
+			        for(int u = 0; u < offshoots; u++)
 			        {
+			        	if (periphery.isEmpty()) continue;
 			        	onePxl = periphery.get(rand.nextInt(periphery.size()));
 				        prevIteration.clear();
 				        prevIteration.add(onePxl);

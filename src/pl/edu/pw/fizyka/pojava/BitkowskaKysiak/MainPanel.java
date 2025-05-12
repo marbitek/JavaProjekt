@@ -18,7 +18,8 @@ public class MainPanel extends JFrame {
 	static GamePanel gamePanel;
 	static CardLayout card;
 	
-	public MainPanel()  {
+	public MainPanel()  
+	{
 		JFrame frame = new JFrame("Dune Harmonics");	
 		card = new CardLayout(5, 5);
 		homeContainer = new JPanel(card);
