@@ -15,8 +15,8 @@ public class TerrainGeneration {
 
 	  	private final SimulationPanel panel;
 		//for methods tied to terrain generation 
-		protected int xModif, yModif, sidestepX, sidestepY, counter;
-		protected float terrainChance = (float) 0.35; //chance that a random pixel will be a part of generated terrain
+		protected int xModif, yModif, sidestepX, sidestepY, counter, n = 5;
+		protected double a = 1;
 		
 		private Pixel[] adjacentPixels; //pixele sąsiadujące z onePxl
 		private int adjacentsInNewTerrain; //liczba pixeli w sąsiedztwie należąca do nowego terenu
@@ -34,17 +34,21 @@ public class TerrainGeneration {
 		 * Funkcja generująca w losowych miejscach dany typ terenu
 		 * @param type
 		 * @param clusterNumber
-		 * @param clusterMaxSize
+		 * @param clusterSizeParameter
 		 * @param gridSize
 		 * @param generate
 		 */
-		public void generateTerrain(String type, int clusterNumber, int clusterMaxSize, int gridSize, boolean generate) {
+		public void generateTerrain(String type, int clusterNumber, double clusterSizeParameter, int gridSize, boolean generate, double parameterReduction) {
+			
+			
 			
 			if(generate) {
 				System.out.println("Terrain generation called");
 				Set<Pixel> newTerrain = new HashSet<>();
 			    Set<Pixel> prevIteration = new HashSet<>();
 			    Set<Pixel> thisIteration = new HashSet<>();
+			    List<Pixel> periphery = new ArrayList<>();
+			    List<Pixel> subSources = new ArrayList<>();
 		
 			    int randX, randY, pixelsAdded = 0, pixelsRemoved = 0;
 			    Color terrainColor = switch (type) {
@@ -60,6 +64,8 @@ public class TerrainGeneration {
 			    
 		
 			    for (int i = 0; i < clusterNumber; i++) {
+			    	a = clusterSizeParameter;
+			    	
 			        randX = rand.nextInt(gridSize);
 			        randY = rand.nextInt(gridSize);
 		
@@ -72,10 +78,13 @@ public class TerrainGeneration {
 			        int counter = 1;
 			        boolean stopCondition = false;
 		
+
+			        	
+			        
 			        do {
 			            for (Pixel px : prevIteration) {   
 		
-			                Pixel[] adjacent = turnAdjacent(px, 1/Math.sqrt(counter), 1);
+			                Pixel[] adjacent = turnAdjacent(px, a/Math.sqrt(counter), 1);
 			                for (Pixel p : adjacent) {
 			                    if (p != null && !newTerrain.contains(p)) {
 			                        thisIteration.add(p);
@@ -84,14 +93,60 @@ public class TerrainGeneration {
 			            }
 		
 			            boolean empty = thisIteration.isEmpty();
+			            if (empty) 
+			            	{
+			            		stopCondition = true;
+			            		periphery = new ArrayList<>(prevIteration);
+			            		if (periphery.isEmpty()) continue;
+			            	}
 			            newTerrain.addAll(thisIteration);
 			            prevIteration = new HashSet<>(thisIteration);
 			            thisIteration.clear();
 			            counter++;
 		
-			            if (empty) stopCondition = true;
+			            
 		
 			        } while (!stopCondition);
+			        
+			        a -= parameterReduction;
+			        
+			        if(a > 0)
+			        {
+			        for(int u = 0; u < n; u++)
+			        {
+			        	onePxl = periphery.get(rand.nextInt(periphery.size()));
+				        prevIteration.clear();
+				        prevIteration.add(onePxl);
+				        stopCondition = false;
+				        counter = 1;
+				        
+				        do {
+				            for (Pixel px : prevIteration) {
+				                Pixel[] adjacent = turnAdjacent(px, a / Math.sqrt(counter), 1);
+				                for (Pixel p : adjacent) {
+				                    if (p != null && !newTerrain.contains(p)) {
+				                        thisIteration.add(p);
+				                    }
+				                }
+				            }
+
+				            if (thisIteration.isEmpty()) {
+				                stopCondition = true;
+				            }
+
+				            newTerrain.addAll(thisIteration);
+				            prevIteration = new HashSet<>(thisIteration);
+				            thisIteration.clear();
+				            counter++;
+
+				        } while (!stopCondition);
+				        
+			        }
+			        }
+			        
+
+			        
+			        
 			    }
 			    
 				//usuwamy pixele nowego terenu nieposiadające sąsiadów

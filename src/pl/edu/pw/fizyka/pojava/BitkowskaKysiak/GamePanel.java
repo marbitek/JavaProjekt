@@ -20,7 +20,7 @@ public class GamePanel extends JPanel implements GameInterface
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private JPanel innerPanel, functional, data, p, p2, pSource, controlPanel, squareWrapper;
+	private JPanel innerPanel, functional, data, p, p2, pSource, controlPanel, squareWrapper, genPanel;
 	protected JButton back, onOff, exit, reset, generate, genFlip; 
 	private String teren[] = {"Sand", "Granite", "Limestone"};
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
@@ -30,11 +30,12 @@ public class GamePanel extends JPanel implements GameInterface
 	private JComboBox<String> numbSrc, lista;
 	private JLabel  field, freq, data1, data2, source, pow;
 	protected JSlider slider, powerSlider;
-	private int size = 100, terrainClusters = 1, clusterSize = 5;
+	private int size = 500, terrainClusters = 1;
 	private SimulationPanel inner;
 	private final TerrainGeneration terrainGen;
 	private boolean gen = true; //flaga do generowania terenu
 	private boolean on = false;  //flaga do przechowywania stanu
+	private double parameterReduction = 1, clusterSizeParameter = 3;
 	
 	public GamePanel() {
 		
@@ -68,9 +69,12 @@ public class GamePanel extends JPanel implements GameInterface
 
 			    inner.setMaxSources(numbSource);
 			    inner.setFreq(currentFreq);
-		
+			    
+			    numbSrc.setEnabled(true);
+			    lista.setEnabled(true);
 			    inner.setAddEnabled(on);  
 			    inner.setSimRunning(on);
+			    inner.pauseSim(false);
 			    
 				} catch(Exception ex)
 				{
@@ -126,7 +130,7 @@ public class GamePanel extends JPanel implements GameInterface
 			public void actionPerformed(ActionEvent e) {
 				Object selected = (String) lista.getSelectedItem();
 				String text_of_selected = selected.toString();
-				terrainGen.generateTerrain(text_of_selected,terrainClusters,clusterSize, size, gen);		
+				terrainGen.generateTerrain(text_of_selected,terrainClusters,clusterSizeParameter, size, gen, parameterReduction);		
 			}
 		});
 		
@@ -273,8 +277,14 @@ public class GamePanel extends JPanel implements GameInterface
 			on = !on;
 			gen = !gen;
 		    inner.setSimRunning(on); //wlączamy symulacje
+		    numbSrc.setEnabled(false);
+		    lista.setEnabled(false);
+		    //lista.setEnabled(false);
 		    onOff.setText(on ? "PAUSE" : "RUN"); 
-				
+			
+		    if(onOff.getText().equals("PAUSE")) inner.pauseSim(true);
+
+		    
 		    
 			} catch (MyException ex) {
 				JOptionPane.showMessageDialog(GamePanel.this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -330,6 +340,8 @@ public class GamePanel extends JPanel implements GameInterface
 		    }
 		});
 		
+		
+		//kod panelu po lewej z ustawieniami generacji terenu
 	}
 	
 	private void resetUiControls() {

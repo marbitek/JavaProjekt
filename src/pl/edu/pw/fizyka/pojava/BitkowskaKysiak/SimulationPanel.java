@@ -45,7 +45,7 @@ public class SimulationPanel extends JPanel implements Runnable
 	protected boolean addEnabled = false; //flaga czy dodawać zródło 
 	protected boolean generate = false; //flaga czy generować teren, na razie
 	protected boolean simRunning = false; //flaga czy symulacja wogole działa
-
+	protected boolean simPaused = false; //flaga czy symulacje zapauzowano
 	
 	/**
 	 * Klasa Źródło fali
@@ -89,6 +89,11 @@ public class SimulationPanel extends JPanel implements Runnable
      */
     public void setAddEnabled(boolean addEnabled) {
         this.addEnabled = addEnabled;
+    }
+    
+    public void pauseSim(boolean pause)
+    {
+    	this.simPaused = pause;
     }
     
     /**
@@ -149,7 +154,7 @@ public class SimulationPanel extends JPanel implements Runnable
         for (int y = 0; y < y_dim; y++) {
         	pixelRow = new ArrayList<>();
             for (int x = 0; x < x_dim; x++) {
-                Pixel p = new Pixel(x, y, Color.WHITE, 3, x, y);
+                Pixel p = new Pixel(x, y, FunctAndConst.SAND, 3, x, y);
                 pixelRow.add(p);
                 paintPxl(x, y, p.getClr());
             }
@@ -162,6 +167,7 @@ public class SimulationPanel extends JPanel implements Runnable
             public void mousePressed(MouseEvent e) {
             	if (simRunning) return;
             	if (selectedSources.size() >= maxSources) return; //warunek na liczbe zrodel
+            	if(simPaused) return;
             	
             	//poprawne mapowanie kliknięcia
                 int gx = e.getX() * x_dim / getWidth();
@@ -349,10 +355,10 @@ public class SimulationPanel extends JPanel implements Runnable
         for (int y = 0; y < y_dim; y++) {
             List<Pixel> row = new ArrayList<>();
             for (int x = 0; x < x_dim; x++) {
-                Pixel p = new Pixel(x, y, Color.WHITE, 3, x, y);
+                Pixel p = new Pixel(x, y, FunctAndConst.SAND, 3, x, y);
                 row.add(p);
                 // od razu nanieś biały piksel
-                paintPxl(x, y, Color.WHITE);
+                paintPxl(x, y, FunctAndConst.SAND);
             }
             pixelGrid.add(row);
         }
