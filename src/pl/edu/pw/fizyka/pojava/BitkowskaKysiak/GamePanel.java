@@ -50,16 +50,33 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		reset = new JButton("Reset");
 		reset.setMinimumSize(new Dimension(70, 25));
-		reset.addActionListener(e -> {
-			
-			inner.resetState();
-			resetUiControls();
+		
+		reset.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+		            if ("PAUSE".equals(onOff.getText())) {
+		                onOff.doClick();  
+		            }
+				
+				inner.getSources().clear();
+				inner.pixelGrid.clear();
+				inner.resetState();
+				resetUiControls();
 
-		    inner.setMaxSources(numbSource);
-		    inner.setFreq(currentFreq);
-	
-		    inner.setAddEnabled(on);  
-		    inner.setSimRunning(on);
+			    inner.setMaxSources(numbSource);
+			    inner.setFreq(currentFreq);
+		
+			    inner.setAddEnabled(on);  
+			    inner.setSimRunning(on);
+			    
+				} catch(Exception ex)
+				{
+					ex.printStackTrace();
+				}
+			}
 		});
 
 		

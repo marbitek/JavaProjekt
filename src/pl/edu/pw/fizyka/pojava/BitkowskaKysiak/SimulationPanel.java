@@ -68,6 +68,12 @@ public class SimulationPanel extends JPanel implements Runnable
         selectedSources.clear();
         repaint();
       }
+    
+    /**
+     * zwracanie listy zrodel
+     * @param getSrc
+     */
+    public List<Source> getSources(){return sources;};
      
     /**
      * ustawienia częstotliwości zrodla
@@ -188,7 +194,7 @@ public class SimulationPanel extends JPanel implements Runnable
      */
     private void addImpulse(Source s, double amplitude) {
     	
-        int r = 3;
+        int r = 2;
         long t = System.nanoTime(); //pobiera czas bierzący w nanosekundach
         double w = amplitude * Math.sin(2 * Math.PI * freq * (t * 1e-9)); //definicja fali kulistej
         //(t * 1e-9) zmiana na nanosekund na sekundy
