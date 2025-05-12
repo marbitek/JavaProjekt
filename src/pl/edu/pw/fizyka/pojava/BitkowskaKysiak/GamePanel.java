@@ -29,7 +29,7 @@ public class GamePanel extends JPanel implements GameInterface
 	private int numbSource;
 	private JComboBox<String> numbSrc, lista;
 	private JLabel  field, freq, data1, data2, source, pow;
-	protected JSlider slider, powerSlider;
+	protected JSlider slider, powerSlider, reduceSlider;
 	private int size = 500, terrainClusters = 1, offshoots = 10;
 	private SimulationPanel inner;
 	private final TerrainGeneration terrainGen;
@@ -119,7 +119,7 @@ public class GamePanel extends JPanel implements GameInterface
 		field.setHorizontalAlignment(SwingConstants.CENTER);
 		field.setVerticalAlignment(SwingConstants.CENTER);
 		p.add(lista);
-		functional.add(p);
+		//functional.add(p);
 		functional.add(Box.createRigidArea(new Dimension(250, 20)));
 
 		//przycisk generowania terenu o wybranym aktualnie typie
@@ -137,7 +137,7 @@ public class GamePanel extends JPanel implements GameInterface
 		controlPanel.add(back);
 		controlPanel.add(reset);
 		controlPanel.add(exit);
-		controlPanel.add(generate);
+		//controlPanel.add(generate);
 		controlPanel.setBackground(new Color(245, 222, 179));
 		
 		this.add(controlPanel, BorderLayout.SOUTH);
@@ -342,41 +342,65 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		//kod panelu po lewej z ustawieniami generacji terenu
 		genPanel = new JPanel();
-		genPanel.setLayout(new GridLayout(4, 2, 5, 5)); 
+		genPanel.setLayout(new BoxLayout(genPanel, BoxLayout.Y_AXIS)); 
 		genPanel.setOpaque(false);
 		genPanel.setBorder(BorderFactory.createTitledBorder("Terrain Gen Parameters"));
 
-		// Cluster count
-		JLabel clusterLabel = new JLabel("Number of clusters generated:");
+		genPanel.add(p);
+
+		JLabel clusterLabel = new JLabel("Generated clusters:");
 		JSlider clusterSlider = new JSlider(1, 10, terrainClusters);
 		clusterSlider.setMajorTickSpacing(1);
 		clusterSlider.setPaintTicks(true);
 		clusterSlider.setPaintLabels(true);
 		clusterSlider.addChangeListener(e -> terrainClusters = clusterSlider.getValue());
 
-		// Cluster size parameter
 		JLabel sizeLabel = new JLabel("Cluster Size:");
-		JSlider sizeSlider = new JSlider(1, 10, (int) clusterSizeParameter);
+		JSlider sizeSlider = new JSlider(1, 5, (int) clusterSizeParameter);
 		sizeSlider.setMajorTickSpacing(1);
 		sizeSlider.setPaintTicks(true);
 		sizeSlider.setPaintLabels(true);
-		sizeSlider.addChangeListener(e -> clusterSizeParameter = sizeSlider.getValue());
+		sizeSlider.addChangeListener(new ChangeListener() {
+		    @Override
+		    public void stateChanged(ChangeEvent e) {
+		        clusterSizeParameter = sizeSlider.getValue();
+		        if (parameterReduction >= clusterSizeParameter) {
+		            parameterReduction = clusterSizeParameter - 1;
+		            reduceSlider.setValue((int) parameterReduction);
+		        }
+		    }
+		});
 
-		// Offshoots
+		// Number of offshoots (max 20)
 		JLabel offshootsLabel = new JLabel("Number of offshoots:");
-		JSlider offshootsSlider = new JSlider(0, 50, offshoots);
-		offshootsSlider.setMajorTickSpacing(10);
+		JSlider offshootsSlider = new JSlider(0, 20, offshoots);
+		offshootsSlider.setMajorTickSpacing(5);
 		offshootsSlider.setPaintTicks(true);
 		offshootsSlider.setPaintLabels(true);
-		offshootsSlider.addChangeListener(e -> offshoots = offshootsSlider.getValue());
+		offshootsSlider.addChangeListener(new ChangeListener() {
+		    @Override
+		    public void stateChanged(ChangeEvent e) {
+		        offshoots = offshootsSlider.getValue();
+		    }
+		});
 
-		// Parameter reduction
+		// Parameter reduction (max 3, must be < clusterSizeParameter)
 		JLabel reduceLabel = new JLabel("Reduction of offshoots:");
-		JSlider reduceSlider = new JSlider(1, 10, (int) parameterReduction);
+		reduceSlider = new JSlider(1, 3, (int) parameterReduction);
 		reduceSlider.setMajorTickSpacing(1);
 		reduceSlider.setPaintTicks(true);
 		reduceSlider.setPaintLabels(true);
-		reduceSlider.addChangeListener(e -> parameterReduction = reduceSlider.getValue());
+		reduceSlider.addChangeListener(new ChangeListener() {
+		    @Override
+		    public void stateChanged(ChangeEvent e) {
+		        int newVal = reduceSlider.getValue();
+		        if (newVal >= clusterSizeParameter) {
+		            newVal = Math.max(1, (int) clusterSizeParameter - 1);
+		            reduceSlider.setValue(newVal);
+		        }
+		        parameterReduction = newVal;
+		    }
+		});
 
 		genPanel.add(clusterLabel); 
 		genPanel.add(clusterSlider);
@@ -386,9 +410,19 @@ public class GamePanel extends JPanel implements GameInterface
 		genPanel.add(offshootsSlider);
 		genPanel.add(reduceLabel); 
 		genPanel.add(reduceSlider);
+		
+		
+		generate.setAlignmentX(Component.CENTER_ALIGNMENT); 
+
+		generate.setMaximumSize(new Dimension(Integer.MAX_VALUE, generate.getPreferredSize().height));
+		generate.setPreferredSize(new Dimension(180, 30));
+		
+		genPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		genPanel.add(generate);
 
 		this.add(genPanel, BorderLayout.WEST);
-		genPanel.setPreferredSize(new Dimension(180, 200));
+		genPanel.setPreferredSize(new Dimension(220, 300));
 	}
 	
 	private void resetUiControls() {
