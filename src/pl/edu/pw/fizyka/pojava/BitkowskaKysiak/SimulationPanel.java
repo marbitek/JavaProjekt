@@ -47,6 +47,10 @@ public class SimulationPanel extends JPanel implements Runnable
 	protected boolean simRunning = false; //flaga czy symulacja wogole działa
 	protected boolean simPaused = false; //flaga czy symulacje zapauzowano
 	
+	//zmienne zwiazane z czasem
+	private long simulationStartTime = 0;
+	private long totalElapsedTime = 0;
+	
 	/**
 	 * Klasa Źródło fali
 	 */
@@ -101,18 +105,22 @@ public class SimulationPanel extends JPanel implements Runnable
      * @param simRunning
      */
     public void setSimRunning(boolean simRunning) {
-    	// jeśli przechodzimy z PAUSE→RUN, to przygotowujemy sources
         if (!this.simRunning && simRunning) {
+            resumeElapsedTime();
+
             sources.clear();
             for (Point p : selectedSources) {
                 sources.add(new Source(p.x, p.y));
             }
-            // możemy wyczyścić zaznaczenia, bo symulacja rusza
             selectedSources.clear();
+        } else if (this.simRunning && !simRunning) {
+            pauseElapsedTime();
         }
-    	this.simRunning = simRunning;
-    	repaint();
+
+        this.simRunning = simRunning;
+        repaint();
     }
+
     
     /**
      * konstruktor SimulationPanel
@@ -304,6 +312,39 @@ public class SimulationPanel extends JPanel implements Runnable
             }
         }
     }
+    
+    //metody zwiazane z zegarem
+    public long getElapsedMs() 
+    	{
+	        if (simRunning) 
+	        {
+	            return totalElapsedTime + (System.currentTimeMillis() - simulationStartTime);
+	        } else 
+	        	{
+	            	return totalElapsedTime;
+	        	}
+    }
+
+    public void resetElapsedTime() 
+    {
+        simulationStartTime = 0;
+        totalElapsedTime = 0;
+    }
+
+    public void pauseElapsedTime() 
+    {
+        if (simRunning) 
+        {
+            totalElapsedTime += System.currentTimeMillis() - simulationStartTime;
+        }
+    }
+
+    public void resumeElapsedTime() 
+    {
+        simulationStartTime = System.currentTimeMillis();
+    }
+    
+    
 
     /**
      * Funkcja kolorująca na dany kolor wskazany pixel

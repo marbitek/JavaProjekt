@@ -67,8 +67,6 @@ public class MainPanel extends JFrame {
 	    gamePanel.back.addActionListener(e -> {
 	        card.show(homeContainer, "Welcome Panel");
 	        WelcomePanel.insertNick.setText("");
-	        gamePanel.slider.setValue(0);
-	        gamePanel.powerSlider.setValue(50);
 	        gamePanel.reset.doClick(); //aktywacja resetu przy powrocie
 	    });
 	    

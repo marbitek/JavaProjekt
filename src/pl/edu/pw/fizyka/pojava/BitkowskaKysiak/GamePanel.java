@@ -59,6 +59,9 @@ public class GamePanel extends JPanel implements GameInterface
 		                onOff.doClick();  
 		            }
 				
+		        inner.resetElapsedTime();
+		        data1.setText("Time elapsed: 0.00 s");
+		            
 				inner.getSources().clear();
 				inner.pixelGrid.clear();
 				inner.resetState();
@@ -79,10 +82,16 @@ public class GamePanel extends JPanel implements GameInterface
 			    FunctAndConst.enableButton(generate, FunctAndConst.buttonBg, FunctAndConst.buttonFg);
 			    FunctAndConst.enableButton(back, FunctAndConst.buttonBg, FunctAndConst.buttonFg);
 			    
+			    slider.setValue(0);
+			    powerSlider.setValue(50);
+			    
 	            clusterSlider.setValue(clusterSlider.getMinimum());   
 	            sizeSlider.setValue(sizeSlider.getMinimum());  
 	            offshootsSlider.setValue(offshootsSlider.getMinimum());
 	            reduceSlider.setValue(reduceSlider.getMinimum());     
+	            
+
+
 			    
 				} catch(Exception ex)
 				{
@@ -433,6 +442,17 @@ public class GamePanel extends JPanel implements GameInterface
 
 		this.add(genPanel, BorderLayout.WEST);
 		genPanel.setPreferredSize(new Dimension(220, 300));
+		
+		//timer
+		Timer elapsedTimer = new Timer(100, new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        double seconds = inner.getElapsedMs() / 1000.0;
+		        data1.setText(String.format("Time elapsed: %.2f s", seconds));
+		    }
+		});
+		elapsedTimer.start();
+
 	}
 	
 	private void resetUiControls() {
