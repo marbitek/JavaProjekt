@@ -35,7 +35,8 @@ public class GamePanel extends JPanel implements GameInterface
 	private final TerrainGeneration terrainGen;
 	private boolean gen = true; //flaga do generowania terenu
 	private boolean on = false;  //flaga do przechowywania stanu
-	private double parameterReduction = 2, clusterSizeParameter = 3;
+	private double parameterReduction = 2, clusterSizeParameter = 3, number = 0;
+	private JTextField tField;
 	
 	public GamePanel() {
 		
@@ -56,14 +57,18 @@ public class GamePanel extends JPanel implements GameInterface
 				try
 				{
 		            if ("PAUSE".equals(onOff.getText())) {
-		                onOff.doClick();  
+		                //onOff.doClick();  
+		            	onOff.setText("RUN");
 		            }
 				
 		        inner.resetElapsedTime();
 		        data1.setText("Time elapsed: 0.00 s");
+		        tField.setEnabled(true);
+		        tField.setText("");
+		        number = 0;
 		            
 				inner.getSources().clear();
-				inner.pixelGrid.clear();
+				//inner.pixelGrid.clear();
 				inner.resetState();
 				resetUiControls();
 
@@ -87,8 +92,8 @@ public class GamePanel extends JPanel implements GameInterface
 			    
 	            clusterSlider.setValue(clusterSlider.getMinimum());   
 	            sizeSlider.setValue(sizeSlider.getMinimum());  
-	            offshootsSlider.setValue(offshootsSlider.getMinimum());
-	            reduceSlider.setValue(reduceSlider.getMinimum());     
+	            //offshootsSlider.setValue(offshootsSlider.getMinimum());
+	            //reduceSlider.setValue(reduceSlider.getMinimum());     
 	            
 
 
@@ -147,7 +152,7 @@ public class GamePanel extends JPanel implements GameInterface
 			public void actionPerformed(ActionEvent e) {
 				Object selected = (String) lista.getSelectedItem();
 				String text_of_selected = selected.toString();
-				terrainGen.generateTerrain(text_of_selected,terrainClusters,clusterSizeParameter, size, gen, parameterReduction, offshoots);		
+				terrainGen.generateTerrain(text_of_selected,terrainClusters,clusterSizeParameter, size, gen, parameterReduction, 0);		
 			}
 		});
 		
@@ -290,6 +295,22 @@ public class GamePanel extends JPanel implements GameInterface
 			try {
 				if(currentFreq == 0) throw new MyException("Frequency value is zero!");
 				
+
+		        String input = tField.getText().trim();
+
+		        // If the input matches a valid decimal number
+		        if (input.matches("\\d+(\\.\\d+)?")) {
+		            double temp = Double.parseDouble(input);
+		            if (temp > 0) {
+		                number = temp; // valid input, update number
+		            } else {
+		                number = 0; // invalid (zero or negative), reset to 0
+		            }
+		        } else {
+		            number = 0; // not a valid number, reset to 0
+		        }
+		        
+			tField.setEnabled(false);
 			on = !on;
 			gen = !gen;
 		    inner.setSimRunning(on); //wlączamy symulacje
@@ -385,12 +406,12 @@ public class GamePanel extends JPanel implements GameInterface
 		        clusterSizeParameter = sizeSlider.getValue();
 		        if (parameterReduction >= clusterSizeParameter) {
 		            parameterReduction = clusterSizeParameter - 1;
-		            reduceSlider.setValue((int) parameterReduction);
+		            //reduceSlider.setValue((int) parameterReduction);
 		        }
 		    }
 		});
 
-		
+		/*
 		JLabel offshootsLabel = new JLabel("Number of offshoots:");
 		offshootsSlider = new JSlider(0, 20, 0);
 		offshootsSlider.setMajorTickSpacing(5);
@@ -420,15 +441,16 @@ public class GamePanel extends JPanel implements GameInterface
 		        parameterReduction = newVal;
 		    }
 		});
+		*/
 
 		genPanel.add(clusterLabel); 
 		genPanel.add(clusterSlider);
 		genPanel.add(sizeLabel);    
 		genPanel.add(sizeSlider);
-		genPanel.add(offshootsLabel);
-		genPanel.add(offshootsSlider);
-		genPanel.add(reduceLabel); 
-		genPanel.add(reduceSlider);
+		//genPanel.add(offshootsLabel);
+		//genPanel.add(offshootsSlider);
+		//genPanel.add(reduceLabel); 
+		//genPanel.add(reduceSlider);
 		
 		
 		generate.setAlignmentX(Component.CENTER_ALIGNMENT); 
@@ -439,7 +461,26 @@ public class GamePanel extends JPanel implements GameInterface
 		genPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		genPanel.add(generate);
+		
+		tField = new JTextField();
 
+		JLabel tFieldLabel1 = new JLabel("End simulation after:");
+		tFieldLabel1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		JLabel tFieldLabel2 = new JLabel("seconds");
+
+		tField = new JTextField();
+		tField.setMinimumSize(new Dimension(100, 25)); 
+		tField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25)); 
+		tField.setPreferredSize(new Dimension(150, 25));
+		tField.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		genPanel.add(Box.createRigidArea(new Dimension(0, 10))); 
+		genPanel.add(tFieldLabel1);
+		genPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+		genPanel.add(tField);
+		genPanel.add(tFieldLabel2);
+		
 		this.add(genPanel, BorderLayout.WEST);
 		genPanel.setPreferredSize(new Dimension(220, 300));
 		
@@ -448,6 +489,11 @@ public class GamePanel extends JPanel implements GameInterface
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
 		        double seconds = inner.getElapsedMs() / 1000.0;
+		        if (number != 0 && seconds >= number)
+		        {
+		        	SwingUtilities.invokeLater(() -> reset.doClick());
+
+		        }
 		        data1.setText(String.format("Time elapsed: %.2f s", seconds));
 		    }
 		});

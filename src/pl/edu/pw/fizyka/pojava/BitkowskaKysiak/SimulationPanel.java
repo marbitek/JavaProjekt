@@ -232,7 +232,7 @@ public class SimulationPanel extends JPanel implements Runnable
     /**
      * Metoda aktualizująca stan fali
      */
-    private void updateSimulation() {
+    private synchronized void updateSimulation() {
         double dx = 0.01;
         double dt = 1e-5;
         final double baseCoeff = (FunctAndConst.c * dt / dx) * (FunctAndConst.c * dt / dx);
@@ -284,30 +284,27 @@ public class SimulationPanel extends JPanel implements Runnable
      * Metoda aktualizująca kolory pixelów symulowanej fali 
      */
     private void updatePixels() {
-        
-    	for (int y = 0; y < pixelGrid.size(); y++) {
-            List<Pixel> row = pixelGrid.get(y);
-            for (int x = 0; x < row.size(); x++) {
-                double v = current[x][y];
-                float amp = (float) Math.min(1.0, Math.abs(v) * FunctAndConst.brightnessFactor / 255.0);
-                
-                Pixel p = pixelGrid.get(y).get(x);
-                Color base = p.getClr();
-                float[] hsb  = Color.RGBtoHSB(base.getRed(),
-                        base.getGreen(),
-                        base.getBlue(), null);
+        synchronized (this) {
+            if (pixelGrid == null || pixelGrid.size() != y_dim || pixelGrid.get(0).size() != x_dim) {
+                System.err.println("PixelGrid not initialized or invalid dimensions. Skipping update.");
+                return;
+            }
 
-             // przy dodatniej amplitudzie rozjaśniamy, przy ujemnej ściemniamy
-                hsb[2] = Math.max(0f, Math.min(1f,
-                         hsb[2] + (v >= 0 ? -amp : amp)));
+            for (int y = 0; y < y_dim; y++) {
+                List<Pixel> row = pixelGrid.get(y);
+                for (int x = 0; x < x_dim; x++) {
+                    double v = current[x][y];
+                    float amp = (float) Math.min(1.0, Math.abs(v) * FunctAndConst.brightnessFactor / 255.0);
 
-                Color shaded = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
-                p.setClr(shaded);
-                paintPxl(x, y, shaded);
-                
-                if (pixelGrid == null || pixelGrid.size() != y_dim || pixelGrid.get(0).size() != x_dim) {
-                    System.err.println("PixelGrid not initialized or invalid dimensions. Skipping update.");
-                    return;
+                    Pixel p = row.get(x);
+                    Color base = p.getClr();
+                    float[] hsb = Color.RGBtoHSB(base.getRed(), base.getGreen(), base.getBlue(), null);
+
+                    hsb[2] = Math.max(0f, Math.min(1f, hsb[2] + (v >= 0 ? -amp : amp)));
+
+                    Color shaded = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
+                    p.setClr(shaded);
+                    paintPxl(x, y, shaded);
                 }
             }
         }
@@ -380,7 +377,13 @@ public class SimulationPanel extends JPanel implements Runnable
      * - czyści źródła
      * - maluje wszystkie pixele na biało
      */
-    public void resetState() {
+    public synchronized void resetState() {
+    	//pauza zegara
+    	setSimRunning(false);
+    	pauseElapsedTime(); 
+    	resetElapsedTime(); 
+
+    	
         // czyszczenie bufory
         for (int i = 0; i < x_dim; i++) {
             Arrays.fill(previous[i], 0);
@@ -454,6 +457,7 @@ public class SimulationPanel extends JPanel implements Runnable
     	        long lastImpulseTime = System.currentTimeMillis();
     	        // interwał w ms między kolejnymi impulsami = 1000/frequencyHz
     	        while (true) {
+    	        	synchronized (this){
     	            if (simRunning) {
     	                updateSimulation();
     	                updatePixels();
@@ -465,9 +469,10 @@ public class SimulationPanel extends JPanel implements Runnable
     	                    for (Source s : sources) {
     	                        addImpulse(s, FunctAndConst.amplitude);
     	                    }
-    	                    lastImpulseTime = now;
-    	                }
-    	            }
+    	                    	lastImpulseTime = now;
+    	                	}
+    	            	}
+    	        	}
     	            repaint();
     	            try { Thread.sleep(16); } catch (InterruptedException ignored) {}
     	        }
