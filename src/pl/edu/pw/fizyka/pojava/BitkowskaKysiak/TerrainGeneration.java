@@ -51,17 +51,17 @@ public class TerrainGeneration {
 			    List<Pixel> subSources = new ArrayList<>();
 		
 			    int randX, randY, pixelsAdded = 0, pixelsRemoved = 0;
+			    
+			    
 			    Color terrainColor = switch (type) {
 			        case "Sand" -> FunctAndConst.SAND;
 			        case "Granite" -> FunctAndConst.GRANITE;   
 			        case "Limestone" -> FunctAndConst.LIMESTONE;
 			        default -> {
 			            System.out.println("Unknown terrain type selected.");
-			            yield FunctAndConst.AIR;
+			            yield FunctAndConst.SAND;
 			        }
-			    };
-			    
-			    
+			    }; 
 		
 			    for (int i = 0; i < clusterNumber; i++) {
 			    	a = clusterSizeParameter;
@@ -180,6 +180,14 @@ public class TerrainGeneration {
 			    for (Pixel p : newTerrain) {
 			        p.setClr(terrainColor);
 			        panel.paintPxl(p.getGX(), p.getGY(), terrainColor);
+			        p.setClr(terrainColor);
+			        
+			        int specifier = switch(type) {
+			        case "Granite"   -> 1;
+			        case "Limestone" -> 2;
+			        default          -> 0;  // "Sand"
+			    };
+			    p.applyTerrainSpec(specifier);
 			    }
 			    
 		        System.out.println("Pixels added: "+pixelsAdded);
