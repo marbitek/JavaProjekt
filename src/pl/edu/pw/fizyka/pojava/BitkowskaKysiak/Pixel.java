@@ -13,8 +13,9 @@ public class Pixel {
 	private int x, y, gridX = 0, gridY = 0;
 	private double terrainSpeedModifier = 1.0; //dla powierza
 	protected double dampLocal = 1.0; //dla powietrza
-	String[] terrainTypes = {"Sand", "Granite", "Limestone", "Air"};
+	String[] terrainTypes = {"Sand", "Granite", "Limestone"};
 	String thisTerrainType = terrainTypes[0];
+	private int terrainSpecificator;  
 	
 	
 	/**
@@ -34,14 +35,14 @@ public class Pixel {
         gridX = gX;
         gridY = gY;
         
-        if(terrainSpecificator >= 0 || terrainSpecificator <= 2)
+        if(terrainSpecificator >= 0 && terrainSpecificator <= 2)
         {
             thisTerrainType = terrainTypes[terrainSpecificator];
         } else {
-        	thisTerrainType = terrainTypes[3];  // „Air”
+        	thisTerrainType = terrainTypes[0];  // „Piasek”
         }
         
-        //prędkość rozchodzenia się dzwięku w danym ośrodku i jego tłumienie
+       /* //prędkość rozchodzenia się dzwięku w danym ośrodku i jego tłumienie
         if (thisTerrainType.equals("Sand")) {
             terrainSpeedModifier = 1.2; 
             setDampLocal(0.996);
@@ -50,12 +51,31 @@ public class Pixel {
             setDampLocal(0.796);
         } else if (thisTerrainType.equals("Limestone")) {
             terrainSpeedModifier = 1.4; 
-            setDampLocal(0.696);
-        } else if (thisTerrainType.equals("Air")) {
-            terrainSpeedModifier = 1;  
-            setDampLocal(1);
+            setDampLocal(0.596);
+        }*/
+    }
+    
+    /** Ustawia nowy typ terenu i przelicza fizykę. */
+    public void applyTerrainSpec(int newSpec) {
+    	this.terrainSpecificator = newSpec;
+        this.thisTerrainType = terrainTypes[newSpec];
+        // teraz recalc fizyki:
+        switch (newSpec) {
+            case 0: // Sand
+                terrainSpeedModifier = 1.1;
+                dampLocal = 0.896;
+                break;
+            case 1: // Granite
+                terrainSpeedModifier = 1.3;
+                dampLocal = 0.696;
+                break;
+            case 2: // Limestone
+                terrainSpeedModifier = 1.2;
+                dampLocal = 0.796;
+                break;
         }
     }
+
     
     /**
      * Setter wygaszania

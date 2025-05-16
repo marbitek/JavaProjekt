@@ -68,7 +68,6 @@ public class GamePanel extends JPanel implements GameInterface
 		        number = 0;
 		            
 				inner.getSources().clear();
-				//inner.pixelGrid.clear();
 				inner.resetState();
 				resetUiControls();
 
@@ -87,19 +86,11 @@ public class GamePanel extends JPanel implements GameInterface
 			    FunctAndConst.enableButton(generate, FunctAndConst.buttonBg, FunctAndConst.buttonFg);
 			    FunctAndConst.enableButton(back, FunctAndConst.buttonBg, FunctAndConst.buttonFg);
 			    
-			    slider.setValue(0);
-			    powerSlider.setValue(50);
 			    
 	            clusterSlider.setValue(clusterSlider.getMinimum());   
-	            sizeSlider.setValue(sizeSlider.getMinimum());  
-	            //offshootsSlider.setValue(offshootsSlider.getMinimum());
-	            //reduceSlider.setValue(reduceSlider.getMinimum());     
-	            
-
-
-			    
-				} catch(Exception ex)
-				{
+	            sizeSlider.setValue(sizeSlider.getMinimum());      
+	         
+				} catch(Exception ex) {
 					ex.printStackTrace();
 				}
 			}
@@ -243,7 +234,8 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		
 		//okienko z wyborem czestotliwosci
-		freq = new JLabel("frequency: 0 Hz ");
+		freq = new JLabel("frequency: 500 Hz ");
+		currentFreq = 500;
 		freq.setLabelFor(slider);
 		freq.setHorizontalAlignment(SwingConstants.CENTER);
 		freq.setVerticalAlignment(SwingConstants.CENTER);
@@ -261,6 +253,7 @@ public class GamePanel extends JPanel implements GameInterface
 		slider.setPaintLabels(true);
 		slider.setMinorTickSpacing(100);
 		slider.setMajorTickSpacing(200);
+		slider.setValue(500);
 		
 		
 		//ustawienia częstotliwości fali 
@@ -383,20 +376,37 @@ public class GamePanel extends JPanel implements GameInterface
 		//kod panelu po lewej z ustawieniami generacji terenu
 		genPanel = new JPanel();
 		genPanel.setLayout(new BoxLayout(genPanel, BoxLayout.Y_AXIS)); 
-		genPanel.setOpaque(false);
+		genPanel.setOpaque(true);
+		genPanel.setBackground(Color.ORANGE);
 		genPanel.setBorder(BorderFactory.createTitledBorder("Terrain Gen Parameters"));
+		genPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.BLACK),
+                "Funcionalities",
+                TitledBorder.CENTER,
+                TitledBorder.TOP,
+                new Font("Arial", Font.BOLD, 14),
+                Color.BLACK
+        ));
 
 		genPanel.add(p);
 
 		JLabel clusterLabel = new JLabel("Generated clusters:");
+		clusterLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		clusterLabel.setVerticalAlignment(SwingConstants.CENTER);
 		clusterSlider = new JSlider(1, 10, 1);
+		clusterLabel.setLabelFor(clusterSlider);
 		clusterSlider.setMajorTickSpacing(1);
 		clusterSlider.setPaintTicks(true);
 		clusterSlider.setPaintLabels(true);
+		clusterSlider.setBackground(Color.ORANGE);
 		clusterSlider.addChangeListener(e -> terrainClusters = clusterSlider.getValue());
 
 		JLabel sizeLabel = new JLabel("Cluster Size:");
+		sizeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		sizeLabel.setVerticalAlignment(SwingConstants.CENTER);
+		sizeLabel.setLabelFor(sizeSlider);
 		sizeSlider = new JSlider(1, 5, 1);
+		sizeSlider.setBackground(Color.ORANGE);
 		sizeSlider.setMajorTickSpacing(1);
 		sizeSlider.setPaintTicks(true);
 		sizeSlider.setPaintLabels(true);
@@ -508,9 +518,9 @@ public class GamePanel extends JPanel implements GameInterface
 	    lista.setEnabled(true);
 	    numbSrc.setSelectedIndex(0);             // 1 źródło
 	    numbSrc.setEnabled(true);
-	    slider.setValue(0);                      // 0 Hz
+	    slider.setValue(500);                      // 0 Hz
 	    powerSlider.setValue(50);                // 50 MW
-	    freq.setText("frequency: 0 Hz");
+	    freq.setText("frequency: 500 Hz");
 	    pow.setText("Excavation power: 50 MW");
 	    onOff.setText("RUN");
 	    
@@ -520,7 +530,7 @@ public class GamePanel extends JPanel implements GameInterface
 
 	    //aktualizacja bieżących zmiennych
 	    numbSource   = 1;
-	    currentFreq  = 0;
+	    currentFreq  = 500;
 	}
 	
 }

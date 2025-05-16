@@ -38,7 +38,7 @@ public class SimulationPanel extends JPanel implements Runnable
 	
 	 // Buffory stanu fali
     private double[][] previous, current, next;
-    private double freq = 0; // domyślna częstotliwość Hz
+    private double freq = 500; // domyślna częstotliwość Hz
     private int maxSources = 1; // ile w ogóle pozwalamy tworzyć
   
 	//flagi 
@@ -95,8 +95,7 @@ public class SimulationPanel extends JPanel implements Runnable
         this.addEnabled = addEnabled;
     }
     
-    public void pauseSim(boolean pause)
-    {
+    public void pauseSim(boolean pause) {
     	this.simPaused = pause;
     }
     
@@ -364,8 +363,14 @@ public class SimulationPanel extends JPanel implements Runnable
         g.drawImage(panelImage, 0,0, getWidth(), getHeight(), null);
         
         if (!simRunning) {
-            for (Point src : selectedSources) {
-                paintPxl(src.x, src.y, Color.RED);
+        	  g.setColor(Color.RED);
+              int r = 2;                    // promień kółka w pikselach
+              for (Point src : selectedSources) {
+                  int cx = src.x * getWidth()  / imgW;   // jeśli rysujesz skalowane
+                  int cy = src.y * getHeight() / imgH;
+                  //g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
+                  // jeśli chcesz wypełnione kółko, użyj fillOval:
+                   g.fillOval(cx - r, cy - r, 2 * r, 2 * r);
             }
         }
     }
@@ -474,7 +479,7 @@ public class SimulationPanel extends JPanel implements Runnable
     	            	}
     	        	}
     	            repaint();
-    	            try { Thread.sleep(16); } catch (InterruptedException ignored) {}
+    	            //try { Thread.sleep(16); } catch (InterruptedException ignored) {}
     	        }
     	    }
 
