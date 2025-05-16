@@ -1,8 +1,8 @@
 DO ZROBIENIA:
 1. poprawić kolorki
-2. dodać puszczanie i zatrzymywanie zegara - docelowo zegar odlicza i po czasie symulacja się kończy (na razie zegar mierzy czas ktory uplynal)
+2. dodać puszczanie i zatrzymywanie zegara - docelowo zegar odlicza i po czasie symulacja się kończy (done)
 3. połączyć fale z gen terenu
 5. pokomentować i uporządkować kod
-6. po odpaleniu symulacji czy gizuiczki mają się blokować czy nie 
+6. po odpaleniu symulacji czy gizuiczki mają się blokować czy nie (done)
 8. poprawić damping i prędkość rozchodzenia 
 9. naprawić guziczek back, bo średnio działa (wykonano)
