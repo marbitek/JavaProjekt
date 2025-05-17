@@ -212,7 +212,7 @@ public class SimulationPanel extends JPanel implements Runnable
         double w = amplitude * Math.sin(2 * Math.PI * freq * (t * 1e-9)); //definicja fali kulistej
         //(t * 1e-9) zmiana na nanosekund na sekundy
         
-        /*for(int dx = -r; dx <= r; dx++) 
+        for(int dx = -r; dx <= r; dx++) 
         	for(int dy = -r; dy <= r; dy++){
         		
         		//delta
@@ -223,9 +223,7 @@ public class SimulationPanel extends JPanel implements Runnable
 	                current[px][py] += w;
 	                previous[px][py] += w;
             }
-        }*/
-        current[s.x][s.y] += w;
-        previous[s.x][s.y] += w;
+        }
     }
     
     
@@ -301,7 +299,7 @@ public class SimulationPanel extends JPanel implements Runnable
                     Color base = p.getClr();
                     float[] hsb = Color.RGBtoHSB(base.getRed(), base.getGreen(), base.getBlue(), null);
 
-                    hsb[2] = Math.max(0f, Math.min(1f, hsb[2] + (v >= 0 ? -amp : amp)));
+                    hsb[2] = Math.max(0f, Math.min(1f, hsb[2] + (v >= 0 ? amp : -amp)));
 
                     Color shaded = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
                     p.setClr(shaded);
