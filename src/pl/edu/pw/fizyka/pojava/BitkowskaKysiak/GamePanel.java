@@ -26,7 +26,7 @@ public class GamePanel extends JPanel implements GameInterface
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
 	protected double currentWsp;
 	protected static double currentFreq = 500;
-	private int numbSource;
+	private int numbSource = 1;
 	private JComboBox<String> numbSrc, lista;
 	private JLabel  field, freq, data1, data2, source, pow;
 	protected JSlider slider, powerSlider, reduceSlider, clusterSlider, sizeSlider, offshootsSlider;
@@ -68,6 +68,11 @@ public class GamePanel extends JPanel implements GameInterface
 				{
 		            if ("PAUSE".equals(onOff.getText())) {
 		                //onOff.doClick();  
+		    			on = !on;
+		    			gen = !gen;
+		    		    inner.setSimRunning(on); 
+		    			
+		    		    if(onOff.getText().equals("PAUSE")) inner.pauseSim(true);
 		            	onOff.setText("RUN");
 		            }
 				
@@ -259,7 +264,7 @@ public class GamePanel extends JPanel implements GameInterface
 		onOff.addActionListener(e -> {
 			try {
 				if(currentFreq == 0) throw new MyException("Frequency value is zero!");
-				
+				if(inner.getSelectedSources().size() != numbSource) throw new MyException("Invalid number of sources!");
 
 		        String input = tField.getText().trim();
 

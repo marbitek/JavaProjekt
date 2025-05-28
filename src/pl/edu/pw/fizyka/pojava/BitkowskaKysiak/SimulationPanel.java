@@ -78,6 +78,12 @@ public class SimulationPanel extends JPanel implements Runnable
      * @param getSrc
      */
     public List<Source> getSources(){return sources;};
+    
+    /**
+     * zwracanie listy zaznaczonych zrodel
+     * @param getSrc
+     */
+    public List<Point> getSelectedSources(){return selectedSources;};
      
     /**
      * ustawienia częstotliwości zrodla

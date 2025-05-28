@@ -3,11 +3,10 @@ DO ZROBIENIA:
 2. suwaczki
 3. połączyć fale z gen terenu, odbijanie/przejscie z inna predkoscia przez osrodki
 5. pokomentować i uporządkować kod
-6. reset zeby nie krztusil programu
+6. reset zeby nie krztusil programu (done)
 7. generacja terenu, poprawa piasku
->>>>>>> 1bb8c895c2ba81a8938256a9d1b7fdbfafbc166a
 8. poprawić damping i prędkość rozchodzenia 
 9. robal
 10. moc
 11. koparka
-zegar nie powinien się puszczać bez zrodel
+12. zegar nie powinien się puszczać bez zrodel (done)
