@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class FunctAndConst {
 	
-	protected static final Color SANDGr = new Color(237, 251, 200);
+	protected static final Color SAND_GROUND = new Color(237, 251, 200);
 	protected static final Color SAND = new Color(237, 201, 175);
 	protected static final Color GRANITE = new Color(169, 169, 169);
 	protected static final Color LIMESTONE = new Color(245, 245, 220);
@@ -25,7 +25,7 @@ public class FunctAndConst {
 	//MK+
     public static boolean isTerrain(Color c)
     {
-    	return (c == GRANITE || c == LIMESTONE || c == SAND);
+    	return (c == GRANITE || c == LIMESTONE || c == SAND || c == SAND_GROUND);
     }
     
     
@@ -50,7 +50,6 @@ public class FunctAndConst {
         button.setBackground(background);
         button.setForeground(foreground);
     }
-
 
     //KM-
     

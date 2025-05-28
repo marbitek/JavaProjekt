@@ -299,7 +299,7 @@ public class SimulationPanel extends JPanel implements Runnable
                     Color base = p.getClr();
                     float[] hsb = Color.RGBtoHSB(base.getRed(), base.getGreen(), base.getBlue(), null);
 
-                    hsb[2] = Math.max(0f, Math.min(1f, hsb[2] + (v >= 0 ? -amp : amp)));
+                    hsb[2] = Math.max(0f, Math.min(1f, hsb[2] + (v >= 0 ? amp : -amp)));
 
                     Color shaded = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
                     p.setClr(shaded);

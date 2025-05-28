@@ -20,12 +20,12 @@ public class GamePanel extends JPanel implements GameInterface
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private JPanel innerPanel, functional, data, p, p2, pSource, controlPanel, squareWrapper, genPanel;
+	private JPanel innerPanel, functional, data, p, p2, p3, p4, p5, p6, pSource, controlPanel, squareWrapper, genPanel;
 	protected JButton back, onOff, exit, reset, generate; 
 	private String teren[] = {"Sand", "Granite", "Limestone"};
 	private String sources[] = {"One source", "Two sources", "Three sources", "Four sources"};
 	protected double currentWsp;
-	protected static double currentFreq;
+	protected static double currentFreq = 500;
 	private int numbSource;
 	private JComboBox<String> numbSrc, lista;
 	private JLabel  field, freq, data1, data2, source, pow;
@@ -42,11 +42,21 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		super(new BorderLayout());
 		
+		//ustalamy renderer z wyśrodkowanym tekstem DLA JList lub JComboBox
+		DefaultListCellRenderer renderer = new DefaultListCellRenderer();
+		renderer.setHorizontalAlignment(SwingConstants.CENTER); // wyśrodkuj poziomo
+		
+		
+		//CONTROL PANEL
 		controlPanel = new JPanel(); 
 		controlPanel.setLayout(new FlowLayout());
+		
+		//guzik back
 		back = new JButton("Back"); 
 		back.setMinimumSize(new Dimension(70, 25));
 		
+		
+		//guzik reset
 		reset = new JButton("Reset");
 		reset.setMinimumSize(new Dimension(70, 25));
 		
@@ -97,68 +107,36 @@ public class GamePanel extends JPanel implements GameInterface
 		});
 
 		
+		//guzik exit
 		exit = new JButton("Exit");
 		exit.setMinimumSize(new Dimension(70, 25));
 		exit.addActionListener(e -> System.exit(0));
 		
 		
+		//dodanie guziczków do controlPanel
+		controlPanel.add(back);
+		controlPanel.add(reset);
+		controlPanel.add(exit);
+		controlPanel.setBackground(new Color(245, 222, 179));
+		
+		this.add(controlPanel, BorderLayout.SOUTH);
+		
+		
+		//sources funcionalities panel
 		functional = new JPanel();
 		functional.setLayout(new BoxLayout(functional, BoxLayout.Y_AXIS));
 		functional.setPreferredSize(new Dimension(250, 400));
 		functional.setBackground(Color.ORANGE);
-		
-		field = new JLabel("Field: ");
 		functional.setBorder(BorderFactory.createTitledBorder(
 	                BorderFactory.createLineBorder(Color.BLACK),
-	                "Funcionalities",
+	                "Sources funcionalities",
 	                TitledBorder.CENTER,
 	                TitledBorder.TOP,
 	                new Font("Arial", Font.BOLD, 14),
 	                Color.BLACK
 	        ));
 		
-		lista = new JComboBox<>(teren); //przeniesione tutaj
-		//ustalamy renderer z wyśrodkowanym tekstem
-		DefaultListCellRenderer renderer = new DefaultListCellRenderer();
-		renderer.setHorizontalAlignment(SwingConstants.CENTER); // wyśrodkuj poziomo
-		lista.setRenderer(renderer);
-		lista.setBackground(Color.WHITE);
-		field.setLabelFor(lista);
-		
-		p = new JPanel();
-		p.setLayout(new GridLayout(2,1));
-		p.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
-		p.add(field);
-		field.setHorizontalAlignment(SwingConstants.CENTER);
-		field.setVerticalAlignment(SwingConstants.CENTER);
-		p.add(lista);
-		//functional.add(p);
-		functional.add(Box.createRigidArea(new Dimension(250, 20)));
 
-		//przycisk generowania terenu o wybranym aktualnie typie
-		generate = new JButton("Generate chosen terrain");
-		generate.setMinimumSize(new Dimension(70, 25));
-		generate.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Object selected = (String) lista.getSelectedItem();
-				String text_of_selected = selected.toString();
-				terrainGen.generateTerrain(text_of_selected,terrainClusters,clusterSizeParameter, size, gen, parameterReduction, 0);		
-			}
-		});
-		
-		controlPanel.add(back);
-		controlPanel.add(reset);
-		controlPanel.add(exit);
-		//controlPanel.add(generate);
-		controlPanel.setBackground(new Color(245, 222, 179));
-		
-		this.add(controlPanel, BorderLayout.SOUTH);
-		
-		FunctAndConst.buttonStyling(back, new Color(240, 248, 255), new Color(128, 0, 0));
-		FunctAndConst.buttonStyling(reset, new Color(240, 248, 255), new Color(128, 0, 0));
-		FunctAndConst.buttonStyling(exit, new Color(240, 248, 255), new Color(128, 0, 0));
-		FunctAndConst.buttonStyling(generate, new Color(240, 248, 255), new Color(128, 0, 0));
 		
 		innerPanel = new JPanel();
 		innerPanel.setBackground(Color.orange);
@@ -168,7 +146,6 @@ public class GamePanel extends JPanel implements GameInterface
 		//OBIEKT TYPU SIMULATION PANEL!
 		inner = new SimulationPanel(size, size, 1, 500, 500);  //500x500 pixeli
 		terrainGen = new TerrainGeneration(inner);
-		
 		Border padding = BorderFactory.createMatteBorder(15, 15, 15, 15, Color.ORANGE);
 		Border ramka = BorderFactory.createLineBorder(Color.black, 3);
 		inner.setBorder(BorderFactory.createCompoundBorder(padding, ramka));
@@ -193,7 +170,6 @@ public class GamePanel extends JPanel implements GameInterface
 		};
 		squareWrapper.add(inner);
 		squareWrapper.setBackground(Color.orange); 
-
 		innerPanel.add(squareWrapper, BorderLayout.CENTER);
 
 		
@@ -232,10 +208,8 @@ public class GamePanel extends JPanel implements GameInterface
 		functional.add(Box.createRigidArea(new Dimension(250, 20)));
 		
 		
-		
 		//okienko z wyborem czestotliwosci
-		freq = new JLabel("frequency: 500 Hz ");
-		currentFreq = 500;
+		freq = new JLabel("Frequency: 500 Hz ");
 		freq.setLabelFor(slider);
 		freq.setHorizontalAlignment(SwingConstants.CENTER);
 		freq.setVerticalAlignment(SwingConstants.CENTER);
@@ -261,7 +235,7 @@ public class GamePanel extends JPanel implements GameInterface
            @Override
            public void stateChanged(ChangeEvent e) {
                currentFreq = slider.getValue();
-               freq.setText(String.valueOf("frequency: " + currentFreq + " Hz"));
+               freq.setText(String.valueOf("Frequency: " + currentFreq + " Hz"));
                inner.setFreq(currentFreq);
             }
         });
@@ -282,8 +256,6 @@ public class GamePanel extends JPanel implements GameInterface
 	
 		//GUZIK RUN -> PAUSe
 		onOff = new JButton("RUN");
-		FunctAndConst.buttonStyling(onOff, Color.black, new Color(255, 248, 220));
-
 		onOff.addActionListener(e -> {
 			try {
 				if(currentFreq == 0) throw new MyException("Frequency value is zero!");
@@ -309,14 +281,11 @@ public class GamePanel extends JPanel implements GameInterface
 		    inner.setSimRunning(on); //wlączamy symulacje
 		    numbSrc.setEnabled(false);
 		    lista.setEnabled(false);
-		    //lista.setEnabled(false);
 		    onOff.setText(on ? "PAUSE" : "RUN"); 
 		    FunctAndConst.disableButton(generate);
 		    FunctAndConst.disableButton(back);
 			
 		    if(onOff.getText().equals("PAUSE")) inner.pauseSim(true);
-
-		    
 		    
 			} catch (MyException ex) {
 				JOptionPane.showMessageDialog(GamePanel.this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -331,8 +300,12 @@ public class GamePanel extends JPanel implements GameInterface
 		pow = new JLabel("Excavation power: 50 MW");
 		pow.setOpaque(true);
 		pow.setBackground(Color.orange);
+		pow.setLabelFor(powerSlider);
+		pow.setHorizontalAlignment(SwingConstants.CENTER);
+		pow.setVerticalAlignment(SwingConstants.CENTER);
 
 		powerSlider.setPaintTicks(true);
+		
 		powerSlider.setPaintLabels(true);
 		powerSlider.setMinorTickSpacing(5);
 		powerSlider.setMajorTickSpacing(25);
@@ -350,61 +323,72 @@ public class GamePanel extends JPanel implements GameInterface
 		data.add(data1);
 		data.add(data2);
 		data.add(onOff);
-
 		functional.add(data);
 		
-		p.setMaximumSize(new Dimension(250, 60));
-		pSource.setMaximumSize(new Dimension(250, 60));
-		p2.setMaximumSize(new Dimension(250, 80));
-		data.setMaximumSize(new Dimension(240, 250));
-		
-		//kod poniżej zapewnia stałe proporcje panelu symulacji
-		this.addComponentListener(new java.awt.event.ComponentAdapter() {
-		    @Override
-		    public void componentResized(java.awt.event.ComponentEvent e) 
-		    {
-		    	
-		        int size = (int)(Math.min(getHeight(), getWidth()) * 0.9); // keep square
-		        ((SimulationPanel)inner).resize(size, size);
-
-		        inner.revalidate();
-		        inner.repaint();
-		    }
-		});
 		
 		
-		//kod panelu po lewej z ustawieniami generacji terenu
+		//RERRAIN FUNCIONALITIES
 		genPanel = new JPanel();
 		genPanel.setLayout(new BoxLayout(genPanel, BoxLayout.Y_AXIS)); 
-		genPanel.setOpaque(true);
+		genPanel.setPreferredSize(new Dimension(250, 400));
 		genPanel.setBackground(Color.ORANGE);
-		genPanel.setBorder(BorderFactory.createTitledBorder("Terrain Gen Parameters"));
 		genPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK),
-                "Funcionalities",
+                "Terrain funcionalities",
                 TitledBorder.CENTER,
                 TitledBorder.TOP,
                 new Font("Arial", Font.BOLD, 14),
                 Color.BLACK
         ));
-
+		
+		
+		lista = new JComboBox<>(teren); //lista z teren do generowania
+		lista.setRenderer(renderer);
+		lista.setBackground(Color.WHITE);
+		//lista.setMaximumSize(new Dimension(Integer.MAX_VALUE, lista.getPreferredSize().height));
+		lista.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		field = new JLabel("Field: ");
+		field.setLabelFor(lista);
+		field.setHorizontalAlignment(SwingConstants.CENTER);
+		field.setVerticalAlignment(SwingConstants.CENTER);
+		
+		p = new JPanel();
+		p.setLayout(new GridLayout(2,1));
+		p.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
+		p.add(field);
+		p.add(lista);
 		genPanel.add(p);
-
-		JLabel clusterLabel = new JLabel("Generated clusters:");
-		clusterLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		clusterLabel.setVerticalAlignment(SwingConstants.CENTER);
+		
+		genPanel.add(Box.createRigidArea(new Dimension(250, 20)));
+		
+		//clusterSlider
+		p3 = new JPanel();
+		p3.setLayout(new BorderLayout());
+		p3.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
+		//p.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
 		clusterSlider = new JSlider(1, 10, 1);
-		clusterLabel.setLabelFor(clusterSlider);
 		clusterSlider.setMajorTickSpacing(1);
 		clusterSlider.setPaintTicks(true);
 		clusterSlider.setPaintLabels(true);
 		clusterSlider.setBackground(Color.ORANGE);
 		clusterSlider.addChangeListener(e -> terrainClusters = clusterSlider.getValue());
+		
+		JLabel clusterLabel = new JLabel("Generated clusters:");
+		clusterLabel.setLabelFor(clusterSlider);
+		clusterLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		clusterLabel.setVerticalAlignment(SwingConstants.CENTER);
+		p3.add(clusterLabel, BorderLayout.NORTH);
+		p3.add(clusterSlider, BorderLayout.CENTER);
+		genPanel.add(p3);
+		genPanel.add(Box.createRigidArea(new Dimension(250, 20)));
+		
 
-		JLabel sizeLabel = new JLabel("Cluster Size:");
-		sizeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		sizeLabel.setVerticalAlignment(SwingConstants.CENTER);
-		sizeLabel.setLabelFor(sizeSlider);
+		p4 = new JPanel();
+		p4.setLayout(new BorderLayout());
+		p4.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
+		
 		sizeSlider = new JSlider(1, 5, 1);
 		sizeSlider.setBackground(Color.ORANGE);
 		sizeSlider.setMajorTickSpacing(1);
@@ -420,79 +404,75 @@ public class GamePanel extends JPanel implements GameInterface
 		        }
 		    }
 		});
+		
+		JLabel sizeLabel = new JLabel("Cluster Size:");
+		sizeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		sizeLabel.setVerticalAlignment(SwingConstants.CENTER);
+		sizeLabel.setLabelFor(sizeSlider);
+		
+		//genPanel.add(sizeLabel);    
+		//genPanel.add(sizeSlider);
+		//generate.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
-		/*
-		JLabel offshootsLabel = new JLabel("Number of offshoots:");
-		offshootsSlider = new JSlider(0, 20, 0);
-		offshootsSlider.setMajorTickSpacing(5);
-		offshootsSlider.setPaintTicks(true);
-		offshootsSlider.setPaintLabels(true);
-		offshootsSlider.addChangeListener(new ChangeListener() {
-		    @Override
-		    public void stateChanged(ChangeEvent e) {
-		        offshoots = offshootsSlider.getValue();
-		    }
+		p4.add(sizeLabel, BorderLayout.NORTH);
+		p4.add(sizeSlider, BorderLayout.CENTER);
+		genPanel.add(p4);
+		genPanel.add(Box.createRigidArea(new Dimension(250, 20)));
+		
+		
+		p5 = new JPanel();
+		p5.setLayout(new GridLayout(1,1));
+		p5.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
+		
+		//przycisk generowania terenu o wybranym aktualnie typie
+		generate = new JButton("Generate chosen terrain");
+		generate.setMaximumSize(new Dimension(250, 25));
+		generate.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Object selected = (String) lista.getSelectedItem();
+				String text_of_selected = selected.toString();
+				terrainGen.generateTerrain(text_of_selected,terrainClusters,clusterSizeParameter, size, gen, parameterReduction, 0);		
+			}
 		});
-
+		p5.add(generate);
+		genPanel.add(p5);
+		genPanel.add(Box.createRigidArea(new Dimension(250, 20)));
+		//genPanel.add(Box.createRigidArea(new Dimension(250, 20)));
 		
-		JLabel reduceLabel = new JLabel("Reduction of offshoots:");
-		reduceSlider = new JSlider(1, 3, 1);
-		reduceSlider.setMajorTickSpacing(1);
-		reduceSlider.setPaintTicks(true);
-		reduceSlider.setPaintLabels(true);
-		reduceSlider.addChangeListener(new ChangeListener() {
-		    @Override
-		    public void stateChanged(ChangeEvent e) {
-		        int newVal = reduceSlider.getValue();
-		        if (newVal >= clusterSizeParameter) {
-		            newVal = Math.max(1, (int) clusterSizeParameter - 1);
-		            reduceSlider.setValue(newVal);
-		        }
-		        parameterReduction = newVal;
-		    }
-		});
-		*/
-
-		genPanel.add(clusterLabel); 
-		genPanel.add(clusterSlider);
-		genPanel.add(sizeLabel);    
-		genPanel.add(sizeSlider);
-		//genPanel.add(offshootsLabel);
-		//genPanel.add(offshootsSlider);
-		//genPanel.add(reduceLabel); 
-		//genPanel.add(reduceSlider);
-		
-		
-		generate.setAlignmentX(Component.CENTER_ALIGNMENT); 
-
-		generate.setMaximumSize(new Dimension(Integer.MAX_VALUE, generate.getPreferredSize().height));
-		generate.setPreferredSize(new Dimension(180, 30));
-		
-		genPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		genPanel.add(generate);
+		p6 = new JPanel();
+		p6.setLayout(new GridLayout(2,1));
+		p6.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
 		
 		tField = new JTextField();
-
-		JLabel tFieldLabel1 = new JLabel("End simulation after:");
+		JLabel tFieldLabel1 = new JLabel("End simulation after (s):");
 		tFieldLabel1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
+		
+		p6.add(tFieldLabel1);
+		p6.add(tField);
+		genPanel.add(p6);
+		genPanel.add(Box.createRigidArea(new Dimension(250, 20)));
+		
 		JLabel tFieldLabel2 = new JLabel("seconds");
-
-		tField = new JTextField();
+/*
 		tField.setMinimumSize(new Dimension(100, 25)); 
 		tField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25)); 
 		tField.setPreferredSize(new Dimension(150, 25));
 		tField.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+		*/
+		//p5.add(generate);
+		
+		
+	
+/*
 		genPanel.add(Box.createRigidArea(new Dimension(0, 10))); 
 		genPanel.add(tFieldLabel1);
 		genPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		genPanel.add(tField);
-		genPanel.add(tFieldLabel2);
+		genPanel.add(tFieldLabel2);*/
 		
 		this.add(genPanel, BorderLayout.WEST);
-		genPanel.setPreferredSize(new Dimension(220, 300));
 		
 		//timer
 		Timer elapsedTimer = new Timer(100, new ActionListener() {
@@ -508,6 +488,38 @@ public class GamePanel extends JPanel implements GameInterface
 		    }
 		});
 		elapsedTimer.start();
+		
+		
+		//ESTETYKA
+		FunctAndConst.buttonStyling(back, new Color(240, 248, 255), new Color(128, 0, 0));
+		FunctAndConst.buttonStyling(reset, new Color(240, 248, 255), new Color(128, 0, 0));
+		FunctAndConst.buttonStyling(exit, new Color(240, 248, 255), new Color(128, 0, 0));
+		FunctAndConst.buttonStyling(generate, new Color(240, 248, 255), new Color(128, 0, 0));
+		FunctAndConst.buttonStyling(onOff, Color.black, new Color(255, 248, 220));
+		
+		p.setMaximumSize(new Dimension(250, 60));
+		p3.setMaximumSize(new Dimension(250, 80));
+		p4.setMaximumSize(new Dimension(250, 80));
+		pSource.setMaximumSize(new Dimension(250, 60));
+		p2.setMaximumSize(new Dimension(250, 80));
+		data.setMaximumSize(new Dimension(240, 250));
+		p5.setMaximumSize(new Dimension(250, 40));
+		p6.setMaximumSize(new Dimension(250,50));
+		
+		//kod poniżej zapewnia stałe proporcje panelu symulacji
+				this.addComponentListener(new java.awt.event.ComponentAdapter() {
+				    @Override
+				    public void componentResized(java.awt.event.ComponentEvent e) 
+				    {
+				    	
+				        int size = (int)(Math.min(getHeight(), getWidth()) * 0.9); // keep square
+				        ((SimulationPanel)inner).resize(size, size);
+
+				        inner.revalidate();
+				        inner.repaint();
+				    }
+				});
+				
 
 	}
 	
