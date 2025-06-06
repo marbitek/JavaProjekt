@@ -1,12 +1,11 @@
 DO ZROBIENIA:
-1. poprawić kolorki
+1. baza danych z listą graczy i rankingiem (na razie można ich sortować względem najkrótszego czasu)
+2. poprawić kolorki
 2. suwaczki
 3. połączyć fale z gen terenu, odbijanie/przejscie z inna predkoscia przez osrodki
 5. pokomentować i uporządkować kod
-6. reset zeby nie krztusil programu (done)
-7. generacja terenu, poprawa piasku
-8. poprawić damping i prędkość rozchodzenia 
-9. robal
-10. moc
-11. koparka
-12. zegar nie powinien się puszczać bez zrodel (done)
+6. generacja terenu, poprawa piasku
+7. poprawić damping i prędkość rozchodzenia 
+8. robal
+9. moc
+10. koparka
