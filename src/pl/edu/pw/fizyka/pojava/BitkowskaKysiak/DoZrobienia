@@ -1,11 +1,15 @@
 DO ZROBIENIA:
 1. baza danych z listą graczy i rankingiem (na razie można ich sortować względem najkrótszego czasu)
-2. poprawić kolorki
 2. suwaczki
-3. połączyć fale z gen terenu, odbijanie/przejscie z inna predkoscia przez osrodki
-5. pokomentować i uporządkować kod
-6. generacja terenu, poprawa piasku
-7. poprawić damping i prędkość rozchodzenia 
-8. robal
+2. poprawić kolorki (X)
+3. połączyć fale z gen terenu, odbijanie/przejscie z inna predkoscia przez osrodki (X)
+5. generacja terenu, poprawa piasku żeby fale się od niego nie odbijały (X)
+6. poprawić damping i prędkość rozchodzenia (X)
+7. robal
+8. koparka
 9. moc
-10. koparka
+10. pokomentować i uporządkować kod
+
+
+
+X - opcjonalne bo mamy już za to teoretycznie max punktów
