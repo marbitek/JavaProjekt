@@ -3,8 +3,10 @@ package pl.edu.pw.fizyka.pojava.BitkowskaKysiak;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -17,8 +19,9 @@ public class MainPanel extends JFrame {
 	static WelcomePanel welcomePanel;
 	static GamePanel gamePanel;
 	static CardLayout card;
+	static BazaDanych baza;
 	
-	public MainPanel()  
+	public MainPanel() throws SQLException  
 	{
 		JFrame frame = new JFrame("Dune Harmonics");	
 		card = new CardLayout(5, 5);
@@ -27,7 +30,9 @@ public class MainPanel extends JFrame {
 		
 	    welcomePanel = new WelcomePanel();
 	    homeContainer.add(welcomePanel, "Welcome Panel");
-	    welcomePanel.start.addActionListener(e -> card.show(homeContainer, "Game Panel"));
+	    //welcomePanel.start.addActionListener(e -> card.show(homeContainer, "Game Panel"));
+	    
+	    baza = new BazaDanych();
 	    
 	    welcomePanel.start.addActionListener(e -> {
 	        String nick = welcomePanel.insertNick.getText().trim();
@@ -55,7 +60,12 @@ public class MainPanel extends JFrame {
 	            "Instruction",
 	            javax.swing.JOptionPane.INFORMATION_MESSAGE
 	        );
-
+	        
+	        try {
+				baza.addUser(nick);
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 	        card.show(homeContainer, "Game Panel");
 	    });
 
@@ -68,7 +78,12 @@ public class MainPanel extends JFrame {
 	        card.show(homeContainer, "Welcome Panel");
 	        WelcomePanel.insertNick.setText("");
 	        gamePanel.reset.doClick(); //aktywacja resetu przy powrocie
-	    });
+	        javax.swing.JOptionPane.showMessageDialog(
+		            this,
+		            baza.listOfUsers(),
+		            "Users",
+		            javax.swing.JOptionPane.INFORMATION_MESSAGE
+		        );});
 	    
 	    frame.add(homeContainer);
 	    card.show(homeContainer, "Welcome Panel");
@@ -81,6 +96,12 @@ public class MainPanel extends JFrame {
 	}
 
 	public static void main(String[] args) {
-	    SwingUtilities.invokeLater(MainPanel::new);
+	    SwingUtilities.invokeLater(() -> {
+			try {
+				new MainPanel();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 }
