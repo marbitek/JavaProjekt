@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 
 public class MainPanel extends JFrame {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 12L;
 
 	static JPanel homePanel, centre;
 	static JPanel homeContainer;

@@ -295,9 +295,9 @@ public class TerrainGeneration {
 			onePxl = panel.pixelGrid.get(sidestepY).get(sidestepX);
 			
 			if (onePxl != null && /*!onePxl.getClr().equals(beginningPixel.getClr()) &&*/ rand.nextDouble() < probability)
-			{
-				adjacents[j] = onePxl;
-			}
+				{
+					adjacents[j] = onePxl;
+				}
 			}
 		}
 		return adjacents;

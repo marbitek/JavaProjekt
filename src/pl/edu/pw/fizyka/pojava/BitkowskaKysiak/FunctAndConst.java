@@ -3,6 +3,7 @@ package pl.edu.pw.fizyka.pojava.BitkowskaKysiak;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
 
 
@@ -28,6 +29,33 @@ public class FunctAndConst {
     	return (c == GRANITE || c == LIMESTONE || c == SAND || c == SAND_GROUND);
     }
     
+    public static int[] randomBorderPixel(int x_dim, int y_dim) {
+        Random rand = new Random();
+        int edge = rand.nextInt(4); 
+        int x = 0, y = 0;
+
+        switch (edge) {
+            case 0: // Top edge
+                x = rand.nextInt(x_dim);
+                y = 0;
+                break;
+            case 1: // Bottom edge
+                x = rand.nextInt(x_dim);
+                y = y_dim - 1;
+                break;
+            case 2: // Left edge
+                x = 0;
+                y = rand.nextInt(y_dim);
+                break;
+            case 3: // Right edge
+                x = x_dim - 1;
+                y = rand.nextInt(y_dim);
+                break;
+        }
+
+        return new int[]{x, y};
+    }
+
     
     public static void buttonStyling(JButton button, Color bgColor, Color fgColor) {
         button.setBackground(bgColor);

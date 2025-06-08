@@ -30,7 +30,7 @@ public class GamePanel extends JPanel implements GameInterface
 	private JComboBox<String> numbSrc, lista;
 	private JLabel  field, freq, data1, data2, source, pow;
 	protected JSlider slider, powerSlider, reduceSlider, clusterSlider, sizeSlider, offshootsSlider;
-	private int size = 500, terrainClusters = 1, offshoots = 10;
+	private int size = 500, terrainClusters = 1, offshoots = 10, startPauseCounter = 0;
 	private SimulationPanel inner;
 	private final TerrainGeneration terrainGen;
 	private boolean gen = true; //flaga do generowania terenu
@@ -88,6 +88,7 @@ public class GamePanel extends JPanel implements GameInterface
 
 			    inner.setMaxSources(numbSource);
 			    inner.setFreq(currentFreq);
+			    inner.respawnWorm();
 			    
 			    numbSrc.setEnabled(true);
 			    lista.setEnabled(true);
@@ -103,7 +104,9 @@ public class GamePanel extends JPanel implements GameInterface
 			    
 			    
 	            clusterSlider.setValue(clusterSlider.getMinimum());   
-	            sizeSlider.setValue(sizeSlider.getMinimum());      
+	            sizeSlider.setValue(sizeSlider.getMinimum()); 
+	            
+	            startPauseCounter = 0;
 	         
 				} catch(Exception ex) {
 					ex.printStackTrace();
@@ -264,8 +267,16 @@ public class GamePanel extends JPanel implements GameInterface
 		onOff.addActionListener(e -> {
 			try {
 				if(currentFreq == 0) throw new MyException("Frequency value is zero!");
-				if(inner.getSelectedSources().size() != numbSource) throw new MyException("Invalid number of sources!");
+				
 
+				if (!on && startPauseCounter ==0)
+				{ 
+				    if (inner.getSelectedSources().size() != numbSource)
+				        throw new MyException("Invalid number of sources!");
+				}
+
+				startPauseCounter++;
+				
 		        String input = tField.getText().trim();
 
 		        // If the input matches a valid decimal number
@@ -289,6 +300,8 @@ public class GamePanel extends JPanel implements GameInterface
 		    onOff.setText(on ? "PAUSE" : "RUN"); 
 		    FunctAndConst.disableButton(generate);
 		    FunctAndConst.disableButton(back);
+		    
+		    
 			
 		    if(onOff.getText().equals("PAUSE")) inner.pauseSim(true);
 		    

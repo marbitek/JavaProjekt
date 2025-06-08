@@ -51,17 +51,36 @@ public class SimulationPanel extends JPanel implements Runnable
 	private long simulationStartTime = 0;
 	private long totalElapsedTime = 0;
 	
+	//robal (robale?)
+	private Worm worm;
+	private int[] wormPosition;
+	private int wormSize = 20;
+	
 	/**
 	 * Klasa Źródło fali
 	 */
-    private static class Source {
+    public static class Source {
     	int x,y; 
     	
     	Source(int x,int y){
     		this.x=x;
     		this.y=y;
-    		} 
+    		}
+    	
+        public int getX() {return x;}
+        public int getY() {return y;}
     	}
+    
+    public boolean isSourceAt(int x, int y, List<Source> sources) 
+    {
+        for (Source s : sources) {
+            if (s.getX() == x && s.getY() == y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     
     /**
      * maksymalna liczba zrodel
@@ -91,6 +110,10 @@ public class SimulationPanel extends JPanel implements Runnable
      */
     public void setFreq(double freq) {
     	this.freq = freq;
+    }
+    
+    public double[][] getCurrentField() {
+        return current;
     }
     
     /**
@@ -192,6 +215,14 @@ public class SimulationPanel extends JPanel implements Runnable
                     repaint();  // kolorowanie pixela
                 }
             }});
+        
+        
+        wormPosition = FunctAndConst.randomBorderPixel(x_dim, y_dim); 
+        worm = new Worm(wormPosition[0], wormPosition[1]);
+        //System.out.println(wormPosition[0]+"   " +wormPosition[1]);
+
+        
+        
         new Thread(this).start();
 	}
 	
@@ -315,6 +346,12 @@ public class SimulationPanel extends JPanel implements Runnable
         }
     }
     
+    public void respawnWorm()
+    {
+        wormPosition = FunctAndConst.randomBorderPixel(x_dim, y_dim ); 
+        worm = new Worm(wormPosition[0], wormPosition[1]);
+    }
+    
     //metody zwiazane z zegarem
     public long getElapsedMs() 
     	{
@@ -372,14 +409,20 @@ public class SimulationPanel extends JPanel implements Runnable
         	  g.setColor(Color.RED);
               int r = 2;                    // promień kółka w pikselach
               for (Point src : selectedSources) {
-                  int cx = src.x * getWidth()  / imgW;   // jeśli rysujesz skalowane
-                  int cy = src.y * getHeight() / imgH;
-                  //g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
+                  //int cx = src.x * getWidth()  / imgW;   // jeśli rysujesz skalowane
+                  //int cy = src.y * getHeight() / imgH;
+            	  int cx = src.x * getWidth()  / x_dim;
+            	  int cy = src.y * getHeight() / y_dim;
+
+            	  
+            	  //g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
                   // jeśli chcesz wypełnione kółko, użyj fillOval:
                    g.fillOval(cx - r, cy - r, 2 * r, 2 * r);
             }
         }
-    }
+
+
+        }
 
 
     /**
@@ -463,6 +506,21 @@ public class SimulationPanel extends JPanel implements Runnable
         }
     }
     	
+    	
+    	private void drawWorm() {
+    	    for (int dy = 0; dy < wormSize; dy++) {
+    	        for (int dx = 0; dx < wormSize; dx++) {
+    	            int wx = worm.getX() + dx;
+    	            int wy = worm.getY() + dy;
+    	            if (wx >= 0 && wx < x_dim && wy >= 0 && wy < y_dim) {
+    	                pixelGrid.get(wy).get(wx).setClr(worm.getClr());
+    	                paintPxl(wx, wy, worm.getClr());
+    	            }
+    	        }
+    	    }
+    	}
+
+    	
     	   @Override
     	    public void run() {
     	        long lastImpulseTime = System.currentTimeMillis();
@@ -482,6 +540,33 @@ public class SimulationPanel extends JPanel implements Runnable
     	                    }
     	                    	lastImpulseTime = now;
     	                	}
+    	                
+	    	                double[][] field = getCurrentField(); // your wave amplitude field
+	    	                int wx = (int) worm.getX();
+	    	                int wy = (int) worm.getY();
+	
+	    	                if (!worm.isActivated()) {
+	    	                    if (wx >= 0 && wy >= 0 && wx < x_dim && wy < y_dim) {
+	    	                        if (Math.abs(field[wx][wy]) > 0.01) { 
+	    	                            worm.setActivated(true);
+	    	                            drawWorm();
+	    	                        }
+	    	                    }
+	    	                }
+
+    	                if(worm.isActivated())	
+    	                {
+    	                	drawWorm();
+    	                	if (!worm.hasTarget()) {
+    	                	    int[] newTarget = worm.setDirection(this, 2*wormSize);
+    	                	    if (newTarget != null) {
+    	                	        worm.setTarget(newTarget[0], newTarget[1]);
+    	                	    }
+    	                	} else {
+    	                	    worm.moveTowardTarget();
+    	                	}
+    	            	}
+
     	            	}
     	        	}
     	            repaint();
