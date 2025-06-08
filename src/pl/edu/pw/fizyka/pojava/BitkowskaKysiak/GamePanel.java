@@ -35,7 +35,7 @@ public class GamePanel extends JPanel implements GameInterface
 	private final TerrainGeneration terrainGen;
 	private boolean gen = true; //flaga do generowania terenu
 	private boolean on = false;  //flaga do przechowywania stanu
-	private double parameterReduction = 2, clusterSizeParameter = 3, number = 0;
+	private double parameterReduction = 2, clusterSizeParameter = 1, number = 0;
 	private JTextField tField;
 	
 	public GamePanel() {
