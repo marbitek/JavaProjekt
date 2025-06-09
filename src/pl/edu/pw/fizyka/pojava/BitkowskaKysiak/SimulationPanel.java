@@ -320,12 +320,16 @@ public class SimulationPanel extends JPanel implements Runnable
      * Metoda aktualizująca kolory pixelów symulowanej fali 
      */
     private void updatePixels() {
+    	if(!simRunning) return;
+    	
         synchronized (this) {
             if (pixelGrid == null || pixelGrid.size() != y_dim || pixelGrid.get(0).size() != x_dim) {
                 System.err.println("PixelGrid not initialized or invalid dimensions. Skipping update.");
                 return;
             }
 
+            Graphics2D g2 = panelImage.createGraphics();
+            try {
             for (int y = 0; y < y_dim; y++) {
                 List<Pixel> row = pixelGrid.get(y);
                 for (int x = 0; x < x_dim; x++) {
@@ -340,11 +344,19 @@ public class SimulationPanel extends JPanel implements Runnable
 
                     Color shaded = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
                     p.setClr(shaded);
-                    paintPxl(x, y, shaded);
+                    
+                    //paintPxl(x, y, shaded);
+                    g2.setColor(shaded);
+                    g2.fillRect(x * pixelSize, y * pixelSize,
+                                pixelSize, pixelSize);
                 }
             }
-        }
-    }
+            }finally {g2.dispose();
+            }
+           }
+          }
+        
+    
     
     public void respawnWorm()
     {
@@ -566,11 +578,13 @@ public class SimulationPanel extends JPanel implements Runnable
     	                	    worm.moveTowardTarget();
     	                	}
     	            	}
-
+    	                SwingUtilities.invokeLater(this::repaint);
     	            	}
+    	            
     	        	}
-    	            repaint();
-    	            //try { Thread.sleep(16); } catch (InterruptedException ignored) {}
+    	            //repaint(); 
+    	        	
+    	        try { Thread.sleep(33); } catch (InterruptedException ignored) {}
     	        }
     	    }
 

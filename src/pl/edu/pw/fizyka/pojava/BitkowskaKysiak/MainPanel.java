@@ -20,7 +20,7 @@ public class MainPanel extends JFrame {
 	static WelcomePanel welcomePanel;
 	static GamePanel gamePanel;
 	static CardLayout card;
-	static BazaDanych baza;
+	static protected BazaDanych baza;
 	
 	public MainPanel() throws SQLException  
 	{
@@ -43,7 +43,9 @@ public class MainPanel extends JFrame {
         new SwingWorker<BazaDanych, Void>() {
             @Override
             protected BazaDanych doInBackground() throws Exception {
-                // tu dopiero tworzymy połączenie (ciężka operacja)
+            
+            	FunctAndConst.disableButton(welcomePanel.start);
+                // tu dopiero tworzymy połączenie
                 return new BazaDanych();
             }
             @Override
@@ -51,11 +53,10 @@ public class MainPanel extends JFrame {
                 try {
                     baza = get();                   // wynik new BazaDanych()
                     welcomePanel.start.setEnabled(true);
+                    FunctAndConst.enableButton(welcomePanel.start, new Color(240, 248, 255), new Color(128, 0, 0));
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(
-                        MainPanel.this,
-                        "Nie udało się połączyć z bazą:\n" + ex.getMessage(),
-                        "Błąd połączenia",
+                        MainPanel.this,"Nie udało się połączyć z bazą:\n" + ex.getMessage(),"Błąd połączenia",
                         JOptionPane.ERROR_MESSAGE
                     );
                     System.exit(1);
@@ -68,7 +69,8 @@ public class MainPanel extends JFrame {
 	        
 	        String nickFinal = nick.isEmpty() ? "Stranger" : nick;
 	      
-	        welcomePanel.start.setEnabled(false);
+	       
+	        FunctAndConst.disableButton(welcomePanel.start);
 
 	        new SwingWorker<Void, Void>() {
                 @Override
@@ -78,7 +80,8 @@ public class MainPanel extends JFrame {
                 }
                 @Override
                 protected void done() {
-                    welcomePanel.start.setEnabled(true);
+                    
+                    FunctAndConst.enableButton(welcomePanel.start, new Color(240, 248, 255), new Color(128, 0, 0));
                     // komunikat i przejście na panel gry
                     String info = String.format("""
                         Welcome %s in Dune Harmonics!
@@ -112,18 +115,11 @@ public class MainPanel extends JFrame {
 	        card.show(homeContainer, "Welcome Panel");
 	        WelcomePanel.insertNick.setText("");
 	        gamePanel.reset.doClick(); //aktywacja resetu przy powrocie
-	        javax.swing.JOptionPane.showMessageDialog(
-		            this,
-		            baza.listOfUsers(),
-		            "Users",
-		            javax.swing.JOptionPane.INFORMATION_MESSAGE
-		        );});
+	    });
 	    
 	    frame.add(homeContainer);
 	    card.show(homeContainer, "Welcome Panel");
 	   
-	    //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-	    //frame.pack();
 	    frame.setVisible(true);
 	}
 

@@ -9,7 +9,9 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.util.TimerTask;
+import java.util.Timer;
+import javax.swing.SwingUtilities;
 
 public class GamePanel extends JPanel implements GameInterface
 {
@@ -37,6 +39,9 @@ public class GamePanel extends JPanel implements GameInterface
 	private boolean on = false;  //flaga do przechowywania stanu
 	private double parameterReduction = 2, clusterSizeParameter = 1, number = 0;
 	private JTextField tField;
+	private Timer countdownTimer;
+
+	
 	
 	public GamePanel() {
 		
@@ -153,6 +158,11 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		//OBIEKT TYPU SIMULATION PANEL!
 		inner = new SimulationPanel(size, size, 1, 500, 500);  //500x500 pixeli
+		
+		Thread simThread = new Thread(inner);
+		simThread.setDaemon(true);
+		simThread.start();
+		
 		terrainGen = new TerrainGeneration(inner);
 		Border padding = BorderFactory.createMatteBorder(15, 15, 15, 15, Color.ORANGE);
 		Border ramka = BorderFactory.createLineBorder(Color.black, 3);
@@ -262,6 +272,27 @@ public class GamePanel extends JPanel implements GameInterface
 		data2 = new JLabel("Harvested spice: 0.00 t");
 		
 	
+		/*Timer countdownTimer = new Timer(100, e -> {
+		    if (number > 0) {
+		        data1.setText(String.format("Time elapsed: %.2f s", number));
+		        number -= 10 / 1000.0;
+		    } else {
+		        ((Timer)e.getSource()).stop();    // zatrzymaj timer
+		        data1.setText("Time elapsed: 0 s");
+		        reset.doClick();                  // kliknij reset
+		        javax.swing.JOptionPane.showMessageDialog(
+			            this,
+			            MainPanel.baza.listOfUsers(),
+			            "Users",
+			            javax.swing.JOptionPane.INFORMATION_MESSAGE
+			        );
+		    }
+		});*/
+		
+
+	
+		
+		
 		//GUZIK RUN -> PAUSe
 		onOff = new JButton("RUN");
 		onOff.addActionListener(e -> {
@@ -278,17 +309,45 @@ public class GamePanel extends JPanel implements GameInterface
 				startPauseCounter++;
 				
 		        String input = tField.getText().trim();
+		        
+		        if (countdownTimer != null) {
+		            countdownTimer.cancel();
+		        }
+		        
 
 		        // If the input matches a valid decimal number
-		        if (input.matches("\\d+(\\.\\d+)?")) {
+		        if (input.matches("\\d+(\\.\\d+)?") && input != null) {
 		            double temp = Double.parseDouble(input);
 		            if (temp > 0) {
 		                number = temp; // valid input, update number
+		        	    countdownTimer = new Timer();
+		        	    countdownTimer.scheduleAtFixedRate(new TimerTask() {
+		        	        @Override public void run() {
+		        	            number -= 0.1;
+		        	            if (number > 0) {
+		        	                // aktualizacja UI tylko przez EDT
+		        	                SwingUtilities.invokeLater(() ->
+		        	                    data1.setText(String.format("Time elapsed: %.1f s", number))
+		        	                );
+		        	            } else {
+		        	                countdownTimer.cancel();
+		        	                SwingUtilities.invokeLater(() -> {
+		        	                    data1.setText("Time elapsed: 0.0 s");
+		        	                    reset.doClick();
+		        	                    // ewentualnie pokaz listę userów:
+		        	                    JOptionPane.showMessageDialog(GamePanel.this,
+		        	                        MainPanel.baza.listOfUsers(), "Users",
+		        	                        JOptionPane.INFORMATION_MESSAGE);
+		        	                });
+		        	            }
+		        	        }
+		        	    }, 0, 100);  // co 100 ms
 		            } else {
 		                number = 0; // invalid (zero or negative), reset to 0
 		            }
 		        } else {
 		            number = 0; // not a valid number, reset to 0
+		            throw new MyException("Time of simulation is not set!");
 		        }
 		        
 			tField.setEnabled(false);
@@ -303,13 +362,18 @@ public class GamePanel extends JPanel implements GameInterface
 		    
 		    
 			
-		    if(onOff.getText().equals("PAUSE")) inner.pauseSim(true);
+		    if(onOff.getText().equals("PAUSE")) {
+		    	inner.pauseSim(true);
+		    	
+
+		    }
 		    
 			} catch (MyException ex) {
 				JOptionPane.showMessageDialog(GamePanel.this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		});
 
+		
 		
 		//SUWAK MOCY
 		powerSlider = new JSlider(JSlider.HORIZONTAL, 25, 75, 50);
@@ -466,6 +530,8 @@ public class GamePanel extends JPanel implements GameInterface
 		JLabel tFieldLabel1 = new JLabel("End simulation after (s):");
 		tFieldLabel1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
+
+		
 		
 		p6.add(tFieldLabel1);
 		p6.add(tField);
@@ -492,7 +558,7 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		this.add(genPanel, BorderLayout.WEST);
 		
-		//timer
+		/*//timer
 		Timer elapsedTimer = new Timer(100, new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
@@ -506,7 +572,8 @@ public class GamePanel extends JPanel implements GameInterface
 		    }
 		});
 		elapsedTimer.start();
-		
+		*/
+
 		
 		//ESTETYKA
 		FunctAndConst.buttonStyling(back, new Color(240, 248, 255), new Color(128, 0, 0));
