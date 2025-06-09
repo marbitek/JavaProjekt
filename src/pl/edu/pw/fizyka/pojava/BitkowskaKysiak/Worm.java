@@ -15,7 +15,8 @@ public class Worm {
     private boolean hasTarget = false;
     private boolean activated = false;
     
-    public Worm(int startX, int startY) {
+    public Worm(int startX, int startY) 
+    {
         this.x = startX;
         this.y = startY;
     }
