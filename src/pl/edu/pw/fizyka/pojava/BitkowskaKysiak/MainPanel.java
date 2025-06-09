@@ -36,10 +36,9 @@ public class MainPanel extends JFrame {
 		
 	    welcomePanel = new WelcomePanel();
 	    homeContainer.add(welcomePanel, "Welcome Panel");
-	    //welcomePanel.start.addActionListener(e -> card.show(homeContainer, "Game Panel"));
 	    
-	    //baza = new BazaDanych();
 	    
+	    //oddzielny wątek do łączenia z bazą żeby nie zacinać gui
         new SwingWorker<BazaDanych, Void>() {
             @Override
             protected BazaDanych doInBackground() throws Exception {
@@ -51,7 +50,7 @@ public class MainPanel extends JFrame {
             @Override
             protected void done() {
                 try {
-                    baza = get();                   // wynik new BazaDanych()
+                    baza = get();//baza danych
                     welcomePanel.start.setEnabled(true);
                     FunctAndConst.enableButton(welcomePanel.start, new Color(240, 248, 255), new Color(128, 0, 0));
                 } catch (Exception ex) {
@@ -72,7 +71,7 @@ public class MainPanel extends JFrame {
 	       
 	        FunctAndConst.disableButton(welcomePanel.start);
 
-	        new SwingWorker<Void, Void>() {
+	        new SwingWorker<Void, Void>() {//anonimowa klasa dziedzicząca - używana do działania w tle
                 @Override
                 protected Void doInBackground() throws Exception {
                     baza.addUser(nickFinal);
@@ -90,7 +89,7 @@ public class MainPanel extends JFrame {
                         • Chose the type of field,
                         • Chose the number of sources,
                         • Set the frequency of the sources,
-                        • Observe the data.
+                        • Set the time of simulation.
 
                         Click OK to start the game!
                              """, nickFinal);

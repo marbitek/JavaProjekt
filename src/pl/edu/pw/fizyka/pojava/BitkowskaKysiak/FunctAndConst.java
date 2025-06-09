@@ -18,7 +18,7 @@ public class FunctAndConst {
 	protected static final Color buttonFg = new Color(128, 0, 0);
 	
 	protected static final double c = 343.0 *1.6;   // prędkość dźwięku m/s
-    protected static int amplitude = 50; //amplituda fali
+    protected static int amplitude = 100; //amplituda fali
     protected static final double brightnessFactor = 255.0 / amplitude;
 
 	

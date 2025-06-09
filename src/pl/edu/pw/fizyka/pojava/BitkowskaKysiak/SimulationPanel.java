@@ -301,12 +301,12 @@ public class SimulationPanel extends JPanel implements Runnable
              
         //  Absorbing boundary zero: fala ginie na krawędzi
         for (int y = 0; y < rows; y++) {
-            next[0       ][y] = current[1       ][y];  // lewy brzeg = druga kolumna
-            next[cols-1  ][y] = current[cols-2  ][y];  // prawy brzeg = przedostatnia kolumna
+            next[0][y] = current[1][y];  // lewy brzeg = druga kolumna
+            next[cols-1][y] = current[cols-2][y];  // prawy brzeg = przedostatnia kolumna
         }
         for (int x = 0; x < cols; x++) {
-            next[x][0       ] = current[x][1       ];  // górny brzeg = drugi wiersz
-            next[x][rows-1  ] = current[x][rows-2  ];  // dolny brzeg = przedostatni wiersz
+            next[x][0] = current[x][1];  // górny brzeg = drugi wiersz
+            next[x][rows-1] = current[x][rows-2];  // dolny brzeg = przedostatni wiersz
         }
 
         double[][] tmp = previous; 
@@ -348,13 +348,14 @@ public class SimulationPanel extends JPanel implements Runnable
                     //paintPxl(x, y, shaded);
                     g2.setColor(shaded);
                     g2.fillRect(x * pixelSize, y * pixelSize,
-                                pixelSize, pixelSize);
+                                pixelSize, pixelSize);//rysowanie tylko potrzebnych - odciązenie symulacji
                 }
+              }
+            } finally {
+            	g2.dispose();
             }
-            }finally {g2.dispose();
-            }
-           }
-          }
+         }
+       }
         
     
     
@@ -419,22 +420,14 @@ public class SimulationPanel extends JPanel implements Runnable
         
         if (!simRunning) {
         	  g.setColor(Color.RED);
-              int r = 2;                    // promień kółka w pikselach
+              int r = 2; // promień kółka w pikselach
               for (Point src : selectedSources) {
-                  //int cx = src.x * getWidth()  / imgW;   // jeśli rysujesz skalowane
-                  //int cy = src.y * getHeight() / imgH;
             	  int cx = src.x * getWidth()  / x_dim;
             	  int cy = src.y * getHeight() / y_dim;
-
-            	  
-            	  //g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
-                  // jeśli chcesz wypełnione kółko, użyj fillOval:
-                   g.fillOval(cx - r, cy - r, 2 * r, 2 * r);
+                  g.fillOval(cx - r, cy - r, 2 * r, 2 * r);
             }
         }
-
-
-        }
+    }
 
 
     /**
@@ -453,8 +446,8 @@ public class SimulationPanel extends JPanel implements Runnable
         // czyszczenie bufory
         for (int i = 0; i < x_dim; i++) {
             Arrays.fill(previous[i], 0);
-            Arrays.fill(current[i],  0);
-            Arrays.fill(next[i],     0);
+            Arrays.fill(current[i], 0);
+            Arrays.fill(next[i], 0);
         }
         
         panelImage = new BufferedImage(imgW, imgH, BufferedImage.TYPE_INT_RGB);
@@ -584,7 +577,7 @@ public class SimulationPanel extends JPanel implements Runnable
     	        	}
     	            //repaint(); 
     	        	
-    	        try { Thread.sleep(33); } catch (InterruptedException ignored) {}
+    	        try { Thread.sleep(33); } catch (InterruptedException ignored) {}//musi być by odciążyć EDT
     	        }
     	    }
 
