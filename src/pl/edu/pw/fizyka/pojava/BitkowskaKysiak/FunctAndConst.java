@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class FunctAndConst {
 	
-	protected static final Color SAND_GROUND = new Color(237, 251, 200);
+	protected static final Color SAND_GROUND = new Color(213, 197, 157);
 	protected static final Color SAND = new Color(237, 201, 175);
 	protected static final Color GRANITE = new Color(169, 169, 169);
 	protected static final Color LIMESTONE = new Color(245, 245, 220);
@@ -17,8 +17,8 @@ public class FunctAndConst {
 	protected static final Color buttonBg = new Color(240, 248, 255);
 	protected static final Color buttonFg = new Color(128, 0, 0);
 	
-	protected static final double c = 343.0 *1.5;   // prędkość dźwięku m/s
-    protected static int amplitude = 20; //amplituda fali
+	protected static final double c = 343.0 *1.6;   // prędkość dźwięku m/s
+    protected static int amplitude = 100; //amplituda fali
     protected static final double brightnessFactor = 255.0 / amplitude;
 
 	

@@ -54,12 +54,12 @@ public class TerrainGeneration {
 			    
 			    
 			    Color terrainColor = switch (type) {
-			        case "Sand" -> FunctAndConst.SAND;
+			        case "Sand" -> FunctAndConst.SAND_GROUND;
 			        case "Granite" -> FunctAndConst.GRANITE;   
 			        case "Limestone" -> FunctAndConst.LIMESTONE;
 			        default -> {
 			            System.out.println("Unknown terrain type selected.");
-			            yield FunctAndConst.SAND;
+			            yield FunctAndConst.SAND_GROUND;
 			        }
 			    }; 
 		

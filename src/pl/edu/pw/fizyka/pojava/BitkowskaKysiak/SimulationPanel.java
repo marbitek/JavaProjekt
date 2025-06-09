@@ -301,12 +301,12 @@ public class SimulationPanel extends JPanel implements Runnable
              
         //  Absorbing boundary zero: fala ginie na krawędzi
         for (int y = 0; y < rows; y++) {
-            next[0       ][y] = current[1       ][y];  // lewy brzeg = druga kolumna
-            next[cols-1  ][y] = current[cols-2  ][y];  // prawy brzeg = przedostatnia kolumna
+            next[0][y] = current[1][y];  // lewy brzeg = druga kolumna
+            next[cols-1][y] = current[cols-2][y];  // prawy brzeg = przedostatnia kolumna
         }
         for (int x = 0; x < cols; x++) {
-            next[x][0       ] = current[x][1       ];  // górny brzeg = drugi wiersz
-            next[x][rows-1  ] = current[x][rows-2  ];  // dolny brzeg = przedostatni wiersz
+            next[x][0] = current[x][1];  // górny brzeg = drugi wiersz
+            next[x][rows-1] = current[x][rows-2];  // dolny brzeg = przedostatni wiersz
         }
 
         double[][] tmp = previous; 
@@ -320,12 +320,16 @@ public class SimulationPanel extends JPanel implements Runnable
      * Metoda aktualizująca kolory pixelów symulowanej fali 
      */
     private void updatePixels() {
+    	if(!simRunning) return;
+    	
         synchronized (this) {
             if (pixelGrid == null || pixelGrid.size() != y_dim || pixelGrid.get(0).size() != x_dim) {
                 System.err.println("PixelGrid not initialized or invalid dimensions. Skipping update.");
                 return;
             }
 
+            Graphics2D g2 = panelImage.createGraphics();
+            try {
             for (int y = 0; y < y_dim; y++) {
                 List<Pixel> row = pixelGrid.get(y);
                 for (int x = 0; x < x_dim; x++) {
@@ -340,11 +344,20 @@ public class SimulationPanel extends JPanel implements Runnable
 
                     Color shaded = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
                     p.setClr(shaded);
-                    paintPxl(x, y, shaded);
+                    
+                    //paintPxl(x, y, shaded);
+                    g2.setColor(shaded);
+                    g2.fillRect(x * pixelSize, y * pixelSize,
+                                pixelSize, pixelSize);//rysowanie tylko potrzebnych - odciązenie symulacji
                 }
+              }
+            } finally {
+            	g2.dispose();
             }
-        }
-    }
+         }
+       }
+        
+    
     
     public void respawnWorm()
     {
@@ -407,22 +420,14 @@ public class SimulationPanel extends JPanel implements Runnable
         
         if (!simRunning) {
         	  g.setColor(Color.RED);
-              int r = 2;                    // promień kółka w pikselach
+              int r = 2; // promień kółka w pikselach
               for (Point src : selectedSources) {
-                  //int cx = src.x * getWidth()  / imgW;   // jeśli rysujesz skalowane
-                  //int cy = src.y * getHeight() / imgH;
             	  int cx = src.x * getWidth()  / x_dim;
             	  int cy = src.y * getHeight() / y_dim;
-
-            	  
-            	  //g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
-                  // jeśli chcesz wypełnione kółko, użyj fillOval:
-                   g.fillOval(cx - r, cy - r, 2 * r, 2 * r);
+                  g.fillOval(cx - r, cy - r, 2 * r, 2 * r);
             }
         }
-
-
-        }
+    }
 
 
     /**
@@ -441,8 +446,8 @@ public class SimulationPanel extends JPanel implements Runnable
         // czyszczenie bufory
         for (int i = 0; i < x_dim; i++) {
             Arrays.fill(previous[i], 0);
-            Arrays.fill(current[i],  0);
-            Arrays.fill(next[i],     0);
+            Arrays.fill(current[i], 0);
+            Arrays.fill(next[i], 0);
         }
         
         panelImage = new BufferedImage(imgW, imgH, BufferedImage.TYPE_INT_RGB);
@@ -566,11 +571,13 @@ public class SimulationPanel extends JPanel implements Runnable
     	                	    worm.moveTowardTarget();
     	                	}
     	            	}
-
+    	                SwingUtilities.invokeLater(this::repaint);
     	            	}
+    	            
     	        	}
-    	            repaint();
-    	            //try { Thread.sleep(16); } catch (InterruptedException ignored) {}
+    	            //repaint(); 
+    	        	
+    	        try { Thread.sleep(33); } catch (InterruptedException ignored) {}//musi być by odciążyć EDT
     	        }
     	    }
 

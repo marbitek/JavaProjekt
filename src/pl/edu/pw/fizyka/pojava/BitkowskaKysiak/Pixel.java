@@ -96,7 +96,7 @@ public class Pixel {
      */
     public void draw(Graphics g, int size) {
         if (thisTerrainType.equals("Sand")) {
-            g.setColor(FunctAndConst.SAND);
+            g.setColor(FunctAndConst.SAND_GROUND);
         } else if (thisTerrainType.equals("Granite")) {
             g.setColor(FunctAndConst.GRANITE);
         } else if (thisTerrainType.equals("Limestone")) {
