@@ -1,11 +1,11 @@
 DO ZROBIENIA:
-1. baza danych z listą graczy i rankingiem (na razie można ich sortować względem najkrótszego czasu)
-2. suwaczki
-2. generacja terenu, poprawa piasku żeby fale się od niego nie odbijały 
-3. poprawić kolorki (X)
+1. baza danych z listą graczy i rankingiem (na razie można ich sortować względem najkrótszego czasu) (wykonano)
+2. suwaczki (pominąć)
+2. generacja terenu, poprawa piasku żeby fale się od niego nie odbijały (wykonano)
+3. poprawić kolorki (X) (wwykonano)
 5. połączyć fale z gen terenu, odbijanie/przejscie z inna predkoscia przez osrodki (X) 
 6. poprawić damping i prędkość rozchodzenia (X)
-7. robal
+7. robal (wykonano)
 8. koparka
 9. moc
 10. pokomentować i uporządkować kod

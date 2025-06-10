@@ -32,7 +32,7 @@ public class GamePanel extends JPanel implements GameInterface
 	private JComboBox<String> numbSrc, lista;
 	private JLabel  field, freq, data1, data2, source, pow;
 	protected JSlider slider, powerSlider, reduceSlider, clusterSlider, sizeSlider, offshootsSlider;
-	private int size = 500, terrainClusters = 1, offshoots = 10, startPauseCounter = 0;
+	private int size = 500, terrainClusters = 1, offshoots = 10, startPauseCounter = 0, Pvalue = 50;
 	private SimulationPanel inner;
 	private final TerrainGeneration terrainGen;
 	private boolean gen = true; //flaga do generowania terenu
@@ -157,7 +157,7 @@ public class GamePanel extends JPanel implements GameInterface
 		innerPanel.setMinimumSize(new Dimension(500, 500));
 		
 		//OBIEKT TYPU SIMULATION PANEL!
-		inner = new SimulationPanel(size, size, 1, 500, 500);  //500x500 pixeli
+		inner = new SimulationPanel(size, size, 1, 500, 500, Pvalue);  //500x500 pixeli
 		
 		Thread simThread = new Thread(inner);
 		simThread.setDaemon(true);
@@ -395,8 +395,10 @@ public class GamePanel extends JPanel implements GameInterface
 		powerSlider.addChangeListener(new ChangeListener() {
            @Override
            public void stateChanged(ChangeEvent e) {
-               int Pvalue = powerSlider.getValue();
+               Pvalue = powerSlider.getValue();
                pow.setText(String.valueOf("Excavation power: " + Pvalue + " MW"));
+               
+               if(inner.getKoparka() != null) inner.getKoparka().setPow(Pvalue);
             }
         });
 		

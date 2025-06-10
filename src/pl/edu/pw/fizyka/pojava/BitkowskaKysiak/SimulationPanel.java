@@ -51,6 +51,10 @@ public class SimulationPanel extends JPanel implements Runnable
 	private long simulationStartTime = 0;
 	private long totalElapsedTime = 0;
 	
+	//koparka
+	private Source koparka;
+	private int excavationPower;
+	
 	//robal (robale?)
 	private Worm worm;
 	private int[] wormPosition;
@@ -60,16 +64,26 @@ public class SimulationPanel extends JPanel implements Runnable
 	 * Klasa Źródło fali
 	 */
     public static class Source {
-    	int x,y; 
+    	int x,y, power = 1; 
     	
     	Source(int x,int y){
     		this.x=x;
     		this.y=y;
     		}
     	
+    	Source(int x,int y, int power){
+    		this.x=x;
+    		this.y=y;
+    		this.power = (int)(power*0.1);    		}
+    	
         public int getX() {return x;}
         public int getY() {return y;}
+        
+        public void setPow(int newPower) {power = newPower;}
+        public int getPow() {return power;}
     	}
+    
+    public Source getKoparka() {return koparka;}
     
     public boolean isSourceAt(int x, int y, List<Source> sources) 
     {
@@ -158,10 +172,11 @@ public class SimulationPanel extends JPanel implements Runnable
      * @param GamePanelX
      * @param GamePanelY
      */
-	public SimulationPanel(int X, int Y, int size, int GamePanelX, int GamePanelY)
+	public SimulationPanel(int X, int Y, int size, int GamePanelX, int GamePanelY, int power)
 	{
 		this.x_dim = X;
 		this.y_dim = Y;
+		this.excavationPower = power;
 		
 		if (x_dim <= 0 || y_dim <= 0) {
 		    throw new IllegalArgumentException("x_dim and y_dim must be > 0");
@@ -211,7 +226,11 @@ public class SimulationPanel extends JPanel implements Runnable
 
                 Point p = new Point(gx, gy);
                 if (!selectedSources.contains(p)) {
-                    selectedSources.add(p);
+                	if(selectedSources.isEmpty())
+                	{
+                		koparka = new Source(gx, gy, excavationPower);
+                	} else selectedSources.add(p);
+                    
                     repaint();  // kolorowanie pixela
                 }
             }});
