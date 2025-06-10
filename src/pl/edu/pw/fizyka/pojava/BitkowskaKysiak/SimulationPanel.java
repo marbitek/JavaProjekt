@@ -35,6 +35,7 @@ public class SimulationPanel extends JPanel implements Runnable
 	// Lista źródeł fali
     private final List<Source> sources = new ArrayList<>();
     private final List<Point> selectedSources = new ArrayList<>();   // lista zaznaczonych lokalizacji
+    public int sourceCounter = 0;
 	
 	 // Buffory stanu fali
     private double[][] previous, current, next;
@@ -151,9 +152,18 @@ public class SimulationPanel extends JPanel implements Runnable
             resumeElapsedTime();
 
             sources.clear();
-            for (Point p : selectedSources) {
-                sources.add(new Source(p.x, p.y));
+            
+            if (koparka != null) {
+                sources.add(koparka);
             }
+
+            // Then add other selected sources
+            for (Point p : selectedSources) {
+                if (koparka == null || !(koparka.getX() == p.x && koparka.getY() == p.y)) {
+                    sources.add(new Source(p.x, p.y));
+                }
+            }
+            
             selectedSources.clear();
         } else if (this.simRunning && !simRunning) {
             pauseElapsedTime();
@@ -226,10 +236,11 @@ public class SimulationPanel extends JPanel implements Runnable
 
                 Point p = new Point(gx, gy);
                 if (!selectedSources.contains(p)) {
-                	if(selectedSources.isEmpty())
+                	if(sourceCounter == 0)
                 	{
-                		koparka = new Source(gx, gy, excavationPower);
+                		koparka = new Source(p.x, p.y, excavationPower);
                 	} else selectedSources.add(p);
+                    sourceCounter++;
                     
                     repaint();  // kolorowanie pixela
                 }
@@ -440,6 +451,14 @@ public class SimulationPanel extends JPanel implements Runnable
         if (!simRunning) {
         	  g.setColor(Color.RED);
               int r = 2; // promień kółka w pikselach
+              
+              if(koparka != null)
+              {
+        	  int cxk = koparka.x * getWidth()  / x_dim;
+        	  int cyk = koparka.y * getHeight() / y_dim;
+              g.fillOval(cxk - r, cyk - r, 2 * r, 2 * r);
+              }
+              
               for (Point src : selectedSources) {
             	  int cx = src.x * getWidth()  / x_dim;
             	  int cy = src.y * getHeight() / y_dim;
@@ -565,7 +584,7 @@ public class SimulationPanel extends JPanel implements Runnable
     	                    	lastImpulseTime = now;
     	                	}
     	                
-	    	                double[][] field = getCurrentField(); // your wave amplitude field
+	    	                double[][] field = getCurrentField(); 
 	    	                int wx = (int) worm.getX();
 	    	                int wy = (int) worm.getY();
 	
@@ -577,7 +596,9 @@ public class SimulationPanel extends JPanel implements Runnable
 	    	                        }
 	    	                    }
 	    	                }
-
+	    	            
+	    	            worm.tickCooldown();    
+	    	                
     	                if(worm.isActivated())	
     	                {
     	                	drawWorm();

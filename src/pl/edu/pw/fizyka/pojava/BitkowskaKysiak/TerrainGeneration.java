@@ -190,8 +190,8 @@ public class TerrainGeneration {
 			    p.applyTerrainSpec(specifier);
 			    }
 			    
-		        System.out.println("Pixels added: "+pixelsAdded);
-		        System.out.println("Pixels removed: "+pixelsRemoved);
+		        //System.out.println("Pixels added: "+pixelsAdded);
+		        //System.out.println("Pixels removed: "+pixelsRemoved);
 			    panel.revalidate();
 			    panel.repaint();
 				}

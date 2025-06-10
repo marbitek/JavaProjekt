@@ -100,6 +100,7 @@ public class GamePanel extends JPanel implements GameInterface
 			    inner.setAddEnabled(on);  
 			    inner.setSimRunning(on);
 			    inner.pauseSim(false);
+			    inner.sourceCounter = 0;
 			    
 			    gen = true;
 			    on = false;
@@ -212,7 +213,7 @@ public class GamePanel extends JPanel implements GameInterface
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int index = ((JComboBox<?>) e.getSource()).getSelectedIndex();
-				numbSource = index + 1; //wybieram wspolczynnik odpowiadający indeksowi
+				numbSource = index /*+ 1*/; //wybieram wspolczynnik odpowiadający indeksowi
 				inner.setMaxSources(numbSource);
 				
 				}

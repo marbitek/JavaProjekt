@@ -8,7 +8,7 @@ import pl.edu.pw.fizyka.pojava.BitkowskaKysiak.SimulationPanel.Source;
 
 public class Worm {
 
-    private int x, y; 
+    private int x, y, cooldown = 0; 
     private final double speed = 2; 
     private Color color = Color.BLUE;
     private int targetX = -1, targetY = -1;
@@ -23,6 +23,8 @@ public class Worm {
 
     public int[] setDirection(SimulationPanel panel, int r)
     {
+    	if (cooldown > 0) return null;
+    	
         double[][] amplitudes = panel.getCurrentField(); 
         int xDim = panel.x_dim;
         int yDim = panel.y_dim;
@@ -43,6 +45,7 @@ public class Worm {
                     for (int i = 0; i < sources.size(); i++) {
                         if (nx == sources.get(i).getX() && ny == sources.get(i).getY()) {
                             sources.remove(i);
+                            setCooldown(100);
                             break;
                         }
                     }
@@ -72,48 +75,7 @@ public class Worm {
         }
     }
 
-/*    
-    public int[] setDirection(SimulationPanel panel, int r)
-    {
-        double[][] amplitudes = panel.getCurrentField(); 
-        int xDim = panel.x_dim;
-        int yDim = panel.y_dim;
 
-        int destX = 0, destY = 0;
-        double maxAmplitude = 0;
-
-        for (int dx = -r; dx <= r; dx++) {
-            for (int dy = -r; dy <= r; dy++) {
-                int nx = this.x + dx;
-                int ny = this.y + dy;
-                
-                for (int i = 0; i < panel.getSources().size(); i++) {
-                    if (nx == panel.getSources().get(i).getX() && ny == panel.getSources().get(i).getY()) {
-                    	panel.getSources().remove(i);
-                        break; 
-                    }
-                }
-
-
-
-                if (nx >= 0 && ny >= 0 && nx < xDim && ny < yDim) {
-                    double amp = Math.abs(amplitudes[nx][ny]);
-                    if (amp > maxAmplitude) {
-                        maxAmplitude = amp;
-                        destX = nx;
-                        destY = ny;
-                    }
-                }
-            }
-        }
-
-        if (destX != 0 && destY != 0) {
-            return new int[]{destX, destY}; 
-        } else {
-            return null; 
-        }
-    }
-    */
 
     public void moveTowardTarget() {
         if (!hasTarget) return;
@@ -137,6 +99,17 @@ public class Worm {
         this.targetY = ty;
         this.hasTarget = true;
     }
+    
+    public void setCooldown(int ticks) {
+        this.cooldown = ticks;
+        this.activated = false;
+    }
+
+    public void tickCooldown() {
+        if (cooldown > 0) cooldown--;
+        if (cooldown == 0) activated = true;
+    }
+    
     public boolean hasTarget() {
         return hasTarget;
     }
