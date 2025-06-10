@@ -249,10 +249,7 @@ public class SimulationPanel extends JPanel implements Runnable
         
         wormPosition = FunctAndConst.randomBorderPixel(x_dim, y_dim); 
         worm = new Worm(wormPosition[0], wormPosition[1]);
-        //System.out.println(wormPosition[0]+"   " +wormPosition[1]);
-
-        
-        
+       
         new Thread(this).start();
 	}
 	
@@ -305,16 +302,15 @@ public class SimulationPanel extends JPanel implements Runnable
         
         if(baseCoeff > 0.5) return;
         
-       // weź realny rozmiar siatki:
+       //realny rozmiar siatki:
         int rows = pixelGrid.size();                // liczba wierszy = y_dim
         if (rows == 0) return;
         int cols = pixelGrid.get(0).size();         // liczba kolumn = x_dim
 
-        // upewnij się, że buffory mają te same wymiary:
+        // buffory mają te same wymiary:
         cols = Math.min(cols, current.length);
         rows = Math.min(rows, current[0].length);
 
-        // iteruj tylko do rows-1, cols-1
         for (int y = 1; y < rows - 1; y++) {
             for (int x = 1; x < cols - 1; x++) {
                 Pixel px = pixelGrid.get(y).get(x);
@@ -329,7 +325,7 @@ public class SimulationPanel extends JPanel implements Runnable
             }
         }
              
-        //  Absorbing boundary zero: fala ginie na krawędzi
+        //fala ginie na krawędzi
         for (int y = 0; y < rows; y++) {
             next[0][y] = current[1][y];  // lewy brzeg = druga kolumna
             next[cols-1][y] = current[cols-2][y];  // prawy brzeg = przedostatnia kolumna
@@ -401,28 +397,23 @@ public class SimulationPanel extends JPanel implements Runnable
 	        if (simRunning) 
 	        {
 	            return totalElapsedTime + (System.currentTimeMillis() - simulationStartTime);
-	        } else 
-	        	{
+	        } else {
 	            	return totalElapsedTime;
 	        	}
     }
 
-    public void resetElapsedTime() 
-    {
+    public void resetElapsedTime() {
         simulationStartTime = 0;
         totalElapsedTime = 0;
     }
 
-    public void pauseElapsedTime() 
-    {
-        if (simRunning) 
-        {
+    public void pauseElapsedTime() {
+        if (simRunning) {
             totalElapsedTime += System.currentTimeMillis() - simulationStartTime;
         }
     }
 
-    public void resumeElapsedTime() 
-    {
+    public void resumeElapsedTime() {
         simulationStartTime = System.currentTimeMillis();
     }
     
@@ -498,7 +489,7 @@ public class SimulationPanel extends JPanel implements Runnable
             for (int x = 0; x < x_dim; x++) {
                 Pixel p = new Pixel(x, y, FunctAndConst.SAND, 3, x, y);
                 row.add(p);
-                // od razu nanieś biały piksel
+                //biały piksel
                 paintPxl(x, y, FunctAndConst.SAND);
             }
             pixelGrid.add(row);
@@ -551,19 +542,6 @@ public class SimulationPanel extends JPanel implements Runnable
         }
     }
     	
-    	/*
-    	private void drawWorm() {
-    	    for (int dy = 0; dy < wormSize; dy++) {
-    	        for (int dx = 0; dx < wormSize; dx++) {
-    	            int wx = worm.getX() + dx;
-    	            int wy = worm.getY() + dy;
-    	            if (wx >= 0 && wx < x_dim && wy >= 0 && wy < y_dim) {
-    	                pixelGrid.get(wy).get(wx).setClr(worm.getClr());
-    	                paintPxl(wx, wy, worm.getClr());
-    	            }
-    	        }
-    	    }
-    	}*/
     	
     	private void drawWorm() {
     	    int radius = wormSize / 2;
@@ -575,9 +553,8 @@ public class SimulationPanel extends JPanel implements Runnable
     	            int wx = centerX + dx;
     	            int wy = centerY + dy;
 
-    	            // Check if point is within circle radius
     	            if (dx * dx + dy * dy <= radius * radius) {
-    	                // Bounds check
+    	            	
     	                if (wx >= 0 && wx < x_dim && wy >= 0 && wy < y_dim) {
     	                    pixelGrid.get(wy).get(wx).setClr(worm.getClr());
     	                    paintPxl(wx, wy, worm.getClr());
@@ -640,7 +617,6 @@ public class SimulationPanel extends JPanel implements Runnable
     	            	}
     	            
     	        	}
-    	            //repaint(); 
     	        	
     	        try { Thread.sleep(33); } catch (InterruptedException ignored) {}//musi być by odciążyć EDT
     	        }

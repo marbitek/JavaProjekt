@@ -39,20 +39,9 @@ public class Pixel {
         {
             thisTerrainType = terrainTypes[terrainSpecificator];
         } else {
-        	thisTerrainType = terrainTypes[0];  // „Piasek”
+        	thisTerrainType = terrainTypes[0];// „Piasek”
         }
         
-       /* //prędkość rozchodzenia się dzwięku w danym ośrodku i jego tłumienie
-        if (thisTerrainType.equals("Sand")) {
-            terrainSpeedModifier = 1.2; 
-            setDampLocal(0.996);
-        } else if (thisTerrainType.equals("Granite")) {
-            terrainSpeedModifier = 1.6;  
-            setDampLocal(0.796);
-        } else if (thisTerrainType.equals("Limestone")) {
-            terrainSpeedModifier = 1.4; 
-            setDampLocal(0.596);
-        }*/
     }
     
     /** Ustawia nowy typ terenu i przelicza fizykę. */

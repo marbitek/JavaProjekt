@@ -56,9 +56,7 @@ public class BazaDanych implements AutoCloseable {
 	
 	public StringBuilder listOfUsers() {
 		StringBuilder out = new StringBuilder();
-        try (PreparedStatement pst = conn.prepareStatement("SELECT * FROM (SELECT * FROM users ORDER BY id DESC LIMIT 10 ) As sub ORDER BY id ASC");) { //w miejsce ? zostanie wstsawiona moja liczba, cześciowo skompilowane
-        	//PreparedStatement pst = conn.prepareStatement("SELECT * FROM users WHERE usd < ?")) { //w miejsce ? zostanie wstsawiona moja liczba, cześciowo skompilowane
-                //pst.setDouble(1, tHold); //pierwszy znak zapytania - tHold, jeśli by był drugi to 2-coś
+        try (PreparedStatement pst = conn.prepareStatement("SELECT * FROM (SELECT * FROM users ORDER BY id DESC LIMIT 10 ) As sub ORDER BY id ASC");) { 
                 try (ResultSet rs = pst.executeQuery()) {
                     ResultSetMetaData md = rs.getMetaData();
                     int cols = md.getColumnCount();

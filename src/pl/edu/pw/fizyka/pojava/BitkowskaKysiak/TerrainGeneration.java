@@ -183,15 +183,12 @@ public class TerrainGeneration {
 			        p.setClr(terrainColor);
 			        
 			        int specifier = switch(type) {
-			        case "Granite"   -> 1;
+			        case "Granite"-> 1;
 			        case "Limestone" -> 2;
-			        default          -> 0;  // "Sand"
+			        default -> 0;  // "Sand"
 			    };
 			    p.applyTerrainSpec(specifier);
-			    }
-			    
-		        //System.out.println("Pixels added: "+pixelsAdded);
-		        //System.out.println("Pixels removed: "+pixelsRemoved);
+			 }
 			    panel.revalidate();
 			    panel.repaint();
 				}
@@ -219,10 +216,8 @@ public class TerrainGeneration {
 	{
 		Pixel[] neighbours = new Pixel[4];
 		
-		for(int j = 0; j < 4; j++)
-		{
-			switch(j)
-			{
+		for(int j = 0; j < 4; j++) {
+			switch(j){
 				case 0:
 					xModif = 1; yModif=0;
 					break;
@@ -242,12 +237,10 @@ public class TerrainGeneration {
 			}
 			sidestepX = onePxl.getGX() + xModif;
 			sidestepY = onePxl.getGY() + yModif;
-				if(legal(sidestepX, sidestepY, size))
-				{
+				if(legal(sidestepX, sidestepY, size)){
 					neighbours[j] = panel.pixelGrid.get(sidestepY).get(sidestepX);
 				} else neighbours[j] = null;
-					
-	}
+					}
 		return neighbours;
 	}
 	
@@ -290,12 +283,10 @@ public class TerrainGeneration {
 			sidestepX = beginningPixel.getGX() + xModif;
 			sidestepY = beginningPixel.getGY() + yModif;
 			
-			if(legal(sidestepX,sidestepY, panel.x_dim))
-			{	
+			if(legal(sidestepX,sidestepY, panel.x_dim)){	
 			onePxl = panel.pixelGrid.get(sidestepY).get(sidestepX);
 			
-			if (onePxl != null && /*!onePxl.getClr().equals(beginningPixel.getClr()) &&*/ rand.nextDouble() < probability)
-				{
+			if (onePxl != null && rand.nextDouble() < probability){
 					adjacents[j] = onePxl;
 				}
 			}
@@ -303,8 +294,6 @@ public class TerrainGeneration {
 		return adjacents;
 	}
 	
-	
-	
-	
+		
 
 }

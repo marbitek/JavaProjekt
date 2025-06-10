@@ -268,28 +268,6 @@ public class GamePanel extends JPanel implements GameInterface
 		data1 = new JLabel("Time elapsed: 0.00 s");
 		data2 = new JLabel("Harvested spice: 0.00 t");
 		
-	
-		/*Timer countdownTimer = new Timer(100, e -> {
-		    if (number > 0) {
-		        data1.setText(String.format("Time elapsed: %.2f s", number));
-		        number -= 10 / 1000.0;
-		    } else {
-		        ((Timer)e.getSource()).stop();    // zatrzymaj timer
-		        data1.setText("Time elapsed: 0 s");
-		        reset.doClick();                  // kliknij reset
-		        javax.swing.JOptionPane.showMessageDialog(
-			            this,
-			            MainPanel.baza.listOfUsers(),
-			            "Users",
-			            javax.swing.JOptionPane.INFORMATION_MESSAGE
-			        );
-		    }
-		});*/
-		
-
-	
-		
-		
 		//GUZIK RUN -> PAUSe
 		onOff = new JButton("RUN");
 		onOff.addActionListener(e -> {
@@ -306,23 +284,17 @@ public class GamePanel extends JPanel implements GameInterface
 				startPauseCounter++;
 				
 		        String input = tField.getText().trim();
-		        
-		       /* if (countdownTimer != null) {
-		            countdownTimer.cancel();
-		        }*/
-		        
 
-		        // If the input matches a valid decimal number
 		        if (input.matches("\\d+(\\.\\d+)?")) {
 		            double temp = Double.parseDouble(input);
 		            if (temp > 0) {
-		                number = temp; // valid input, update number
+		                number = temp; 
 		        	     // co 100 ms
 		            } else {
-		                number = 0; // invalid (zero or negative), reset to 0
+		                number = 0; 
 		            }
 		        } else {
-		            number = 0; // not a valid number, reset to 0
+		            number = 0; 
 		            
 		        }
 		        
@@ -340,9 +312,7 @@ public class GamePanel extends JPanel implements GameInterface
 			
 		    if(onOff.getText().equals("PAUSE")) {
 		    	inner.pauseSim(true);
-		    	
-
-		    }
+		    	 }
 		    
 			} catch (MyException ex) {
 				JOptionPane.showMessageDialog(GamePanel.this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -405,7 +375,6 @@ public class GamePanel extends JPanel implements GameInterface
 		lista = new JComboBox<>(teren); //lista z teren do generowania
 		lista.setRenderer(renderer);
 		lista.setBackground(Color.WHITE);
-		//lista.setMaximumSize(new Dimension(Integer.MAX_VALUE, lista.getPreferredSize().height));
 		lista.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
 		field = new JLabel("Field: ");
@@ -426,7 +395,6 @@ public class GamePanel extends JPanel implements GameInterface
 		p3 = new JPanel();
 		p3.setLayout(new BorderLayout());
 		p3.setOpaque(false);// przezroczysty, żeby kolor z tła był widoczny
-		//p.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		clusterSlider = new JSlider(1, 10, 1);
 		clusterSlider.setMajorTickSpacing(1);
@@ -470,9 +438,6 @@ public class GamePanel extends JPanel implements GameInterface
 		sizeLabel.setVerticalAlignment(SwingConstants.CENTER);
 		sizeLabel.setLabelFor(sizeSlider);
 		
-		//genPanel.add(sizeLabel);    
-		//genPanel.add(sizeSlider);
-		//generate.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
 		p4.add(sizeLabel, BorderLayout.NORTH);
 		p4.add(sizeSlider, BorderLayout.CENTER);
@@ -498,7 +463,6 @@ public class GamePanel extends JPanel implements GameInterface
 		p5.add(generate);
 		genPanel.add(p5);
 		genPanel.add(Box.createRigidArea(new Dimension(250, 20)));
-		//genPanel.add(Box.createRigidArea(new Dimension(250, 20)));
 		
 		p6 = new JPanel();
 		p6.setLayout(new GridLayout(2,1));
@@ -517,23 +481,7 @@ public class GamePanel extends JPanel implements GameInterface
 		genPanel.add(Box.createRigidArea(new Dimension(250, 20)));
 		
 		JLabel tFieldLabel2 = new JLabel("seconds");
-/*
-		tField.setMinimumSize(new Dimension(100, 25)); 
-		tField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25)); 
-		tField.setPreferredSize(new Dimension(150, 25));
-		tField.setAlignmentX(Component.CENTER_ALIGNMENT);
-		*/
-		//p5.add(generate);
-		
-		
-	
-/*
-		genPanel.add(Box.createRigidArea(new Dimension(0, 10))); 
-		genPanel.add(tFieldLabel1);
-		genPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-		genPanel.add(tField);
-		genPanel.add(tFieldLabel2);*/
-		
+
 		this.add(genPanel, BorderLayout.WEST);
 		
 		//timer
@@ -594,19 +542,19 @@ public class GamePanel extends JPanel implements GameInterface
 	private void resetUiControls() {
 
 	    //suwaki, comboboxy, etykiety
-	    lista.setSelectedIndex(0);    // „Sand”
+	    lista.setSelectedIndex(0);// „Sand”
 	    lista.setEnabled(true);
-	    numbSrc.setSelectedIndex(0);             // 1 źródło
+	    numbSrc.setSelectedIndex(0);// 1 źródło
 	    numbSrc.setEnabled(true);
-	    slider.setValue(500);                      // 0 Hz
-	    powerSlider.setValue(50);                // 50 MW
+	    slider.setValue(500);// 0 Hz
+	    powerSlider.setValue(50);// 50 MW
 	    freq.setText("frequency: 500 Hz");
 	    pow.setText("Excavation power: 50 MW");
 	    onOff.setText("RUN");
 	    
 	    //flagi symulacji
-	    gen = true;                    // wyłącz generator terenu
-	    on = false;                    // własna flaga ON/OFF
+	    gen = true;// wyłącz generator terenu
+	    on = false;// własna flaga ON/OFF
 
 	    //aktualizacja bieżących zmiennych
 	    numbSource   = 1;
