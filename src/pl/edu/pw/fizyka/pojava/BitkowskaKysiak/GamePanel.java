@@ -90,6 +90,7 @@ public class GamePanel extends JPanel implements GameInterface
 				inner.getSources().clear();
 				inner.resetState();
 				resetUiControls();
+				numbSource = 1;
 
 			    inner.setMaxSources(numbSource);
 			    inner.setFreq(currentFreq);
@@ -100,7 +101,7 @@ public class GamePanel extends JPanel implements GameInterface
 			    inner.setAddEnabled(on);  
 			    inner.setSimRunning(on);
 			    inner.pauseSim(false);
-			    inner.sourceCounter = 0;
+			    inner.sourceCounter = 1;
 			    
 			    gen = true;
 			    on = false;

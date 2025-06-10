@@ -505,6 +505,8 @@ public class SimulationPanel extends JPanel implements Runnable
         }
         
         sources.clear();
+        sourceCounter = 1;
+        maxSources = 1;
         this.generate = false;
         revalidate();
         repaint();
@@ -549,7 +551,7 @@ public class SimulationPanel extends JPanel implements Runnable
         }
     }
     	
-    	
+    	/*
     	private void drawWorm() {
     	    for (int dy = 0; dy < wormSize; dy++) {
     	        for (int dx = 0; dx < wormSize; dx++) {
@@ -561,7 +563,30 @@ public class SimulationPanel extends JPanel implements Runnable
     	            }
     	        }
     	    }
+    	}*/
+    	
+    	private void drawWorm() {
+    	    int radius = wormSize / 2;
+    	    int centerX = worm.getX();
+    	    int centerY = worm.getY();
+
+    	    for (int dy = -radius; dy <= radius; dy++) {
+    	        for (int dx = -radius; dx <= radius; dx++) {
+    	            int wx = centerX + dx;
+    	            int wy = centerY + dy;
+
+    	            // Check if point is within circle radius
+    	            if (dx * dx + dy * dy <= radius * radius) {
+    	                // Bounds check
+    	                if (wx >= 0 && wx < x_dim && wy >= 0 && wy < y_dim) {
+    	                    pixelGrid.get(wy).get(wx).setClr(worm.getClr());
+    	                    paintPxl(wx, wy, worm.getClr());
+    	                }
+    	            }
+    	        }
+    	    }
     	}
+
 
     	
     	   @Override
@@ -603,7 +628,7 @@ public class SimulationPanel extends JPanel implements Runnable
     	                {
     	                	drawWorm();
     	                	if (!worm.hasTarget()) {
-    	                	    int[] newTarget = worm.setDirection(this, 2*wormSize);
+    	                	    int[] newTarget = worm.setDirection(this, 30);
     	                	    if (newTarget != null) {
     	                	        worm.setTarget(newTarget[0], newTarget[1]);
     	                	    }

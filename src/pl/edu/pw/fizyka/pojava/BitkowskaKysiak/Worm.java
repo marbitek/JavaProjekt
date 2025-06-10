@@ -10,7 +10,7 @@ public class Worm {
 
     private int x, y, cooldown = 0; 
     private final double speed = 2; 
-    private Color color = Color.BLUE;
+    private Color color = new Color(210, 125, 45);
     private int targetX = -1, targetY = -1;
     private boolean hasTarget = false;
     private boolean activated = false;
@@ -32,7 +32,7 @@ public class Worm {
         int destX = 0, destY = 0;
         double maxIntensity = 0;
 
-        List<Source> sources = panel.getSources(); // Cache list once
+        List<Source> sources = panel.getSources(); 
 
         for (int dx = -r; dx <= r; dx++) {
             for (int dy = -r; dy <= r; dy++) {
@@ -41,7 +41,6 @@ public class Worm {
 
                 if (nx >= 0 && ny >= 0 && nx < xDim && ny < yDim) {
 
-                    // Check if a source is here → devour it
                     for (int i = 0; i < sources.size(); i++) {
                         if (nx == sources.get(i).getX() && ny == sources.get(i).getY()) {
                             sources.remove(i);
@@ -53,10 +52,9 @@ public class Worm {
                     double amp = Math.abs(amplitudes[nx][ny]);
                     double estimatedIntensity = 0;
 
-                    // Sum estimated intensities from each source
                     for (Source s : sources) {
                         double dist = Math.sqrt(Math.pow(s.getX() - nx, 2) + Math.pow(s.getY() - ny, 2));
-                        estimatedIntensity += (amp*s.getPow()) / (dist + 1); // 1/(r + 1) decay
+                        estimatedIntensity += (amp*s.getPow()) / (dist + 1); 
                     }
 
                     if (estimatedIntensity > maxIntensity) {
@@ -87,7 +85,7 @@ public class Worm {
         if (distance < speed) {
             x = targetX;
             y = targetY;
-            hasTarget = false; // arrived, ready to pick next
+            hasTarget = false; 
         } else {
             x += (dx / distance) * speed;
             y += (dy / distance) * speed;
