@@ -9,8 +9,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.TimerTask;
-import java.util.Timer;
 import javax.swing.SwingUtilities;
 
 public class GamePanel extends JPanel implements GameInterface
@@ -39,7 +37,7 @@ public class GamePanel extends JPanel implements GameInterface
 	private boolean on = false;  //flaga do przechowywania stanu
 	private double parameterReduction = 2, clusterSizeParameter = 1, number = 0;
 	private JTextField tField;
-	private Timer countdownTimer;
+	
 
 	
 	
@@ -161,9 +159,6 @@ public class GamePanel extends JPanel implements GameInterface
 		//OBIEKT TYPU SIMULATION PANEL!
 		inner = new SimulationPanel(size, size, 1, 500, 500, Pvalue);  //500x500 pixeli
 		
-		Thread simThread = new Thread(inner);
-		simThread.setDaemon(true);
-		simThread.start();
 		
 		terrainGen = new TerrainGeneration(inner);
 		Border padding = BorderFactory.createMatteBorder(15, 15, 15, 15, Color.ORANGE);
@@ -312,44 +307,23 @@ public class GamePanel extends JPanel implements GameInterface
 				
 		        String input = tField.getText().trim();
 		        
-		        if (countdownTimer != null) {
+		       /* if (countdownTimer != null) {
 		            countdownTimer.cancel();
-		        }
+		        }*/
 		        
 
 		        // If the input matches a valid decimal number
-		        if (input.matches("\\d+(\\.\\d+)?") && input != null) {
+		        if (input.matches("\\d+(\\.\\d+)?")) {
 		            double temp = Double.parseDouble(input);
 		            if (temp > 0) {
 		                number = temp; // valid input, update number
-		        	    countdownTimer = new Timer();
-		        	    countdownTimer.scheduleAtFixedRate(new TimerTask() {
-		        	        @Override public void run() {
-		        	            number -= 0.1;
-		        	            if (number > 0) {
-		        	                // aktualizacja UI tylko przez EDT
-		        	                SwingUtilities.invokeLater(() ->
-		        	                    data1.setText(String.format("Time elapsed: %.1f s", number))
-		        	                );
-		        	            } else {
-		        	                countdownTimer.cancel();
-		        	                SwingUtilities.invokeLater(() -> {
-		        	                    data1.setText("Time elapsed: 0.0 s");
-		        	                    reset.doClick();
-		        	                    // ewentualnie pokaz listę userów:
-		        	                    JOptionPane.showMessageDialog(GamePanel.this,
-		        	                        MainPanel.baza.listOfUsers(), "Users",
-		        	                        JOptionPane.INFORMATION_MESSAGE);
-		        	                });
-		        	            }
-		        	        }
-		        	    }, 0, 100);  // co 100 ms
+		        	     // co 100 ms
 		            } else {
 		                number = 0; // invalid (zero or negative), reset to 0
 		            }
 		        } else {
 		            number = 0; // not a valid number, reset to 0
-		            throw new MyException("Time of simulation is not set!");
+		            
 		        }
 		        
 			tField.setEnabled(false);
@@ -562,7 +536,7 @@ public class GamePanel extends JPanel implements GameInterface
 		
 		this.add(genPanel, BorderLayout.WEST);
 		
-		/*//timer
+		//timer
 		Timer elapsedTimer = new Timer(100, new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
@@ -570,13 +544,18 @@ public class GamePanel extends JPanel implements GameInterface
 		        if (number != 0 && seconds >= number)
 		        {
 		        	SwingUtilities.invokeLater(() -> reset.doClick());
+		        	javax.swing.JOptionPane.showMessageDialog(GamePanel.this,
+				            MainPanel.baza.listOfUsers(),
+				            "Users",
+				            javax.swing.JOptionPane.INFORMATION_MESSAGE
+				        );
 
 		        }
 		        data1.setText(String.format("Time elapsed: %.2f s", seconds));
 		    }
 		});
 		elapsedTimer.start();
-		*/
+		
 
 		
 		//ESTETYKA

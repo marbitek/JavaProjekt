@@ -628,7 +628,7 @@ public class SimulationPanel extends JPanel implements Runnable
     	                {
     	                	drawWorm();
     	                	if (!worm.hasTarget()) {
-    	                	    int[] newTarget = worm.setDirection(this, 30);
+    	                	    int[] newTarget = worm.setDirection(this, 50);
     	                	    if (newTarget != null) {
     	                	        worm.setTarget(newTarget[0], newTarget[1]);
     	                	    }
