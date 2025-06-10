@@ -19,7 +19,7 @@ public class FunctAndConst {
 	
 	protected static final double c = 343.0 *1.6;   // prędkość dźwięku m/s
     protected static int amplitude = 100; //amplituda fali
-    protected static final double brightnessFactor = 255.0 / amplitude;
+    protected static final double brightnessFactor = 500.0 / amplitude;
 
 	
     

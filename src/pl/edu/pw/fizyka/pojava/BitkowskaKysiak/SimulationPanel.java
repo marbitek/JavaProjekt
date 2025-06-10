@@ -35,7 +35,7 @@ public class SimulationPanel extends JPanel implements Runnable
 	// Lista źródeł fali
     private final List<Source> sources = new ArrayList<>();
     private final List<Point> selectedSources = new ArrayList<>();   // lista zaznaczonych lokalizacji
-    public int sourceCounter = 0;
+    public int sourceCounter = 1;
 	
 	 // Buffory stanu fali
     private double[][] previous, current, next;
