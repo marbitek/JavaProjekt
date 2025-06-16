@@ -51,16 +51,16 @@ public class Pixel {
         // teraz recalc fizyki:
         switch (newSpec) {
             case 0: // Sand
-                terrainSpeedModifier = 1.1;
-                dampLocal = 0.896;
+                terrainSpeedModifier = 0.6;
+                dampLocal = 0.94;
                 break;
             case 1: // Granite
-                terrainSpeedModifier = 1.3;
-                dampLocal = 0.696;
+                terrainSpeedModifier = 1.1;
+                dampLocal = 0.98;
                 break;
             case 2: // Limestone
-                terrainSpeedModifier = 1.2;
-                dampLocal = 0.796;
+                terrainSpeedModifier = 0.85;
+                dampLocal = 0.96;
                 break;
         }
     }

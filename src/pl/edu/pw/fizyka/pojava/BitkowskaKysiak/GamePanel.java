@@ -123,7 +123,14 @@ public class GamePanel extends JPanel implements GameInterface
 		//guzik exit
 		exit = new JButton("Exit");
 		exit.setMinimumSize(new Dimension(70, 25));
-		exit.addActionListener(e -> System.exit(0));
+		exit.addActionListener(e -> {
+			javax.swing.JOptionPane.showMessageDialog(GamePanel.this,
+		            MainPanel.baza.listOfUsers(),
+		            "Users",
+		            javax.swing.JOptionPane.INFORMATION_MESSAGE
+		        );
+			System.exit(0);
+		});
 		
 		
 		//dodanie guziczków do controlPanel
@@ -489,14 +496,8 @@ public class GamePanel extends JPanel implements GameInterface
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
 		        double seconds = inner.getElapsedMs() / 1000.0;
-		        if (number != 0 && seconds >= number)
-		        {
+		        if (number != 0 && seconds >= number){
 		        	SwingUtilities.invokeLater(() -> reset.doClick());
-		        	javax.swing.JOptionPane.showMessageDialog(GamePanel.this,
-				            MainPanel.baza.listOfUsers(),
-				            "Users",
-				            javax.swing.JOptionPane.INFORMATION_MESSAGE
-				        );
 
 		        }
 		        data1.setText(String.format("Time elapsed: %.2f s", seconds));

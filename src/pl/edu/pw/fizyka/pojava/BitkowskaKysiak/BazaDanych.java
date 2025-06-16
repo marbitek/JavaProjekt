@@ -65,18 +65,18 @@ public class BazaDanych implements AutoCloseable {
                     for (int i = 1; i <= cols; i++) {
                         String name = md.getColumnName(i);
                         out.append(i == 2
-                                ? String.format("%-20s", name) //jeśli data to rozszerzyć 
+                                ? String.format("%-30s", name) //jeśli data to rozszerzyć 
                                 : String.format("%-8s", name)); //jeśli nie to wszystko tak samo
                     }
                     out.append("\n");
-                    out.append("-".repeat(15 + (cols - 1) * 15)).append("\n");
+                    out.append("-".repeat(20 + (cols - 1) * 20)).append("\n");
 
                     // Wiersze danych
                     while (rs.next()) {
                         for (int i = 1; i <= cols; i++) {
                             String cell = rs.getString(i);
                             out.append(i == 2
-                                    ? String.format("%-20s", cell)
+                                    ? String.format("%-25s", cell)
                                     : String.format("%-8s", cell));
                         }
                         out.append("\n");

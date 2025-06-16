@@ -618,7 +618,7 @@ public class SimulationPanel extends JPanel implements Runnable
     	            
     	        	}
     	        	
-    	        try { Thread.sleep(33); } catch (InterruptedException ignored) {}//musi być by odciążyć EDT
+    	        try { Thread.sleep(5); } catch (InterruptedException ignored) {}//musi być by odciążyć EDT
     	        }
     	    }
 

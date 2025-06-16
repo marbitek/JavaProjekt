@@ -25,9 +25,21 @@ public class MainPanel extends JFrame {
 	public MainPanel() throws SQLException  
 	{
 		JFrame frame = new JFrame("Dune Harmonics");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent e) {
+		        JOptionPane.showMessageDialog(gamePanel,
+	            MainPanel.baza.listOfUsers(),
+	            "Users",
+	            javax.swing.JOptionPane.INFORMATION_MESSAGE
+	        );
+		        System.exit(0);
+		    }
+		});
 		frame.setSize(900, 600);
 		frame.setLocationRelativeTo(null);
+		
 		
 		
 		card = new CardLayout(5, 5);
