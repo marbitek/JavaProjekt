@@ -43,7 +43,7 @@ public class TerrainGeneration {
 			
 			
 			if(generate) {
-				System.out.println("Terrain generation called");
+				//System.out.println("Terrain generation called");
 				Set<Pixel> newTerrain = new HashSet<>();
 			    Set<Pixel> prevIteration = new HashSet<>();
 			    Set<Pixel> thisIteration = new HashSet<>();

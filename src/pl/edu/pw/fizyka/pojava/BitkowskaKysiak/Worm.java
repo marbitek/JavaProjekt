@@ -14,6 +14,7 @@ public class Worm {
     private int targetX = -1, targetY = -1;
     private boolean hasTarget = false;
     private boolean activated = false;
+    private boolean reactivated = true; //dodano w celu naprawienia blednaj logoki czerwia
     
     public Worm(int startX, int startY) 
     {
@@ -105,7 +106,7 @@ public class Worm {
 
     public void tickCooldown() {
         if (cooldown > 0) cooldown--;
-        if (cooldown == 0) activated = true;
+        if (cooldown == 0) reactivated = true;
     }
     
     public boolean hasTarget() {
